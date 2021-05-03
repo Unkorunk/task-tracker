@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(task-tracker-frontend LANGUAGES CXX)
+project(task-tracker LANGUAGES CXX)
 
 add_subdirectory(cpp-httplib)
 
