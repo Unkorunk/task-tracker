@@ -24,9 +24,38 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/MainWindow.cpp
   task-tracker-frontend/MainWindow.h
   task-tracker-frontend/MainWindow.ui
+
   task-tracker-frontend/NavBar.cpp
   task-tracker-frontend/NavBar.h
   task-tracker-frontend/NavBar.ui
+
+  task-tracker-frontend/GreetingsWidget.cpp
+  task-tracker-frontend/GreetingsWidget.h
+  task-tracker-frontend/GreetingsWidget.ui
+
+  task-tracker-frontend/ProfileWidget.cpp
+  task-tracker-frontend/ProfileWidget.h
+  task-tracker-frontend/ProfileWidget.ui
+
+  task-tracker-frontend/NotificationsWidget.cpp
+  task-tracker-frontend/NotificationsWidget.h
+  task-tracker-frontend/NotificationsWidget.ui
+
+  task-tracker-frontend/ProjectWidget.cpp
+  task-tracker-frontend/ProjectWidget.h
+  task-tracker-frontend/ProjectWidget.ui
+
+  task-tracker-frontend/ProjectSettingsWidget.cpp
+  task-tracker-frontend/ProjectSettingsWidget.h
+  task-tracker-frontend/ProjectSettingsWidget.ui
+
+  task-tracker-frontend/IssueWidget.cpp
+  task-tracker-frontend/IssueWidget.h
+  task-tracker-frontend/IssueWidget.ui
+
+  task-tracker-frontend/StatisticsWidget.cpp
+  task-tracker-frontend/StatisticsWidget.h
+  task-tracker-frontend/StatisticsWidget.ui
   ${TS_FILES_FRONTEND}
 )
 

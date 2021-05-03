@@ -14,25 +14,8 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Say Hello</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
      <widget class="NavBar" name="groupBox">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -51,6 +34,30 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <widget class="GreetingsWidget" name="page">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+      <widget class="ProfileWidget" name="page_2"/>
+      <widget class="NotificationsWidget" name="page_3"/>
+      <widget class="ProjectWidget" name="page_4"/>
+      <widget class="ProjectSettingsWidget" name="page_5"/>
+      <widget class="StatisticsWidget" name="page_6"/>
+      <widget class="IssueWidget" name="page_7"/>
+     </widget>
+    </item>
    </layout>
   </widget>
  </widget>
@@ -59,6 +66,48 @@
    <class>NavBar</class>
    <extends>QGroupBox</extends>
    <header>navbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ProfileWidget</class>
+   <extends>QWidget</extends>
+   <header>ProfileWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GreetingsWidget</class>
+   <extends>QWidget</extends>
+   <header>GreetingsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>NotificationsWidget</class>
+   <extends>QWidget</extends>
+   <header>NotificationsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StatisticsWidget</class>
+   <extends>QWidget</extends>
+   <header>StatisticsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IssueWidget</class>
+   <extends>QWidget</extends>
+   <header>IssueWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ProjectSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>ProjectSettingsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ProjectWidget</class>
+   <extends>QWidget</extends>
+   <header>ProjectWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
