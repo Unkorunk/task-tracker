@@ -24,6 +24,9 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/MainWindow.cpp
   task-tracker-frontend/MainWindow.h
   task-tracker-frontend/MainWindow.ui
+  task-tracker-frontend/NavBar.cpp
+  task-tracker-frontend/NavBar.h
+  task-tracker-frontend/NavBar.ui
   ${TS_FILES_FRONTEND}
 )
 
