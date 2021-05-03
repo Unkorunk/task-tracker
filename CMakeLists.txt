@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(task-tracker LANGUAGES CXX)
 
-add_subdirectory(cpp-httplib)
+add_subdirectory(qthttpserver)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -61,8 +61,7 @@ set(PROJECT_SOURCES_FRONTEND
 
 set(PROJECT_SOURCES_BACKEND
   task-tracker-backend/main.cpp
-  task-tracker-backend/Account.hpp
-  task-tracker-backend/ResponseHelper.hpp
+  task-tracker-backend/Project.hpp
   ${TS_FILES_BACKEND}
 )
 
@@ -98,5 +97,5 @@ else()
   )
 endif()
 
-target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets httplib::httplib)
-target_link_libraries(task-tracker-backend PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql httplib::httplib)
+target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(task-tracker-backend PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt::HttpServer)

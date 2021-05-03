@@ -4,10 +4,10 @@
 #include <QJsonObject>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QtCore>
+#include <QtHttpServer>
 
-#include <httplib.h>
-
-#include "Account.hpp"
+#include "Project.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     }
 
     bool server_port_ok;
-    int server_port = server_port_str.toInt(&server_port_ok);
+    quint16 server_port = server_port_str.toInt(&server_port_ok);
     if (!server_port_ok) {
         qInfo() << "invalid value of port passing";
         return 0;
@@ -62,15 +62,21 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    Project::database = &db;
 
-    Account::database = &db;
+    QHttpServer http_server;
+    http_server.route("/project/create/", &Project::Create);
+    http_server.route("/project/delete/", &Project::Delete);
+    http_server.route("/project/edit/", QHttpServerRequest::Method::POST, &Project::Edit);
+    http_server.route("/project/get/", &Project::Get);
 
-    httplib::Server svr;
+    const quint16 port = http_server.listen(QHostAddress(server_host), server_port);
+    if (port == 0) {
+        qInfo() << "failed listen port";
+        return 0;
+    }
 
-    svr.Get("/account/signin", &Account::SignIn);
-    svr.Get("/account/signup", &Account::SignUp);
-
-    svr.listen(server_host.toStdString().c_str(), server_port);
+    qInfo() << port;
 
     return a.exec();
 }
