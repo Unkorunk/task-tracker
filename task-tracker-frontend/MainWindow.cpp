@@ -8,11 +8,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
-    connect( ui->pushButton, SIGNAL(clicked()), this, SLOT(OnSayHello()) );
+    //connect( ui->pushButton, SIGNAL(clicked()), this, SLOT(OnSayHello()) );
 }
 
 void MainWindow::OnSayHello() {
-    ui->label->setText("Hello World");
+    //ui->label->setText("Hello World");
 }
 
 MainWindow::~MainWindow()
