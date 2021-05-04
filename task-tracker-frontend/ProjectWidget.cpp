@@ -1,6 +1,8 @@
 #include "ProjectWidget.h"
 #include "ui_ProjectWidget.h"
 
+#include <QDebug>
+
 ProjectWidget::ProjectWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProjectWidget)
@@ -11,4 +13,9 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
 ProjectWidget::~ProjectWidget()
 {
     delete ui;
+}
+
+void ProjectWidget::SetupProject(const ProjectInfo &project)
+{
+    qInfo() << project.projectName;
 }
