@@ -23,6 +23,11 @@ public:
     QString projectName;
 };
 
+class TaskInfo {
+public:
+    TaskInfo();
+};
+
 class Backend : public QObject {
     Q_OBJECT
 
@@ -37,10 +42,17 @@ public:
 
     void CreateProject(const QString& projectName);
 
+    void GetTasks(const ProjectInfo& projectInfo);
+
+    void CreateTask(const ProjectInfo& projectInfo, const TaskInfo& taskInfo);
+
 signals:
     void Authenticated(Status status);
 
     void ProjectsLoaded(Status status, const QList<ProjectInfo>& projects);
+
+    void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
+
 private slots:
     void OnAuth(QNetworkReply* reply);
 
