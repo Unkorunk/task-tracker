@@ -1,5 +1,6 @@
 #include "ProjectSettingsWidget.h"
 #include "ui_ProjectSettingsWidget.h"
+#include "backend.h"
 
 ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     QWidget(parent),
@@ -11,4 +12,9 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
 ProjectSettingsWidget::~ProjectSettingsWidget()
 {
     delete ui;
+}
+
+void ProjectSettingsWidget::SetupProject(const ProjectInfo &project)
+{
+    ui->label->setText(project.projectName);
 }

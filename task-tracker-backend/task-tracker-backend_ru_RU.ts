@@ -147,8 +147,28 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../task-tracker-frontend/ProjectWidget.ui" line="26"/>
-        <source>Project Widget</source>
+        <location filename="../task-tracker-frontend/ProjectWidget.ui" line="36"/>
+        <source>ProjectName</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectWidget.ui" line="49"/>
+        <source>Project Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectWidget.ui" line="62"/>
+        <source>Project Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectWidget.ui" line="89"/>
+        <source>Create task</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectWidget.ui" line="163"/>
+        <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

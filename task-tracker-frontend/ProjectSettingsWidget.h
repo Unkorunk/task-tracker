@@ -2,6 +2,7 @@
 #define PROJECTSETTINGSWIDGET_H
 
 #include <QWidget>
+#include "backend.h"
 
 namespace Ui {
 class ProjectSettingsWidget;
@@ -14,6 +15,8 @@ class ProjectSettingsWidget : public QWidget
 public:
     explicit ProjectSettingsWidget(QWidget *parent = nullptr);
     ~ProjectSettingsWidget();
+
+    void SetupProject(const ProjectInfo& project);
 
 private:
     Ui::ProjectSettingsWidget *ui;
