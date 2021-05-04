@@ -23,10 +23,19 @@ public:
         Profile = 1,
         Notifications = 2,
         Project = 3,
+        ProjectSettings = 4,
+        ProjectStatistics = 5,
+        Issue = 6,
     };
 
 public slots:
     void OnProjectTransition(const ProjectInfo& projectInfo);
+
+    void OnIssueTransition(const TaskInfo& taskInfo);
+
+    void OnProjectSettingsTransition(const ProjectInfo& projectInfo);
+
+    void OnProjectStatisticsTransition(const ProjectInfo& projectInfo);
 
 private slots:
     void OnTransition(MainWindow::Transition transition);

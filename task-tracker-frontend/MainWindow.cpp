@@ -29,6 +29,27 @@ void MainWindow::OnProjectTransition(const ProjectInfo &projectInfo)
     OnTransition(Transition::Project);
 }
 
+void MainWindow::OnIssueTransition(const TaskInfo &taskInfo)
+{
+    IssueWidget* widget = dynamic_cast<IssueWidget*>(ui->stackedWidget->widget(int(Transition::Issue)));
+    widget->SetupTask(taskInfo);
+    OnTransition(Transition::Issue);
+}
+
+void MainWindow::OnProjectSettingsTransition(const ProjectInfo &projectInfo)
+{
+    ProjectSettingsWidget* widget = dynamic_cast<ProjectSettingsWidget*>(ui->stackedWidget->widget(int(Transition::ProjectSettings)));
+    widget->SetupProject(projectInfo);
+    OnTransition(Transition::ProjectSettings);
+}
+
+void MainWindow::OnProjectStatisticsTransition(const ProjectInfo &projectInfo)
+{
+    StatisticsWidget* widget = dynamic_cast<StatisticsWidget*>(ui->stackedWidget->widget(int(Transition::ProjectSettings)));
+    widget->SetupProject(projectInfo);
+    OnTransition(Transition::ProjectSettings);
+}
+
 void MainWindow::OnTransition(MainWindow::Transition transition)
 {
     switch (transition) {

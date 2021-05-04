@@ -61,6 +61,17 @@ void Backend::CreateProject(const QString &projectName)
     qInfo() << url;
 }
 
+void Backend::GetTasks(const ProjectInfo &projectInfo)
+{
+    emit TasksLoaded(Status(true, ""), myProjectTasksDictionary[projectInfo]);
+}
+
+void Backend::CreateTask(const ProjectInfo &projectInfo, const TaskInfo &taskInfo)
+{
+    myProjectTasksDictionary[projectInfo].append(taskInfo);
+    emit TasksLoaded(Status(true, ""), myProjectTasksDictionary[projectInfo]);
+}
+
 void Backend::OnAuth(QNetworkReply *reply)
 {
 
@@ -100,6 +111,12 @@ void Backend::OnResponse(QNetworkReply* reply)
     }
 }
 
-ProjectInfo::ProjectInfo(int id, int projectId, QString projectName) : id(id), projectId(projectId), projectName(projectName)
+ProjectInfo::ProjectInfo(int id, int projectId, const QString& projectName) : id(id), projectId(projectId), projectName(projectName)
+{
+}
+
+
+TaskInfo::TaskInfo(int taskId, int projectId, const QString &taskName, const QString &taskDesc)
+    : taskId(taskId), projectId(projectId), taskName(taskName), taskDescription(taskDesc)
 {
 }
