@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="NavBar" name="groupBox">
+     <widget class="NavBar" name="navBar">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -67,6 +67,9 @@
    <extends>QGroupBox</extends>
    <header>navbar.h</header>
    <container>1</container>
+   <slots>
+    <signal>onNavbarClicked(MainWindow::Transition)</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>ProfileWidget</class>

@@ -15,8 +15,16 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    enum class Transition {
+        Greetings = 0,
+        Profile = 1,
+        Notifications = 2,
+
+    };
+
 private slots:
     void OnSayHello();
+    void OnTransition(MainWindow::Transition transition);
 
 private:
     Ui::MainWindow *ui;
