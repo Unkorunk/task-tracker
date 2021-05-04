@@ -61,6 +61,16 @@ void Backend::CreateProject(const QString &projectName)
     qInfo() << url;
 }
 
+void Backend::GetTasks(const ProjectInfo &projectInfo)
+{
+
+}
+
+void Backend::CreateTask(const ProjectInfo &projectInfo, const TaskInfo &taskInfo)
+{
+
+}
+
 void Backend::OnAuth(QNetworkReply *reply)
 {
 
@@ -102,4 +112,9 @@ void Backend::OnResponse(QNetworkReply* reply)
 
 ProjectInfo::ProjectInfo(int id, int projectId, QString projectName) : id(id), projectId(projectId), projectName(projectName)
 {
+}
+
+TaskInfo::TaskInfo()
+{
+
 }
