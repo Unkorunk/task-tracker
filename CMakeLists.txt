@@ -56,6 +56,19 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/StatisticsWidget.cpp
   task-tracker-frontend/StatisticsWidget.h
   task-tracker-frontend/StatisticsWidget.ui
+
+  task-tracker-frontend/AuthorizationWindow.cpp
+  task-tracker-frontend/AuthorizationWindow.h
+  task-tracker-frontend/AuthorizationWindow.ui
+
+  task-tracker-frontend/AuthorizationWidget.cpp
+  task-tracker-frontend/AuthorizationWidget.h
+  task-tracker-frontend/AuthorizationWidget.ui
+
+  task-tracker-frontend/RegistrationWidget.cpp
+  task-tracker-frontend/RegistrationWidget.h
+  task-tracker-frontend/RegistrationWidget.ui
+
   ${TS_FILES_FRONTEND}
 )
 
