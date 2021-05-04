@@ -17,8 +17,8 @@ public:
     ~NavBar();
 
 signals:
-    void OnNavbarClicked(MainWindow::Transition transition);
-    void OnLogout();
+    void NavButtonClicked(MainWindow::Transition transition);
+    void Logout();
 
 private slots:
     void OnProjectBtnClicked();

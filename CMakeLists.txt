@@ -15,6 +15,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools Sql REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Network REQUIRED)
 
 set(TS_FILES_FRONTEND task-tracker-frontend/task-tracker-frontend_ru_RU.ts)
 set(TS_FILES_FRONTEND task-tracker-backend/task-tracker-backend_ru_RU.ts)
@@ -69,6 +70,12 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/RegistrationWidget.h
   task-tracker-frontend/RegistrationWidget.ui
 
+  task-tracker-frontend/ProjectsList.cpp
+  task-tracker-frontend/ProjectsList.h
+  task-tracker-frontend/ProjectsList.ui
+
+  task-tracker-frontend/Backend.cpp
+  task-tracker-frontend/Backend.h
   ${TS_FILES_FRONTEND}
 )
 
@@ -111,4 +118,5 @@ else()
 endif()
 
 target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Network)
 target_link_libraries(task-tracker-backend PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt::HttpServer)
