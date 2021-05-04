@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-
+    connect(ui->navBar, SIGNAL(OnNavbarClicked(MainWindow::Transition)), this, SLOT(OnTransition(MainWindow::Transition)));
     //connect( ui->pushButton, SIGNAL(clicked()), this, SLOT(OnSayHello()) );
 }
 
@@ -18,5 +18,10 @@ void MainWindow::OnSayHello() {
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::OnTransition(MainWindow::Transition transition)
+{
+    ui->stackedWidget->setCurrentIndex((int)transition);
 }
 
