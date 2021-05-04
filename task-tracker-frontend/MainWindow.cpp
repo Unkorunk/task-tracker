@@ -7,7 +7,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->navBar, SIGNAL(OnNavbarClicked(MainWindow::Transition)), this, SLOT(OnTransition(MainWindow::Transition)));
+    connect(ui->navBar, &NavBar::OnNavbarClicked, this, &MainWindow::OnTransition);
+
+    OnTransition(Transition::Greetings);
     //connect( ui->pushButton, SIGNAL(clicked()), this, SLOT(OnSayHello()) );
 }
 
@@ -22,6 +24,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::OnTransition(MainWindow::Transition transition)
 {
+    switch (transition) {
+    case Transition::Greetings:
+        Backend::Instance.GetProjects();
+        break;
+    case Transition::Notifications:
+    case Transition::Profile:
+        break;
+    }
+
     ui->stackedWidget->setCurrentIndex((int)transition);
 }
 

@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDebug>
 
 Status::Status(bool success, const QString &message)
 {
@@ -18,27 +19,46 @@ Backend Backend::Instance = Backend();
 
 const QString Backend::BaseUrl = "http://localhost:8080";
 
-Backend::Backend() : myNetworkManager(new QNetworkAccessManager())
+Backend::Backend() : myNetworkManager(std::make_unique<QNetworkAccessManager>())
 {
     // Temporary
     myToken = "abc121cba";
 
-    connect(myNetworkManager, &QNetworkAccessManager::finished, this, &Backend::OnProjectsLoaded);
+    connect(myNetworkManager.get(), &QNetworkAccessManager::finished, this, &Backend::OnResponse);
 }
 
-void Backend::Auth(QString username, QString password)
+QString Backend::GetProjectsUrl()
+{
+    return BaseUrl + "/project/get/";
+}
+
+QString Backend::CreateProjectUrl()
+{
+    return BaseUrl + "/project/create/";
+}
+
+void Backend::Auth(const QString& username, const QString& password)
 {
     emit Authenticated(Status(false, "Not implemented"));
 }
 
-void Backend::Register(QString username, QString email, QString password)
+void Backend::Register(const QString& username, const QString& email, const QString& password)
 {
     emit Authenticated(Status(false, "Not implemented"));
 }
 
 void Backend::GetProjects()
 {
-    myNetworkManager->get(QNetworkRequest(QUrl(BaseUrl + "/project/get/?access_token=" + myToken)));
+    QUrl url = QUrl(GetProjectsUrl() + "?access_token=" + myToken);
+    myNetworkManager->get(QNetworkRequest(url));
+    qInfo() << url;
+}
+
+void Backend::CreateProject(const QString &projectName)
+{
+    QUrl url = QUrl(CreateProjectUrl() + "?access_token=" + myToken + "&full_name=" + projectName);
+    myNetworkManager->get(QNetworkRequest(url));
+    qInfo() << url;
 }
 
 void Backend::OnAuth(QNetworkReply *reply)
@@ -46,25 +66,40 @@ void Backend::OnAuth(QNetworkReply *reply)
 
 }
 
-void Backend::OnProjectsLoaded(QNetworkReply* reply)
+void Backend::OnResponse(QNetworkReply* reply)
 {
-    QNetworkReply::NetworkError error = reply->error();
-    bool isError = error != QNetworkReply::NoError;
+    qInfo() << reply->error();
+    QString request = reply->request().url().toString();
+    QString pattern = request.sliced(0, request.indexOf('?'));
+    if (pattern == GetProjectsUrl()) {
+        QNetworkReply::NetworkError error = reply->error();
+        bool isSuccess = error == QNetworkReply::NoError;
 
-    QJsonDocument json = QJsonDocument::fromJson(reply->readAll());
-    QJsonObject root = json.object();
+        QJsonDocument json = QJsonDocument::fromJson(reply->readAll());
+        QJsonObject root = json.object();
 
-    isError |= root["status"] != "ok";
+        isSuccess &= root["status"] == "ok";
 
-    if (!isError) {
-        for (QJsonValueRef it : root["data"].toArray()) {
-            QJsonObject obj = it.toObject();
-            QString projName = obj["full_name"].toString();
-            int id = obj["id"].toInt();
-            int projId = obj["project_id"].toInt();
+        QList<ProjectInfo> projects;
 
+        if (isSuccess) {
+            for (QJsonValueRef it : root["data"].toArray()) {
+                QJsonObject obj = it.toObject();
+
+                QString projName = obj["full_name"].toString();
+                int id = obj["id"].toInt();
+                int projId = obj["project_id"].toInt();
+
+                projects.push_back(ProjectInfo(id, projId, projName));
+            }
         }
-    }
 
-    emit ProjectsLoaded(Status(isError, ""));
+        emit ProjectsLoaded(Status(isSuccess, ""), projects);
+    } else if (pattern == CreateProjectUrl()) {
+        GetProjects();
+    }
+}
+
+ProjectInfo::ProjectInfo(int id, int projectId, QString projectName) : id(id), projectId(projectId), projectName(projectName)
+{
 }

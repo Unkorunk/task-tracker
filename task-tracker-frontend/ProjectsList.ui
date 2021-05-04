@@ -49,7 +49,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>35</height>
+       <height>25</height>
       </size>
      </property>
      <property name="baseSize">
@@ -59,12 +59,16 @@
       </size>
      </property>
      <property name="placeholderText">
-      <string>Type your request</string>
+      <string>Search project...</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QListView" name="listView"/>
+    <widget class="QListView" name="listView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

@@ -134,7 +134,7 @@
     </message>
     <message>
         <location filename="../task-tracker-frontend/ProjectsList.ui" line="62"/>
-        <source>Type your request</source>
+        <source>Search project...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
