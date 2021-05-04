@@ -56,6 +56,10 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/StatisticsWidget.cpp
   task-tracker-frontend/StatisticsWidget.h
   task-tracker-frontend/StatisticsWidget.ui
+
+  task-tracker-frontend/ProjectsList.cpp
+  task-tracker-frontend/ProjectsList.h
+  task-tracker-frontend/ProjectsList.ui
   ${TS_FILES_FRONTEND}
 )
 
