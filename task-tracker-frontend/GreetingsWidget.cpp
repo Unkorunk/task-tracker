@@ -1,6 +1,7 @@
 #include "GreetingsWidget.h"
 #include "ui_GreetingsWidget.h"
 #include "backend.h"
+#include "MainWindow.h"
 
 GreetingsWidget::GreetingsWidget(QWidget *parent) :
     QWidget(parent),
@@ -11,6 +12,8 @@ GreetingsWidget::GreetingsWidget(QWidget *parent) :
 
     connect(&Backend::Instance, &Backend::ProjectsLoaded, this, &GreetingsWidget::OnProjectsLoad);
     connect(ui->projectList, &ProjectsList::AddProjectClicked, this, &GreetingsWidget::OnProjectAdd);
+
+    connect(ui->projectList, &ProjectsList::ProjectSelected, MainWindow::Instance, &MainWindow::OnProjectTransition);
 }
 
 GreetingsWidget::~GreetingsWidget()

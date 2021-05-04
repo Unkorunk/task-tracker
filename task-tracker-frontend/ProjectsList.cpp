@@ -15,6 +15,7 @@ ProjectsList::ProjectsList(QWidget *parent) :
     ui->listView->setModel(model.get());
 
     connect(ui->addProjectBtn, &QAbstractButton::clicked, this, &ProjectsList::OnAddProjectBtnClicked);
+    connect(ui->listView, &QListView::clicked, this, &ProjectsList::OnItemClicked);
 }
 
 ProjectsList::~ProjectsList()
@@ -54,4 +55,9 @@ void ProjectsList::OnAddProjectBtnClicked()
 
 //    myDialog->setLayout()
     emit AddProjectClicked(QString("NewProject%1").arg(model->rowCount()));
+}
+
+void ProjectsList::OnItemClicked(const QModelIndex &index)
+{
+    emit ProjectSelected(myProjects[index.row()]);
 }

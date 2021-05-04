@@ -32,6 +32,7 @@ signals:
 private slots:
     void OnAddProjectBtnClicked();
 
+    void OnItemClicked(const QModelIndex& index);
 private:
     Ui::ProjectsList *ui;
 

@@ -1,10 +1,13 @@
 #include "MainWindow.h"
 #include "./ui_MainWindow.h"
 
+MainWindow* MainWindow::Instance = nullptr;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    Instance = this;
     ui->setupUi(this);
 
     connect(ui->navBar, &NavBar::OnNavbarClicked, this, &MainWindow::OnTransition);
@@ -20,6 +23,13 @@ void MainWindow::OnSayHello() {
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::OnProjectTransition(const ProjectInfo &projectInfo)
+{
+    ProjectWidget* widget = dynamic_cast<ProjectWidget*>(ui->stackedWidget->widget(int(Transition::Project)));
+    widget->SetupProject(projectInfo);
+    OnTransition(Transition::Project);
 }
 
 void MainWindow::OnTransition(MainWindow::Transition transition)
