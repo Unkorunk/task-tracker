@@ -19,20 +19,20 @@ NavBar::~NavBar()
 
 void NavBar::OnProjectBtnClicked()
 {
-    emit OnNavbarClicked(MainWindow::Transition::Greetings);
+    emit NavButtonClicked(MainWindow::Transition::Greetings);
 }
 
 void NavBar::OnNotificationBtnClicked()
 {
-    emit OnNavbarClicked(MainWindow::Transition::Notifications);
+    emit NavButtonClicked(MainWindow::Transition::Notifications);
 }
 
 void NavBar::OnProfileBtnClicked()
 {
-    emit OnNavbarClicked(MainWindow::Transition::Profile);
+    emit NavButtonClicked(MainWindow::Transition::Profile);
 }
 
 void NavBar::OnLogoutBtnClicked()
 {
-    emit OnLogout();
+    emit Logout();
 }

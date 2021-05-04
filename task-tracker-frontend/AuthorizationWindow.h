@@ -29,7 +29,7 @@ private slots:
 
 private:
     Ui::AuthorizationWindow *ui;
-    MainWindow *mWindow;
+    MainWindow mWindow;
 };
 
 #endif // AUTHORIZATIONWINDOW_H
