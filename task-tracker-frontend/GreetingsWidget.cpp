@@ -6,6 +6,7 @@ GreetingsWidget::GreetingsWidget(QWidget *parent) :
     ui(new Ui::GreetingsWidget)
 {
     ui->setupUi(this);
+    ui->personalProjectsList->ChangeHeader("Personal projects");
 }
 
 GreetingsWidget::~GreetingsWidget()

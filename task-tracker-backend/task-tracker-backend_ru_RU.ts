@@ -4,13 +4,13 @@
 <context>
     <name>GreetingsWidget</name>
     <message>
-        <location filename="../task-tracker-frontend/GreetingsWidget.ui" line="14"/>
+        <location filename="../task-tracker-frontend/GreetingsWidget.ui" line="20"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../task-tracker-frontend/GreetingsWidget.ui" line="26"/>
-        <source>Greetings Widget</source>
+        <location filename="../task-tracker-frontend/GreetingsWidget.ui" line="38"/>
+        <source>Greetings, &lt;username&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -112,6 +112,29 @@
     <message>
         <location filename="../task-tracker-frontend/ProjectWidget.ui" line="26"/>
         <source>Project Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ProjectsList</name>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectsList.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectsList.ui" line="28"/>
+        <source>Project list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectsList.ui" line="35"/>
+        <source>Create project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectsList.ui" line="62"/>
+        <source>Type your request</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
