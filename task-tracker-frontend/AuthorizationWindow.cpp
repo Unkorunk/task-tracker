@@ -1,6 +1,7 @@
 #include "AuthorizationWindow.h"
 #include "MainWindow.h"
 #include "ui_AuthorizationWindow.h"
+#include "Backend.h"
 
 AuthorizationWindow::AuthorizationWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,4 +28,5 @@ void AuthorizationWindow::OnTransition(AuthorizationWindow::Transition transitio
 void AuthorizationWindow::OnSwitchingWindow() {
     mWindow.show();
     this->close();
+    Backend::Instance.GetProjects();
 }

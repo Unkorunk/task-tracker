@@ -13,8 +13,6 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
 
     connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnTransition);
     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);
-
-    OnTransition(Transition::Greetings);
 }
 
 MainWindow::~MainWindow()

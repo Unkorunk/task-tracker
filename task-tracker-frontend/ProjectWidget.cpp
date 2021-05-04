@@ -1,6 +1,6 @@
 #include "ProjectWidget.h"
 #include "ui_ProjectWidget.h"
-#include "backend.h"
+#include "Backend.h"
 
 #include <QDebug>
 #include "MainWindow.h"

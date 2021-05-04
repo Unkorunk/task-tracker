@@ -1,6 +1,6 @@
 #include "ProjectSettingsWidget.h"
 #include "ui_ProjectSettingsWidget.h"
-#include "backend.h"
+#include "Backend.h"
 
 ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     QWidget(parent),

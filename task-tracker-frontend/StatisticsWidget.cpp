@@ -1,6 +1,6 @@
 #include "StatisticsWidget.h"
 #include "ui_StatisticsWidget.h"
-#include "backend.h"
+#include "Backend.h"
 
 StatisticsWidget::StatisticsWidget(QWidget *parent) :
     QWidget(parent),

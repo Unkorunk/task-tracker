@@ -1,6 +1,6 @@
 #include "GreetingsWidget.h"
 #include "ui_GreetingsWidget.h"
-#include "backend.h"
+#include "Backend.h"
 #include "MainWindow.h"
 
 GreetingsWidget::GreetingsWidget(QWidget *parent) :

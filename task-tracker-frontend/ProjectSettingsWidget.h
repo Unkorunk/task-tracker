@@ -2,7 +2,7 @@
 #define PROJECTSETTINGSWIDGET_H
 
 #include <QWidget>
-#include "backend.h"
+#include "Backend.h"
 
 namespace Ui {
 class ProjectSettingsWidget;

@@ -2,10 +2,11 @@
 #define PROJECTWIDGET_H
 
 #include <QWidget>
-#include "backend.h"
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <memory>
+
+#include "Backend.h"
 
 namespace Ui {
 class ProjectWidget;

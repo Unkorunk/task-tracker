@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "backend.h"
+#include "Backend.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

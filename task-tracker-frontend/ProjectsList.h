@@ -6,7 +6,7 @@
 #include <QStringListModel>
 #include <memory>
 
-#include "backend.h"
+#include "Backend.h"
 
 namespace Ui {
 class ProjectsList;
