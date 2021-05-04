@@ -92,13 +92,33 @@
 <context>
     <name>ProjectSettingsWidget</name>
     <message>
-        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="20"/>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="29"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="26"/>
-        <source>Project Settings Widget</source>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="60"/>
+        <source>Project Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="128"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="210"/>
+        <source>Team:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="278"/>
+        <source>Invite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="351"/>
+        <source>Enter recipient&apos;s email</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
