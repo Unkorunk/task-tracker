@@ -3,21 +3,18 @@
 
 MainWindow* MainWindow::Instance = nullptr;
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
+    : QMainWindow(parent),
+      myAuthWindow(authWindow),
+      ui(new Ui::MainWindow)
 {
     Instance = this;
     ui->setupUi(this);
 
-    connect(ui->navBar, &NavBar::OnNavbarClicked, this, &MainWindow::OnTransition);
+    connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnTransition);
+    connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);
 
     OnTransition(Transition::Greetings);
-    //connect( ui->pushButton, SIGNAL(clicked()), this, SLOT(OnSayHello()) );
-}
-
-void MainWindow::OnSayHello() {
-    //ui->label->setText("Hello World");
 }
 
 MainWindow::~MainWindow()
@@ -44,5 +41,11 @@ void MainWindow::OnTransition(MainWindow::Transition transition)
     }
 
     ui->stackedWidget->setCurrentIndex((int)transition);
+}
+
+void MainWindow::OnLogout()
+{
+    myAuthWindow.show();
+    this->close();
 }
 

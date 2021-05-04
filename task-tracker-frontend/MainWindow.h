@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow
 public:
     static MainWindow* Instance;
 
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QMainWindow& authWindow, QWidget *parent = nullptr);
     ~MainWindow();
 
     enum class Transition {
@@ -29,10 +29,12 @@ public slots:
     void OnProjectTransition(const ProjectInfo& projectInfo);
 
 private slots:
-    void OnSayHello();
     void OnTransition(MainWindow::Transition transition);
+    void OnLogout();
 
 private:
     Ui::MainWindow *ui;
+
+    QMainWindow& myAuthWindow;
 };
 #endif // MAINWINDOW_H
