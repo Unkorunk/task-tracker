@@ -5,8 +5,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
-    ui->stackedWidget->setCurrentIndex(4);
+    ui->stackedWidget->setCurrentIndex(6);
 
     connect(ui->navBar, SIGNAL(OnNavbarClicked(MainWindow::Transition)), this, SLOT(OnTransition(MainWindow::Transition)));
     //connect( ui->pushButton, SIGNAL(clicked()), this, SLOT(OnSayHello()) );

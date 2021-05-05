@@ -17,13 +17,18 @@
 <context>
     <name>IssueWidget</name>
     <message>
-        <location filename="../task-tracker-frontend/IssueWidget.ui" line="20"/>
+        <location filename="../task-tracker-frontend/IssueWidget.ui" line="14"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../task-tracker-frontend/IssueWidget.ui" line="26"/>
-        <source>Issue Widget</source>
+        <location filename="../task-tracker-frontend/IssueWidget.ui" line="45"/>
+        <source>Created by *author* *time*</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/IssueWidget.ui" line="93"/>
+        <source>*Task Name*</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
