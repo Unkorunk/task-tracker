@@ -9,10 +9,10 @@ AuthorizationWindow::AuthorizationWindow(QWidget *parent) :
     ui(new Ui::AuthorizationWindow)
 {
     ui->setupUi(this);
-    connect(ui->Authorization, SIGNAL(OnAuthClicked(AuthorizationWindow::Transition)), this, SLOT(OnTransition(AuthorizationWindow::Transition)));
-    connect(ui->Registration, SIGNAL(OnRegClicked(AuthorizationWindow::Transition)), this, SLOT(OnTransition(AuthorizationWindow::Transition)));
-    connect(ui->Authorization, SIGNAL(OnLoggedIn()), this, SLOT(OnSwitchingWindow()));
-    connect(ui->Registration, SIGNAL(OnSignedUp()), this, SLOT(OnSwitchingWindow()));
+    connect(ui->Authorization, &AuthorizationWidget::AuthClicked, this, &AuthorizationWindow::OnTransition);
+    connect(ui->Registration, &RegistrationWidget::SignupBtnClicked, this, &AuthorizationWindow::OnTransition);
+    connect(ui->Authorization, &AuthorizationWidget::LoggedIn, this, &AuthorizationWindow::OnSwitchingWindow);
+    connect(ui->Registration, &RegistrationWidget::SignedUp, this, &AuthorizationWindow::OnSwitchingWindow);
 }
 
 AuthorizationWindow::~AuthorizationWindow()

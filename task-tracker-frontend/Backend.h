@@ -9,6 +9,8 @@
 
 class Status {
 public:
+    Status();
+
     Status(bool success, const QString& message);
 
     bool isSuccess;
@@ -48,9 +50,9 @@ class Backend : public QObject {
 public:
     static Backend Instance;
 
-    void Auth(const QString& username, const QString& password);
+    void SignIn(const QString& username, const QString& password);
 
-    void Register(const QString& username, const QString& email, const QString& password);
+    void SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password);
 
     void GetProjects();
 
@@ -61,24 +63,30 @@ public:
     void CreateTask(const ProjectInfo& projectInfo, const TaskInfo& taskInfo);
 
 signals:
-    void Authenticated(Status status);
+    void SignedIn(Status status);
+
+    void SignedUp(Status status);
 
     void ProjectsLoaded(Status status, const QList<ProjectInfo>& projects);
+
+    void ProjectCreated(Status status);
 
     void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
 
 private slots:
-    void OnAuth(QNetworkReply* reply);
-
     void OnResponse(QNetworkReply* reply);
 
 private:
+    static const QString BaseUrl;
+
     Backend();
 
     QString GetProjectsUrl();
     QString CreateProjectUrl();
+    QString SignInAccountUrl();
+    QString SignUpAccountUrl();
 
-    static const QString BaseUrl;
+    QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 
     QString myToken;
 

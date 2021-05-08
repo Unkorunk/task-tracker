@@ -99,7 +99,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="textEdit_4">
+       <widget class="QTextEdit" name="fullNameField">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -146,7 +146,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="textEdit_3">
+       <widget class="QTextEdit" name="usernameField">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -193,7 +193,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="textEdit_5">
+       <widget class="QTextEdit" name="emailField">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -240,7 +240,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="textEdit_6">
+       <widget class="QTextEdit" name="passwordField">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -287,7 +287,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="textEdit_7">
+       <widget class="QTextEdit" name="repPasswordField">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>

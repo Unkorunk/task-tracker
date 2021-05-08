@@ -10,7 +10,7 @@
     </message>
     <message>
         <location filename="AuthorizationWidget.ui" line="97"/>
-        <source>Login</source>
+        <source>Username</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
