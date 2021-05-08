@@ -19,10 +19,10 @@ public:
 private slots:
     void OnSignUpBtnClicked();
     void OnMoveToLogInBtnClicked();
-
+    void OnSignup(Status status);
 signals:
-    void OnSignedUp();
-    void OnRegClicked(AuthorizationWindow::Transition transition);
+    void SignedUp();
+    void SignupBtnClicked(AuthorizationWindow::Transition transition);
 
 private:
     Ui::RegistrationWidget *ui;
