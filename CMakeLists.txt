@@ -18,7 +18,6 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools Sql REQUIRED
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Network REQUIRED)
 
 set(TS_FILES_FRONTEND task-tracker-frontend/task-tracker-frontend_ru_RU.ts)
-set(TS_FILES_FRONTEND task-tracker-backend/task-tracker-backend_ru_RU.ts)
 
 set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/main.cpp
@@ -82,7 +81,9 @@ set(PROJECT_SOURCES_FRONTEND
 set(PROJECT_SOURCES_BACKEND
   task-tracker-backend/main.cpp
   task-tracker-backend/Project.hpp
-  ${TS_FILES_BACKEND}
+  task-tracker-backend/Account.hpp
+  task-tracker-backend/Task.hpp
+  task-tracker-backend/TaskComment.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -97,8 +98,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_create_translation(QM_FILES
     ${CMAKE_SOURCE_DIR}/task-tracker-frontend
     ${TS_FILES_FRONTEND}
-    ${CMAKE_SOURCE_DIR}/task-tracker-backend
-    ${TS_FILES_BACKEND}
   )
 else()
   add_executable(task-tracker-frontend
@@ -112,8 +111,6 @@ else()
   qt5_create_translation(QM_FILES
     ${CMAKE_SOURCE_DIR}/task-tracker-frontend
     ${TS_FILES_FRONTEND}
-    ${CMAKE_SOURCE_DIR}/task-tracker-backend
-    ${TS_FILES_BACKEND}
   )
 endif()
 

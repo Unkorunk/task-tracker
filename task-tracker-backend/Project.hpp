@@ -1,5 +1,4 @@
-#ifndef PROJECT_HPP
-#define PROJECT_HPP
+#pragma once
 
 #include <QObject>
 #include <QtSql/QSqlDatabase>
@@ -397,5 +396,3 @@ const QString Project::UPDATE_PROJECT_SQL = QString(R"(
 const QString Project::DELETE_PROJECT_SQL = QString(R"(
     DELETE FROM projects WHERE id = ?;
 )");
-
-#endif // PROJECT_HPP
