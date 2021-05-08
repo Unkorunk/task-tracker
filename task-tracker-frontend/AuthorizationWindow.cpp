@@ -28,5 +28,7 @@ void AuthorizationWindow::OnTransition(AuthorizationWindow::Transition transitio
 void AuthorizationWindow::OnSwitchingWindow() {
     mWindow.show();
     this->close();
+
+    Backend::Instance.UpdateProfile();
     Backend::Instance.GetProjects();
 }

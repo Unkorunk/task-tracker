@@ -19,6 +19,12 @@ RegistrationWidget::~RegistrationWidget()
 }
 
 void RegistrationWidget::OnSignUpBtnClicked() {
+    ui->fullNameField->setReadOnly(true);
+    ui->emailField->setReadOnly(true);
+    ui->usernameField->setReadOnly(true);
+    ui->passwordField->setReadOnly(true);
+    ui->repPasswordField->setReadOnly(true);
+
     QString username = ui->usernameField->toPlainText();
     QString email = ui->emailField->toPlainText();
     QString password = ui->passwordField->toPlainText();
@@ -37,6 +43,12 @@ void RegistrationWidget::OnMoveToLogInBtnClicked() {
 
 void RegistrationWidget::OnSignup(Status status)
 {
+    ui->fullNameField->setReadOnly(false);
+    ui->emailField->setReadOnly(false);
+    ui->usernameField->setReadOnly(false);
+    ui->passwordField->setReadOnly(false);
+    ui->repPasswordField->setReadOnly(false);
+
     if (status.isSuccess) {
         // TODO: instant login
         emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);

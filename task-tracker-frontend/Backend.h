@@ -37,6 +37,20 @@ public:
     QString taskDescription;
 };
 
+class UserInfo {
+public:
+    UserInfo(const QString& username, const QString& fullName, const QString& email);
+
+    QString GetUsername();
+    QString GetFullName();
+    QString GetEmail();
+
+private:
+    QString myUsername;
+    QString myFullName;
+    QString myEmail;
+};
+
 inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
 {
     if (proj1.projectId != proj2.projectId)
@@ -62,6 +76,10 @@ public:
 
     void CreateTask(const ProjectInfo& projectInfo, const TaskInfo& taskInfo);
 
+    UserInfo GetProfile();
+
+    void UpdateProfile();
+
 signals:
     void SignedIn(Status status);
 
@@ -72,6 +90,8 @@ signals:
     void ProjectCreated(Status status);
 
     void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
+
+    void ProfileUpdated(Status status);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -85,10 +105,12 @@ private:
     QString CreateProjectUrl();
     QString SignInAccountUrl();
     QString SignUpAccountUrl();
+    QString GetAccountUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 
     QString myToken;
+    UserInfo myUserInfo;
 
     std::unique_ptr<QNetworkAccessManager> myNetworkManager;
 
