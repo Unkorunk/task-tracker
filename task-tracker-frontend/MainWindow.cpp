@@ -11,7 +11,6 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
 
     Instance = this;
     ui->setupUi(this);
-    ui->stackedWidget->setCurrentIndex(4);
 
     connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnTransition);
     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);

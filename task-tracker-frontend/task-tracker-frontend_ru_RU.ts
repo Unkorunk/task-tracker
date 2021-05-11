@@ -149,33 +149,39 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="60"/>
-        <source>Project Settings</source>
+        <location filename="ProjectSettingsWidget.ui" line="93"/>
+        <source>Settings: TODO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="128"/>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ProjectSettingsWidget.ui" line="205"/>
+        <location filename="ProjectSettingsWidget.ui" line="151"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="262"/>
+        <location filename="ProjectSettingsWidget.ui" line="164"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectSettingsWidget.ui" line="221"/>
         <source>Team:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="330"/>
+        <location filename="ProjectSettingsWidget.ui" line="289"/>
         <source>Invite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="415"/>
+        <location filename="ProjectSettingsWidget.ui" line="374"/>
         <source>Enter recipient&apos;s email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectSettingsWidget.ui" line="488"/>
+        <location filename="ProjectSettingsWidget.ui" line="497"/>
+        <source>Project name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
