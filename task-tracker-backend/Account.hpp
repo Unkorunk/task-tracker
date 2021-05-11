@@ -213,8 +213,22 @@ public:
             };
         }
 
+        result = EnterUser(username, password);
+
+        if (!result.result)
+        {
+            return QJsonObject{
+                { "status", "fail" },
+                { FAIL_DESCRIPTION, result.description }
+            };
+        }
+
+        QJsonObject data;
+        data.insert("access_token", result.description);
+
         return QJsonObject{
-            { "status", "ok" }
+            { "status", "ok" },
+            { "data", data }
         };
     }
 
