@@ -124,7 +124,11 @@ public:
                 result.photo = q.value("photo").toString();
             }
             result.email = q.value("email").toString();
-            result.access_token = q.value("access_token").toString();
+            if (q.value("access_token").isNull()) {
+                result.access_token = "null";
+            } else {
+                result.access_token = q.value("access_token").toString();
+            }
             result.valid_until = q.value("valid_until").toInt();
             result.is_valid = ( result.valid_until > QDateTime::currentDateTime().toSecsSinceEpoch() );
         }
