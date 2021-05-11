@@ -1,27 +1,23 @@
 #include "ProjectsList.h"
 #include "ui_ProjectsList.h"
-
+#include "ProjectItemWidget.h"
 #include <QDialog>
 
 ProjectsList::ProjectsList(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProjectsList),
-    model(std::make_unique<QStringListModel>())
+    ui(new Ui::ProjectsList)
 {
     ui->setupUi(this);
 
-    //model->setStringList(QStringList { "a", "b", "c"});
-
-    ui->listView->setModel(model.get());
-
     connect(ui->addProjectBtn, &QAbstractButton::clicked, this, &ProjectsList::OnAddProjectBtnClicked);
-    connect(ui->listView, &QListView::clicked, this, &ProjectsList::OnItemClicked);
+    connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 }
 
 ProjectsList::~ProjectsList()
 {
     delete ui;
 }
+
 
 void ProjectsList::ChangeHeader(const QString& header)
 {
@@ -31,12 +27,17 @@ void ProjectsList::ChangeHeader(const QString& header)
 void ProjectsList::SetProjects(const QList<ProjectInfo>& list)
 {
     myProjects = list;
-    QStringList stringList;
+    ui->listWidget->clear();
     for (auto& project : myProjects) {
-        stringList.append(project.projectName);
-    }
+       auto item = new QListWidgetItem();
+       auto widget = new ProjectItemWidget(this);
+       widget->setProject(project.projectName);
+       item->setSizeHint(QSize(200, 50));
 
-    model->setStringList(stringList);
+       ui->listWidget->addItem(item);
+       ui->listWidget->setItemWidget(item, widget);
+       update();
+    }
 }
 
 void ProjectsList::OnAddProjectBtnClicked()
@@ -54,10 +55,12 @@ void ProjectsList::OnAddProjectBtnClicked()
 //    dialogLayout.addItem(new QTextBlock());
 
 //    myDialog->setLayout()
-    emit AddProjectClicked(QString("NewProject%1").arg(model->rowCount()));
+    emit AddProjectClicked(QString("NewProject%1").arg(ui->listWidget->count()));
 }
 
-void ProjectsList::OnItemClicked(const QModelIndex &index)
+void ProjectsList::OnItemClicked(QListWidgetItem* item)
 {
+    auto index = ui->listWidget->indexFromItem(item);
+    qInfo() << index.row();
     emit ProjectSelected(myProjects[index.row()]);
 }

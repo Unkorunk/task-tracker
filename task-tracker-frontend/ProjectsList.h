@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <memory>
+#include <QListWidgetItem>
 
 #include "Backend.h"
 
@@ -32,11 +33,9 @@ signals:
 private slots:
     void OnAddProjectBtnClicked();
 
-    void OnItemClicked(const QModelIndex& index);
+    void OnItemClicked(QListWidgetItem*);
 private:
     Ui::ProjectsList *ui;
-
-    std::unique_ptr<QStringListModel> model;
 
     QList<ProjectInfo> myProjects;
 

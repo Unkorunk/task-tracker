@@ -142,6 +142,29 @@ an account?</source>
     </message>
 </context>
 <context>
+    <name>ProjectItemWidget</name>
+    <message>
+        <location filename="ProjectItemWidget.ui" line="20"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectItemWidget.ui" line="51"/>
+        <source>P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectItemWidget.ui" line="69"/>
+        <source>ProjectName</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectItemWidget.ui" line="84"/>
+        <source>all tasks done</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ProjectSettingsWidget</name>
     <message>
         <location filename="ProjectSettingsWidget.ui" line="29"/>
