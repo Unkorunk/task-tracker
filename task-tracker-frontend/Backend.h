@@ -77,9 +77,9 @@ public:
 
     void GetTasks(const ProjectInfo& projectInfo);
 
-    void CreateTask(const ProjectInfo& projectInfo, const TaskInfo& taskInfo);
+    void CreateTask(const TaskInfo& taskInfo);
 
-    void UpdateTask(const ProjectInfo& projectInfo, const TaskInfo& taskInfo);
+    void UpdateTask(const TaskInfo& taskInfo);
 
     UserInfo GetProfile();
 
@@ -100,6 +100,8 @@ signals:
 
     void ProfileUpdated(Status status);
 
+    void TaskUpdated(Status status);
+
 private slots:
     void OnResponse(QNetworkReply* reply);
 
@@ -111,9 +113,14 @@ private:
     QString GetProjectsUrl();
     QString CreateProjectUrl();
     QString EditProjectUrl();
+
     QString SignInAccountUrl();
     QString SignUpAccountUrl();
     QString GetAccountUrl();
+
+    QString GetTasksUrl();
+    QString CreateTaskUrl();
+    QString EditTaskUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 
@@ -121,8 +128,6 @@ private:
     UserInfo myUserInfo;
 
     std::unique_ptr<QNetworkAccessManager> myNetworkManager;
-
-    QMap<ProjectInfo, QList<TaskInfo>> myProjectTasksDictionary;
 };
 
 #endif // BACKEND_H

@@ -25,8 +25,7 @@ const QString Backend::BaseUrl = "http://localhost:8080";
 
 Backend::Backend() : myUserInfo("", "", ""), myNetworkManager(std::make_unique<QNetworkAccessManager>())
 {
-    // Temporary
-    myToken = "abc121cba";
+    myToken = "";
 
     connect(myNetworkManager.get(), &QNetworkAccessManager::finished, this, &Backend::OnResponse);
 }
@@ -64,6 +63,16 @@ QString Backend::GetAccountUrl()
 QString Backend::GetTasksUrl()
 {
     return BaseUrl + "/task/get";
+}
+
+QString Backend::CreateTaskUrl()
+{
+    return BaseUrl + "/task/create";
+}
+
+QString Backend::EditTaskUrl()
+{
+    return BaseUrl + "/task/edit";
 }
 
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status)
@@ -133,15 +142,44 @@ void Backend::GetTasks(const ProjectInfo &projectInfo)
     qInfo() << url;
 }
 
-void Backend::CreateTask(const ProjectInfo &projectInfo, const TaskInfo &taskInfo)
+void Backend::CreateTask(const TaskInfo &taskInfo)
 {
-    myProjectTasksDictionary[projectInfo].append(taskInfo);
-    emit TasksLoaded(Status(true, ""), myProjectTasksDictionary[projectInfo]);
+    QUrlQuery query;
+    query.addQueryItem("project_id", QString("%1").arg(taskInfo.projectId));
+    query.addQueryItem("access_token", myToken);
+
+    // TODO: support story points
+    query.addQueryItem("story_points", QString("%1").arg(1));
+    query.addQueryItem("title", taskInfo.taskName);
+    query.addQueryItem("description", taskInfo.taskDescription);
+
+    QUrl url = QUrl(CreateTaskUrl());
+    url.setQuery(query.toString(QUrl::FullyEncoded).toUtf8());
+    QNetworkRequest request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+    myNetworkManager->post(request, "");
+    qInfo() << request.url();
 }
 
-void Backend::UpdateTask(const ProjectInfo& projectInfo, const TaskInfo &taskInfo)
+void Backend::UpdateTask(const TaskInfo &taskInfo)
 {
-    myProjectTasksDictionary[projectInfo].at(taskInfo.taskId);
+    QUrlQuery query;
+    query.addQueryItem("access_token", myToken);
+
+    // TODO: support story points
+    query.addQueryItem("story_points", QString("%1").arg(1));
+    query.addQueryItem("title", taskInfo.taskName);
+    query.addQueryItem("description", taskInfo.taskDescription);
+    query.addQueryItem("id", QString("%1").arg(taskInfo.taskId));
+
+    QUrl url = QUrl(EditTaskUrl());
+    url.setQuery(query.toString(QUrl::FullyEncoded).toUtf8());
+    QNetworkRequest request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+    myNetworkManager->post(request, "");
+    qInfo() << request.url();
     //emit TasksLoaded(Status(true, ""), myProjectTasksDictionary[projectInfo]);
 }
 
@@ -163,7 +201,6 @@ void Backend::OnResponse(QNetworkReply* reply)
     QJsonObject root = GetRootFromReply(reply, status);
 
     qInfo() << status.response;
-    qInfo() << reply->url();
 
     QString request = reply->request().url().toString();
     if (request.indexOf('?') == -1) {
@@ -218,8 +255,23 @@ void Backend::OnResponse(QNetworkReply* reply)
 
         emit ProfileUpdated(status);
     } else if (pattern == GetTasksUrl()) {
+        QList<TaskInfo> tasks;
+        for (QJsonValueRef it : root["data"].toArray()) {
+            QJsonObject obj = it.toObject();
 
-        emit TasksLoaded(status, myProjectTasksDictionary[projectInfo]);
+            QString taskTitle = obj["title"].toString();
+            QString taskDesc = obj["description"].toString();
+            int id = obj["id"].toInt();
+            int projId = obj["project_id"].toInt();
+
+            tasks.push_back(TaskInfo(id, projId, taskTitle, taskDesc));
+        }
+
+        emit TasksLoaded(status, tasks);
+    } else if (pattern == CreateTaskUrl()) {
+        emit TaskUpdated(status);
+    } else if (pattern == EditTaskUrl()) {
+        emit TaskUpdated(status);
     }
 }
 
