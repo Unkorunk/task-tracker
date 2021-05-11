@@ -4,8 +4,9 @@
 #include <QWidget>
 #include <QStandardItemModel>
 #include <QStringListModel>
+#include <QListWidgetItem>
 #include <memory>
-
+#include "TaskItemWidget.h"
 #include "Backend.h"
 
 namespace Ui {
@@ -38,16 +39,17 @@ private slots:
 
     void OnProjectStatisticsBtnClicked();
 
-    void OnItemClicked(const QModelIndex& index);
+    void OnItemClicked(QListWidgetItem*);
 
     void OnTasksLoaded(Status status, const QList<TaskInfo>& tasks);
+
+    void RemoveItem(const QString &text);
 private:
     Ui::ProjectWidget *ui;
 
-    std::unique_ptr<QStringListModel> model;
-
-    QList<TaskInfo> myTasks;
     ProjectInfo myProject;
+
+    QList<TaskInfo> taskList;
 
   //  std::unique_ptr<QDialog> myDialog;
 };

@@ -1,22 +1,33 @@
 #include "ProjectWidget.h"
 #include "ui_ProjectWidget.h"
 #include "Backend.h"
-
+#include <QListWidget>
 #include <QDebug>
 #include "MainWindow.h"
 
 ProjectWidget::ProjectWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProjectWidget),
-    myProject(0, 0, ""),
-    model(std::make_unique<QStringListModel>())
+    myProject(0, 0, "")
 {
     ui->setupUi(this);
 
-    ui->listView->setModel(model.get());
+   // ui->listWidget->size
+//    for (int i = 0; i < 5; i++) {
+//        auto item = new QListWidgetItem();
+//        auto widget = new TaskItemWidget(this);
+//        widget->setTask(QString("text %1").arg(i));
+//        item->setSizeHint(QSize(200, 100));
+
+//        ui->listWidget->addItem(item);
+//        ui->listWidget->setItemWidget(item, widget);
+//    }
+
+   // ui->listView->setModel(model.get());
+    connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 
     connect(ui->CreateTaskBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnCreateTaskBtnClicked);
-    connect(ui->listView, &QListView::clicked, this, &ProjectWidget::OnItemClicked);
+
     connect(&Backend::Instance, &Backend::TasksLoaded, this, &ProjectWidget::OnTasksLoaded);
 
     connect(this, &ProjectWidget::TaskSelected, MainWindow::Instance, &MainWindow::OnIssueTransition);
@@ -28,6 +39,18 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(this, &ProjectWidget::ProjectStatisticsClicked, MainWindow::Instance, &MainWindow::OnProjectStatisticsTransition);
 }
 
+void ProjectWidget::RemoveItem(const QString &text)
+{
+    for (int i = 0; i < ui->listWidget->count(); ++i) {
+        auto item = ui->listWidget->item(i);
+        auto itemWidget = dynamic_cast<TaskItemWidget*>(ui->listWidget->itemWidget(item));
+        if (itemWidget->getTask() == text) {
+            delete item;
+            break;
+        }
+    }
+}
+
 ProjectWidget::~ProjectWidget()
 {
     delete ui;
@@ -35,7 +58,8 @@ ProjectWidget::~ProjectWidget()
 
 void ProjectWidget::OnCreateTaskBtnClicked()
 {
-    Backend::Instance.CreateTask(myProject, TaskInfo(model->rowCount(), myProject.id, QString("NewTask%1").arg(model->rowCount()), "Default task description"));
+    Backend::Instance.CreateTask(myProject, TaskInfo(ui->listWidget->count(), myProject.id,
+                                                     QString("NewTask%1").arg(ui->listWidget->count()), "Default task description"));
 
 //    if (myDialog.get() != nullptr && myDialog->isVisible()) {
 //        myDialog->close();
@@ -47,6 +71,8 @@ void ProjectWidget::OnCreateTaskBtnClicked()
 
 //    myDialog->setLayout()
     //   emit CreateTaskClicked(QString("NewTask%1").arg(model->rowCount()));
+
+
 }
 
 void ProjectWidget::OnProjectSettingsBtnClicked()
@@ -60,22 +86,44 @@ void ProjectWidget::OnProjectStatisticsBtnClicked()
     emit ProjectSettingsClicked(myProject);
 }
 
-void ProjectWidget::OnItemClicked(const QModelIndex &index)
+//void ProjectWidget::OnItemClicked(const QModelIndex &index)
+//{
+//    emit TaskSelected(taskList[index.row()]);
+//}
+
+void ProjectWidget::OnItemClicked(QListWidgetItem* item)
 {
-    emit TaskSelected(myTasks[index.row()]);
+    auto index = ui->listWidget->indexFromItem(item);
+    qInfo() << index.row();
+    qInfo() << taskList[taskList.count() - index.row() - 1].taskName;
+    emit TaskSelected(taskList[taskList.count() - index.row() - 1]);
 }
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
 {
-    myTasks = tasks;
+//    myTasks = tasks;
 
-    QStringList list;
+//    QStringList list;
 
+//    for (auto& task : tasks) {
+//        list.append(task.taskName);
+//    }
+
+//    model->setStringList(list);
+
+    ui->listWidget->clear();
     for (auto& task : tasks) {
-        list.append(task.taskName);
-    }
+        //TODO: change
+        taskList.append(TaskInfo(taskList.count(), 0, task.taskName, ""));
+        auto item = new QListWidgetItem();
+        auto widget = new TaskItemWidget(this);
+        widget->setTask(task.taskName);
+        item->setSizeHint(QSize(200, 100));
 
-    model->setStringList(list);
+        ui->listWidget->addItem(item);
+        ui->listWidget->setItemWidget(item, widget);
+        update();
+    }
 }
 
 
