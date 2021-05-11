@@ -275,11 +275,68 @@ public:
         };
     }
 
+    static QJsonObject AddProperties(const QHttpServerRequest &request) {
+        const char *FAIL_DESCRIPTION = "description";
+
+        ARG(task_id, "task_id");
+        ARG(proprty_value_id, "proprty_value_id");
+
+        database->transaction();
+
+        QSqlQuery q;
+        if (!q.prepare(ADD_PROPERTIES_SQL)) {
+            database->rollback();
+            return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, q.lastError().text()} };
+        }
+        q.addBindValue(task_id.toInt());
+        q.addBindValue(proprty_value_id.toInt());
+        if (!q.exec()) {
+            database->rollback();
+            return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, q.lastError().text()} };
+        }
+
+        database->commit();
+
+        return QJsonObject{
+            { "status", "ok" }
+        };
+    }
+
+    static QJsonObject RemoveProperties(const QHttpServerRequest &request) {
+
+        const char *FAIL_DESCRIPTION = "description";
+
+        ARG(task_id, "task_id");
+        ARG(proprty_value_id, "proprty_value_id");
+
+        database->transaction();
+
+        QSqlQuery q;
+        if (!q.prepare(REMOVE_PROPERTIES_SQL)) {
+            database->rollback();
+            return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, q.lastError().text()} };
+        }
+        q.addBindValue(task_id.toInt());
+        q.addBindValue(proprty_value_id.toInt());
+        if (!q.exec()) {
+            database->rollback();
+            return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, q.lastError().text()} };
+        }
+
+        database->commit();
+
+        return QJsonObject{
+            { "status", "ok" }
+        };
+    }
+
 private:
     const static QString CREATE_TASK_SQL;
     const static QString DELETE_TASK_SQL;
     const static QString GET_TASK_SQL;
     const static QString GET_PROPERTIES_SQL;
+    const static QString ADD_PROPERTIES_SQL;
+    const static QString REMOVE_PROPERTIES_SQL;
 };
 
 QSqlDatabase *Task::database = nullptr;
@@ -298,4 +355,12 @@ const QString Task::GET_TASK_SQL = R"(
 
 const QString Task::GET_PROPERTIES_SQL = R"(
     SELECT tagcaptions.id as property_id, caption, tagvalues.id as property_value_id, value FROM tagcaptions LEFT JOIN tagvalues ON tagcaptions.id = tagvalues.tagcaption_id;
+)";
+
+const QString Task::ADD_PROPERTIES_SQL = R"(
+    INSERT INTO taskstags(task_id, tag_value_id) VALUES (?, ?);
+)";
+
+const QString Task::REMOVE_PROPERTIES_SQL = R"(
+    DELETE FROM taskstags WHERE task_id = ? AND tag_value_id = ?;
 )";
