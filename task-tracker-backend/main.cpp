@@ -83,15 +83,15 @@ int main(int argc, char *argv[])
     http_server.route("/project/get/",    &Project::Get   );
     http_server.route("/project/edit/", QHttpServerRequest::Method::POST, &Project::Edit);
 
-    http_server.route("/task/create", &Task::Create);
     http_server.route("/task/delete", &Task::Delete);
     http_server.route("/task/get",    &Task::Get   );
-    http_server.route("/task/edit", QHttpServerRequest::Method::POST, &Task::Edit);
+    http_server.route("/task/create", QHttpServerRequest::Method::POST, &Task::Create);
+    http_server.route("/task/edit",   QHttpServerRequest::Method::POST, &Task::Edit  );
 
-    http_server.route("/task/comment/create", &TaskComment::Create);
-    http_server.route("/task/comment/delete", &TaskComment::Delete);
-    http_server.route("/task/comment/get",    &TaskComment::Get   );
-    http_server.route("/task/comment/edit", QHttpServerRequest::Method::POST, &TaskComment::Edit);
+//    http_server.route("/task/comment/create", &TaskComment::Create);
+//    http_server.route("/task/comment/delete", &TaskComment::Delete);
+//    http_server.route("/task/comment/get",    &TaskComment::Get   );
+//    http_server.route("/task/comment/edit", QHttpServerRequest::Method::POST, &TaskComment::Edit);
 
     const quint16 port = http_server.listen(QHostAddress(server_host), server_port);
     if (port == 0) {
