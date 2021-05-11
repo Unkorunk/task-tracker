@@ -252,4 +252,27 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
+<context>
+    <name>TaskItemWidget</name>
+    <message>
+        <location filename="TaskItemWidget.ui" line="34"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="TaskItemWidget.ui" line="71"/>
+        <source>N</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="TaskItemWidget.ui" line="100"/>
+        <source>TaskName</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="TaskItemWidget.ui" line="121"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>

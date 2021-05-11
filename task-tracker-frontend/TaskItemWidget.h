@@ -17,12 +17,6 @@ public:
     void setTask(const QString &text);
     QString getTask();
 
-signals:
-    void SendRemoveItem(const QString &text);
-
-private slots:
-    void onButtonClicked();
-
 private:
     Ui::TaskItemWidget *ui;
 };
