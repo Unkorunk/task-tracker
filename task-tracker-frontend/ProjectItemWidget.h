@@ -17,13 +17,6 @@ public:
     void setProject(const QString &text);
     QString getProject();
 
-signals:
-    void SendRemoveItem(const QString &text);
-
-private slots:
-    void onButtonClicked();
-
-
 private:
     Ui::ProjectItemWidget *ui;
 };

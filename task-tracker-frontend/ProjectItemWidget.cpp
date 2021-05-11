@@ -6,8 +6,6 @@ ProjectItemWidget::ProjectItemWidget(QWidget *parent) :
     ui(new Ui::ProjectItemWidget)
 {
     ui->setupUi(this);
-
-    connect(this, SIGNAL(sendRemoveItem(const QString &text)), parent, SLOT(removeItem(const QSTring &text)));
 }
 
 ProjectItemWidget::~ProjectItemWidget()
@@ -22,9 +20,4 @@ void ProjectItemWidget::setProject(const QString &text)
 QString ProjectItemWidget::getProject()
 {
     return ui->projectName->text();
-}
-
-void ProjectItemWidget::onButtonClicked()
-{
-    emit SendRemoveItem(ui->projectName->text());
 }
