@@ -41,6 +41,8 @@ private slots:
     void OnItemClicked(const QModelIndex& index);
 
     void OnTasksLoaded(Status status, const QList<TaskInfo>& tasks);
+
+    void OnTaskUpdate(Status status);
 private:
     Ui::ProjectWidget *ui;
 

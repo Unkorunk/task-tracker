@@ -12,6 +12,12 @@ class IssueWidget : public QWidget
 {
     Q_OBJECT
 
+private slots:
+    void OnEditClicked();
+    void OnSaveClicked();
+
+    void OnTaskUpdated(Status status);
+
 public:
     explicit IssueWidget(QWidget *parent = nullptr);
     ~IssueWidget();
@@ -19,7 +25,16 @@ public:
     void SetupTask(const TaskInfo& task);
 
 private:
+    void ToEditMode();
+    void ToReadOnlyMode();
+
+    void LockUi();
+    void UnlockUi();
+
     Ui::IssueWidget *ui;
+    bool edited;
+    TaskInfo task_info;
+    //QString text;
 };
 
 #endif // ISSUEWIDGET_H
