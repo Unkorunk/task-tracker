@@ -27,6 +27,8 @@ void AuthorizationWidget::OnLogInBtnClicked() {
 
 void AuthorizationWidget::OnMoveToSignUpBtnClicked() {
     emit AuthClicked(AuthorizationWindow::Transition::Registration);
+    ui->usernameField->setText("");
+    ui->passwordField->setText("");
 }
 
 void AuthorizationWidget::OnLogin(Status status)
@@ -36,6 +38,8 @@ void AuthorizationWidget::OnLogin(Status status)
 
     if (status.isSuccess) {
         emit LoggedIn();
+        ui->usernameField->setText("");
+        ui->passwordField->setText("");
         return;
     }
 

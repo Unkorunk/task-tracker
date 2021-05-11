@@ -39,6 +39,11 @@ void RegistrationWidget::OnSignUpBtnClicked() {
 }
 
 void RegistrationWidget::OnMoveToLogInBtnClicked() {
+    ui->fullNameField->setText("");
+    ui->emailField->setText("");
+    ui->usernameField->setText("");
+    ui->passwordField->setText("");
+    ui->repPasswordField->setText("");
     emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);
 }
 
@@ -51,9 +56,13 @@ void RegistrationWidget::OnSignup(Status status)
     ui->repPasswordField->setReadOnly(false);
 
     if (status.isSuccess) {
-        // TODO: instant login
         emit SignedUp();
         //emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);
+        ui->fullNameField->setText("");
+        ui->emailField->setText("");
+        ui->usernameField->setText("");
+        ui->passwordField->setText("");
+        ui->repPasswordField->setText("");
 
         return;
     }
