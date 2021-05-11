@@ -19,12 +19,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="196"/>
+        <location filename="AuthorizationWidget.ui" line="202"/>
         <source>Log in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="227"/>
+        <location filename="AuthorizationWidget.ui" line="233"/>
         <source>Don&apos;t have 
 an account?</source>
         <translation type="unfinished"></translation>
@@ -269,17 +269,17 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="285"/>
+        <location filename="RegistrationWidget.ui" line="288"/>
         <source>Repeat password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="340"/>
+        <location filename="RegistrationWidget.ui" line="343"/>
         <source>Sign up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="371"/>
+        <location filename="RegistrationWidget.ui" line="374"/>
         <source>Already have 
 an account?</source>
         <translation type="unfinished"></translation>
@@ -295,6 +295,29 @@ an account?</source>
     <message>
         <location filename="StatisticsWidget.ui" line="26"/>
         <source>Statistics Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TaskItemWidget</name>
+    <message>
+        <location filename="TaskItemWidget.ui" line="34"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="TaskItemWidget.ui" line="71"/>
+        <source>N</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="TaskItemWidget.ui" line="100"/>
+        <source>TaskName</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="TaskItemWidget.ui" line="121"/>
+        <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

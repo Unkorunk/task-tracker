@@ -75,6 +75,11 @@ set(PROJECT_SOURCES_FRONTEND
 
   task-tracker-frontend/Backend.cpp
   task-tracker-frontend/Backend.h
+
+  task-tracker-frontend/TaskItemWidget.cpp
+  task-tracker-frontend/TaskItemWidget.h
+  task-tracker-frontend/TaskItemWidget.ui
+
   ${TS_FILES_FRONTEND}
 )
 
