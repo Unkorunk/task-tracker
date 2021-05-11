@@ -26,6 +26,26 @@ public:
     QString projectName;
 };
 
+class PropertyValue {
+public:
+    PropertyValue();
+
+    PropertyValue(int valueId, int propId, QString title);
+
+    int propertyValueId;
+    int propertyId;
+    QString valueTitle;
+};
+
+class PropertyInfo {
+public:
+    QString caption;
+    int propertyId;
+
+    QList<PropertyValue> values;
+    int selectedId;
+};
+
 class TaskInfo {
 public:
     TaskInfo(int taskId, int projectId, const QString& taskName, const QString& taskDesc);
@@ -36,6 +56,7 @@ public:
     QString taskName;
     QString taskDescription;
     QVector<QString> team;
+    QVector<PropertyInfo> properties;
 };
 
 class UserInfo {
@@ -79,6 +100,8 @@ public:
 
     void CreateTask(const TaskInfo& taskInfo);
 
+    void DeleteTask(const TaskInfo& taskInfo);
+
     void EditTask(const TaskInfo& taskInfo);
 
     UserInfo GetProfile();
@@ -96,11 +119,13 @@ signals:
 
     void ProjectEdited(Status status);
 
-    void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
-
     void ProfileUpdated(Status status);
 
+    void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
+
     void TaskEdited(Status status);
+
+    void TaskDeleted(Status status);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -109,6 +134,10 @@ private:
     static const QString BaseUrl;
 
     Backend();
+
+    void GetProperties();
+
+    QString GetPropertiesUrl();
 
     QString GetProjectsUrl();
     QString CreateProjectUrl();
@@ -121,8 +150,13 @@ private:
     QString GetTasksUrl();
     QString CreateTaskUrl();
     QString EditTaskUrl();
+    QString DeleteTaskUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
+
+    QMap<int, PropertyValue> valIdToVal;
+    QMap<int, QList<PropertyValue>> propIdToVals;
+    QMap<int, QString> propIdToCaption;
 
     QString myToken;
     UserInfo myUserInfo;

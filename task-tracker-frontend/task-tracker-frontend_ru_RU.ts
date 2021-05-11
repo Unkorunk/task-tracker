@@ -74,8 +74,13 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="141"/>
+        <location filename="IssueWidget.ui" line="125"/>
         <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="IssueWidget.ui" line="132"/>
+        <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -72,12 +72,11 @@ void ProjectWidget::OnItemClicked(QListWidgetItem* item)
     auto index = ui->listWidget->indexFromItem(item);
     qInfo() << index.row();
     qInfo() << taskList[taskList.count() - index.row() - 1].taskName;
-    emit TaskSelected(taskList[taskList.count() - index.row() - 1]);
+    emit TaskSelected(myProject, taskList[taskList.count() - index.row() - 1]);
 }
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
 {
-
     ui->listWidget->clear();
     for (auto& task : tasks) {
         //TODO: change

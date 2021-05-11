@@ -30,6 +30,18 @@ Backend::Backend() : myUserInfo("", "", ""), myNetworkManager(std::make_unique<Q
     connect(myNetworkManager.get(), &QNetworkAccessManager::finished, this, &Backend::OnResponse);
 }
 
+void Backend::GetProperties()
+{
+    QUrl url = QUrl(GetPropertiesUrl());
+    myNetworkManager->get(QNetworkRequest(url));
+    qInfo() << url;
+}
+
+QString Backend::GetPropertiesUrl()
+{
+    return BaseUrl + "/task/properties/get";
+}
+
 QString Backend::GetProjectsUrl()
 {
     return BaseUrl + "/project/get/";
@@ -73,6 +85,11 @@ QString Backend::CreateTaskUrl()
 QString Backend::EditTaskUrl()
 {
     return BaseUrl + "/task/edit";
+}
+
+QString Backend::DeleteTaskUrl()
+{
+    return BaseUrl + "/task/delete";
 }
 
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status)
@@ -160,6 +177,13 @@ void Backend::CreateTask(const TaskInfo &taskInfo)
 
     myNetworkManager->post(request, "");
     qInfo() << request.url();
+}
+
+void Backend::DeleteTask(const TaskInfo &taskInfo)
+{
+    QUrl url = QUrl(DeleteTaskUrl() + QString("?id=%1").arg(taskInfo.taskId));
+    myNetworkManager->get(QNetworkRequest(url));
+    qInfo() << url;
 }
 
 void Backend::EditTask(const TaskInfo &taskInfo)
@@ -272,6 +296,34 @@ void Backend::OnResponse(QNetworkReply* reply)
         emit TaskEdited(status);
     } else if (pattern == EditTaskUrl()) {
         emit TaskEdited(status);
+    } else if (pattern == DeleteTaskUrl()) {
+        emit TaskDeleted(status);
+    } else if (pattern == GetPropertiesUrl()) {
+        propIdToCaption.clear();
+        propIdToVals.clear();
+        valIdToVal.clear();
+
+        for (QJsonValueRef prop : root["data"].toArray()) {
+            QJsonObject obj = prop.toObject();
+
+            QString caption = obj["caption"].toString();
+            int propId = obj["property_id"].toInt();
+
+            QList<PropertyValue> values;
+
+            for (QJsonValueRef val : obj["property_value"].toArray()) {
+                QJsonObject valObj = val.toObject();
+                int valId = valObj["id"].toInt();
+                QString title = valObj["title"].toString();
+
+                PropertyValue propVal(valId, propId, title);
+                values.push_back(propVal);
+                valIdToVal[valId] = propVal;
+            }
+
+            propIdToCaption[propId] = caption;
+            propIdToVals[propId] = values;
+        }
     }
 }
 
@@ -303,4 +355,13 @@ QString UserInfo::GetFullName()
 QString UserInfo::GetEmail()
 {
     return myEmail;
+}
+
+PropertyValue::PropertyValue()
+{
+}
+
+PropertyValue::PropertyValue(int valueId, int propId, QString title)
+    : propertyValueId(valueId), propertyId(propId), valueTitle(title)
+{
 }

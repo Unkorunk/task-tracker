@@ -15,14 +15,16 @@ class IssueWidget : public QWidget
 private slots:
     void OnEditClicked();
     void OnSaveClicked();
+    void OnDeleteClicked();
 
     void OnTaskUpdated(Status status);
+    void OnTaskDeleted(Status status);
 
 public:
     explicit IssueWidget(QWidget *parent = nullptr);
     ~IssueWidget();
 
-    void SetupTask(const TaskInfo& task);
+    void SetupTask(const ProjectInfo& project, const TaskInfo& task);
 
 private:
     void ToEditMode();
@@ -34,6 +36,7 @@ private:
     Ui::IssueWidget *ui;
     bool edited;
     TaskInfo task_info;
+    ProjectInfo project_info;
     //QString text;
 };
 
