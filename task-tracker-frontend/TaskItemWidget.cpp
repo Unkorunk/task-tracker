@@ -18,11 +18,11 @@ TaskItemWidget::~TaskItemWidget()
 
 void TaskItemWidget::setTask(const QString &text)
 {
-    ui->label->setText(text);
+    ui->taskName->setText(text);
 }
 QString TaskItemWidget::getTask()
 {
-    return ui->label->text();
+    return ui->taskName->text();
 }
 //void TaskItemWidget::SendRemoveItem(const QString &text)
 //{
@@ -31,5 +31,5 @@ QString TaskItemWidget::getTask()
 
 void TaskItemWidget::onButtonClicked()
 {
-    emit SendRemoveItem(ui->label->text());
+    emit SendRemoveItem(ui->taskName->text());
 }
