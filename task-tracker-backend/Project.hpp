@@ -49,7 +49,11 @@ public:
             result.is_valid = true;
             result.id = q.value("id").toInt();
             result.full_name = q.value("full_name").toString();
-            result.photo = q.value("photo").toString();
+            if (q.value("photo").isNull()){
+                result.photo = "null";
+            } else {
+                result.photo = q.value("photo").toString();
+            }
         }
 
         database->commit();
@@ -264,8 +268,10 @@ public:
 
         if (fields_obj.contains("photo")) {
             q.addBindValue(fields_obj["photo"].toString());
-        } else {
+        } else if (project.photo != "null") {
             q.addBindValue(project.photo);
+        } else {
+            q.addBindValue( QVariant() );
         }
 
         q.addBindValue(project.id);

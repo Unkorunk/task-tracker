@@ -118,9 +118,17 @@ public:
             result.full_name = q.value("full_name").toString();
             result.username = q.value("username").toString();
             result.password = q.value("password").toString();
-            result.photo = q.value("photo").toString();
+            if (q.value("photo").isNull()) {
+                result.photo = "null";
+            } else {
+                result.photo = q.value("photo").toString();
+            }
             result.email = q.value("email").toString();
-            result.access_token = q.value("access_token").toString();
+            if (q.value("access_token").isNull()) {
+                result.access_token = "null";
+            } else {
+                result.access_token = q.value("access_token").toString();
+            }
             result.valid_until = q.value("valid_until").toInt();
             result.is_valid = ( result.valid_until > QDateTime::currentDateTime().toSecsSinceEpoch() );
         }
@@ -213,8 +221,22 @@ public:
             };
         }
 
+        result = EnterUser(username, password);
+
+        if (!result.result)
+        {
+            return QJsonObject{
+                { "status", "fail" },
+                { FAIL_DESCRIPTION, result.description }
+            };
+        }
+
+        QJsonObject data;
+        data.insert("access_token", result.description);
+
         return QJsonObject{
-            { "status", "ok" }
+            { "status", "ok" },
+            { "data", data }
         };
     }
 
@@ -255,7 +277,7 @@ public:
         data.insert("id", result.id);
         data.insert("full_name", result.full_name);
         data.insert("username", result.username);
-        data.insert("photo", result.username);
+        data.insert("photo", result.photo);
         data.insert("email", result.email);
 
         return QJsonObject{
@@ -333,8 +355,10 @@ public:
 
         if (fields_obj.contains("photo")) {
             q.addBindValue(fields_obj["photo"].toString());
-        } else {
+        } else if (user.photo != "null") {
             q.addBindValue(user.photo);
+        } else {
+            q.addBindValue( QVariant() );
         }
 
         if (fields_obj.contains("email")) {

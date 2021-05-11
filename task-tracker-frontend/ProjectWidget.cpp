@@ -12,18 +12,6 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-   // ui->listWidget->size
-//    for (int i = 0; i < 5; i++) {
-//        auto item = new QListWidgetItem();
-//        auto widget = new TaskItemWidget(this);
-//        widget->setTask(QString("text %1").arg(i));
-//        item->setSizeHint(QSize(200, 100));
-
-//        ui->listWidget->addItem(item);
-//        ui->listWidget->setItemWidget(item, widget);
-//    }
-
-   // ui->listView->setModel(model.get());
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 
     connect(ui->CreateTaskBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnCreateTaskBtnClicked);
@@ -37,18 +25,12 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
 
     connect(ui->ProjectStatisticsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectStatisticsBtnClicked);
     connect(this, &ProjectWidget::ProjectStatisticsClicked, MainWindow::Instance, &MainWindow::OnProjectStatisticsTransition);
+
+    connect(&Backend::Instance, &Backend::TaskEdited, this, &ProjectWidget::OnTaskUpdate);
 }
 
 void ProjectWidget::RemoveItem(const QString &text)
 {
-    for (int i = 0; i < ui->listWidget->count(); ++i) {
-        auto item = ui->listWidget->item(i);
-        auto itemWidget = dynamic_cast<TaskItemWidget*>(ui->listWidget->itemWidget(item));
-        if (itemWidget->getTask() == text) {
-            delete item;
-            break;
-        }
-    }
 }
 
 ProjectWidget::~ProjectWidget()
@@ -58,8 +40,7 @@ ProjectWidget::~ProjectWidget()
 
 void ProjectWidget::OnCreateTaskBtnClicked()
 {
-    Backend::Instance.CreateTask(myProject, TaskInfo(ui->listWidget->count(), myProject.id,
-                                                     QString("NewTask%1").arg(ui->listWidget->count()), "Default task description"));
+    Backend::Instance.CreateTask(TaskInfo(0, myProject.projectId, QString("NewTask"), "Default task description"));
 
 //    if (myDialog.get() != nullptr && myDialog->isVisible()) {
 //        myDialog->close();
@@ -86,11 +67,6 @@ void ProjectWidget::OnProjectStatisticsBtnClicked()
     emit ProjectSettingsClicked(myProject);
 }
 
-//void ProjectWidget::OnItemClicked(const QModelIndex &index)
-//{
-//    emit TaskSelected(taskList[index.row()]);
-//}
-
 void ProjectWidget::OnItemClicked(QListWidgetItem* item)
 {
     auto index = ui->listWidget->indexFromItem(item);
@@ -101,20 +77,11 @@ void ProjectWidget::OnItemClicked(QListWidgetItem* item)
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
 {
-//    myTasks = tasks;
-
-//    QStringList list;
-
-//    for (auto& task : tasks) {
-//        list.append(task.taskName);
-//    }
-
-//    model->setStringList(list);
 
     ui->listWidget->clear();
     for (auto& task : tasks) {
         //TODO: change
-        taskList.append(TaskInfo(taskList.count(), 0, task.taskName, ""));
+        taskList.append(task);
         auto item = new QListWidgetItem();
         auto widget = new TaskItemWidget(this);
         widget->setTask(task.taskName);
@@ -126,10 +93,18 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
     }
 }
 
+void ProjectWidget::OnTaskUpdate(Status status)
+{
+    if (status.isSuccess) {
+        Backend::Instance.GetTasks(myProject);
+    }
+
+    // TODO: handle errors
+}
+
 
 void ProjectWidget::SetupProject(const ProjectInfo &project)
 {
-    qInfo() << project.projectName;
     myProject = project;
 
     ui->ProjectNameLabel->setText(myProject.projectName);

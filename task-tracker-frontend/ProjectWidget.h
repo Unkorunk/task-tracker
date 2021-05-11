@@ -44,6 +44,9 @@ private slots:
     void OnTasksLoaded(Status status, const QList<TaskInfo>& tasks);
 
     void RemoveItem(const QString &text);
+
+    void OnTaskUpdate(Status status);
+
 private:
     Ui::ProjectWidget *ui;
 
