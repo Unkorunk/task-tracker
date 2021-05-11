@@ -8,6 +8,7 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
       myAuthWindow(authWindow),
       ui(new Ui::MainWindow)
 {
+
     Instance = this;
     ui->setupUi(this);
 

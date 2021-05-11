@@ -35,6 +35,7 @@ public:
 
     QString taskName;
     QString taskDescription;
+    QVector<QString> team;
 };
 
 class UserInfo {
@@ -72,9 +73,13 @@ public:
 
     void CreateProject(const QString& projectName);
 
+    void EditProject(const ProjectInfo& projectInfo);
+
     void GetTasks(const ProjectInfo& projectInfo);
 
-    void CreateTask(const ProjectInfo& projectInfo, const TaskInfo& taskInfo);
+    void CreateTask(const TaskInfo& taskInfo);
+
+    void EditTask(const TaskInfo& taskInfo);
 
     UserInfo GetProfile();
 
@@ -87,11 +92,15 @@ signals:
 
     void ProjectsLoaded(Status status, const QList<ProjectInfo>& projects);
 
-    void ProjectCreated(Status status);
+    void ProjectCreated(Status status);   
+
+    void ProjectEdited(Status status);
 
     void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
 
     void ProfileUpdated(Status status);
+
+    void TaskEdited(Status status);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -103,9 +112,15 @@ private:
 
     QString GetProjectsUrl();
     QString CreateProjectUrl();
+    QString EditProjectUrl();
+
     QString SignInAccountUrl();
     QString SignUpAccountUrl();
     QString GetAccountUrl();
+
+    QString GetTasksUrl();
+    QString CreateTaskUrl();
+    QString EditTaskUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 
@@ -113,8 +128,6 @@ private:
     UserInfo myUserInfo;
 
     std::unique_ptr<QNetworkAccessManager> myNetworkManager;
-
-    QMap<ProjectInfo, QList<TaskInfo>> myProjectTasksDictionary;
 };
 
 #endif // BACKEND_H

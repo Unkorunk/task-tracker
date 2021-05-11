@@ -26,6 +26,8 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
 
     connect(ui->ProjectStatisticsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectStatisticsBtnClicked);
     connect(this, &ProjectWidget::ProjectStatisticsClicked, MainWindow::Instance, &MainWindow::OnProjectStatisticsTransition);
+
+    connect(&Backend::Instance, &Backend::TaskEdited, this, &ProjectWidget::OnTaskUpdate);
 }
 
 ProjectWidget::~ProjectWidget()
@@ -35,7 +37,7 @@ ProjectWidget::~ProjectWidget()
 
 void ProjectWidget::OnCreateTaskBtnClicked()
 {
-    Backend::Instance.CreateTask(myProject, TaskInfo(model->rowCount(), myProject.id, QString("NewTask%1").arg(model->rowCount()), "Default task description"));
+    Backend::Instance.CreateTask(TaskInfo(model->rowCount(), myProject.projectId, QString("NewTask"), "Default task description"));
 
 //    if (myDialog.get() != nullptr && myDialog->isVisible()) {
 //        myDialog->close();
@@ -78,10 +80,18 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
     model->setStringList(list);
 }
 
+void ProjectWidget::OnTaskUpdate(Status status)
+{
+    if (status.isSuccess) {
+        Backend::Instance.GetTasks(myProject);
+    }
+
+    // TODO: handle errors
+}
+
 
 void ProjectWidget::SetupProject(const ProjectInfo &project)
 {
-    qInfo() << project.projectName;
     myProject = project;
 
     ui->ProjectNameLabel->setText(myProject.projectName);
