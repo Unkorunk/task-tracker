@@ -2,6 +2,7 @@
 #define STATISTICSWIDGET_H
 
 #include <QWidget>
+#include "Backend.h"
 
 namespace Ui {
 class StatisticsWidget;
@@ -15,6 +16,7 @@ public:
     explicit StatisticsWidget(QWidget *parent = nullptr);
     ~StatisticsWidget();
 
+    void SetupProject(const ProjectInfo& project);
 private:
     Ui::StatisticsWidget *ui;
 };

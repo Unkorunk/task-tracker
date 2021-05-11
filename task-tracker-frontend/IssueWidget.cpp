@@ -12,3 +12,8 @@ IssueWidget::~IssueWidget()
 {
     delete ui;
 }
+
+void IssueWidget::SetupTask(const TaskInfo &task)
+{
+    ui->label->setText(task.taskName);
+}

@@ -1,5 +1,6 @@
 #include "StatisticsWidget.h"
 #include "ui_StatisticsWidget.h"
+#include "Backend.h"
 
 StatisticsWidget::StatisticsWidget(QWidget *parent) :
     QWidget(parent),
@@ -11,4 +12,9 @@ StatisticsWidget::StatisticsWidget(QWidget *parent) :
 StatisticsWidget::~StatisticsWidget()
 {
     delete ui;
+}
+
+void StatisticsWidget::SetupProject(const ProjectInfo &project)
+{
+    ui->label->setText(project.projectName);
 }
