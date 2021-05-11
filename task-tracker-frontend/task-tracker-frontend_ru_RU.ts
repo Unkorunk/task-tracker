@@ -83,6 +83,11 @@ an account?</source>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="IssueWidget.ui" line="188"/>
+        <source>Status:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>

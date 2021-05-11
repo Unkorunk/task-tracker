@@ -80,6 +80,11 @@ void IssueWidget::SetupTask(const ProjectInfo& project, const TaskInfo &task)
     this->ui->taskNameEdit->setText(task.taskName);
     this->ui->descriptionEdit->setText(task.taskDescription);
 
+    this->ui->statusComboBox->clear();
+    this->ui->statusComboBox->addItem("TODO");
+    this->ui->statusComboBox->addItem("In progress");
+    this->ui->statusComboBox->addItem("Done");
+
     UnlockUi();
     ToReadOnlyMode();
 }
