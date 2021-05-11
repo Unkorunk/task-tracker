@@ -1,17 +1,21 @@
 #include "IssueWidget.h"
 #include "ui_IssueWidget.h"
+#include "MainWindow.h"
 
 IssueWidget::IssueWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::IssueWidget),
-    task_info(0, 0, "Task name", "Task description")
+    task_info(0, 0, "Task name", "Task description"),
+    project_info(0, 0, "")
 {
     this->ui->setupUi(this);
-    this->SetupTask(task_info);
+    this->SetupTask(project_info, task_info);
 
     connect(ui->editButton, &QPushButton::clicked, this, &IssueWidget::OnEditClicked);
     connect(ui->saveButton, &QPushButton::clicked, this, &IssueWidget::OnSaveClicked);
+    connect(ui->deleteButton, &QPushButton::clicked, this, &IssueWidget::OnDeleteClicked);
     connect(&Backend::Instance, &Backend::TaskEdited, this, &IssueWidget::OnTaskUpdated);
+    connect(&Backend::Instance, &Backend::TaskDeleted, this, &IssueWidget::OnTaskDeleted);
 }
 
 IssueWidget::~IssueWidget()
@@ -40,6 +44,12 @@ void IssueWidget::OnSaveClicked(){
     Backend::Instance.EditTask(TaskInfo(task_info.taskId, task_info.projectId, ui->taskNameEdit->text(), ui->descriptionEdit->toPlainText()));
 }
 
+void IssueWidget::OnDeleteClicked()
+{
+    LockUi();
+    Backend::Instance.DeleteTask(task_info);
+}
+
 void IssueWidget::OnTaskUpdated(Status status)
 {
     UnlockUi();
@@ -54,12 +64,26 @@ void IssueWidget::OnTaskUpdated(Status status)
     }
 }
 
-void IssueWidget::SetupTask(const TaskInfo &task)
+void IssueWidget::OnTaskDeleted(Status status)
 {
+    UnlockUi();
+    if (status.isSuccess) {
+        MainWindow::Instance->OnProjectTransition(project_info);
+    }
+}
+
+void IssueWidget::SetupTask(const ProjectInfo& project, const TaskInfo &task)
+{
+    project_info = project;
     task_info = task;
 
     this->ui->taskNameEdit->setText(task.taskName);
     this->ui->descriptionEdit->setText(task.taskDescription);
+
+    this->ui->statusComboBox->clear();
+    this->ui->statusComboBox->addItem("TODO");
+    this->ui->statusComboBox->addItem("In progress");
+    this->ui->statusComboBox->addItem("Done");
 
     UnlockUi();
     ToReadOnlyMode();
@@ -93,6 +117,8 @@ void IssueWidget::LockUi()
 {
     this->ui->editButton->setEnabled(false);
     this->ui->saveButton->setEnabled(false);
+    this->ui->deleteButton->setEnabled(false);
+
     this->ui->taskNameEdit->setReadOnly(true);
     this->ui->descriptionEdit->setReadOnly(true);
 }
@@ -101,6 +127,8 @@ void IssueWidget::UnlockUi()
 {
     this->ui->editButton->setEnabled(true);
     this->ui->saveButton->setEnabled(true);
+    this->ui->deleteButton->setEnabled(true);
+
     this->ui->taskNameEdit->setReadOnly(false);
     this->ui->descriptionEdit->setReadOnly(false);
 }

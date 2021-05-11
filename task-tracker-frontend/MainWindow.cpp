@@ -28,10 +28,10 @@ void MainWindow::OnProjectTransition(const ProjectInfo &projectInfo)
     OnTransition(Transition::Project);
 }
 
-void MainWindow::OnIssueTransition(const TaskInfo &taskInfo)
+void MainWindow::OnIssueTransition(const ProjectInfo& project, const TaskInfo &taskInfo)
 {
     IssueWidget* widget = dynamic_cast<IssueWidget*>(ui->stackedWidget->widget(int(Transition::Issue)));
-    widget->SetupTask(taskInfo);
+    widget->SetupTask(project, taskInfo);
     OnTransition(Transition::Issue);
 }
 

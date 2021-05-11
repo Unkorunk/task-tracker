@@ -99,7 +99,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="fullNameField">
+       <widget class="QLineEdit" name="fullNameField">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -108,15 +108,18 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>278</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>278</width>
-          <height>30</height>
+          <width>16777215</width>
+          <height>16777215</height>
          </size>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
@@ -146,7 +149,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="usernameField">
+       <widget class="QLineEdit" name="usernameField">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -155,15 +158,18 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>25</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>30</height>
+          <height>16777215</height>
          </size>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
@@ -193,7 +199,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="emailField">
+       <widget class="QLineEdit" name="emailField">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -202,15 +208,18 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>25</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>30</height>
+          <height>16777215</height>
          </size>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
@@ -242,7 +251,7 @@
       <item>
        <widget class="QLineEdit" name="passwordField">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -250,13 +259,13 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>30</height>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>30</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="echoMode">
@@ -292,7 +301,7 @@
       <item>
        <widget class="QLineEdit" name="repPasswordField">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -300,13 +309,13 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>30</height>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>30</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="echoMode">
