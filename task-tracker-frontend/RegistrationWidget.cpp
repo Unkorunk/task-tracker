@@ -19,20 +19,22 @@ RegistrationWidget::~RegistrationWidget()
 }
 
 void RegistrationWidget::OnSignUpBtnClicked() {
+
+    QString username = ui->usernameField->toPlainText();
+    QString email = ui->emailField->toPlainText();
+    QString password = ui->passwordField->text();
+
+    if (password != ui->repPasswordField->text() || password.length() < 6 || username.length() == 0 || email.length() == 0) {
+        // TODO: handle this
+        return;
+    }
+
     ui->fullNameField->setReadOnly(true);
     ui->emailField->setReadOnly(true);
     ui->usernameField->setReadOnly(true);
     ui->passwordField->setReadOnly(true);
     ui->repPasswordField->setReadOnly(true);
 
-    QString username = ui->usernameField->toPlainText();
-    QString email = ui->emailField->toPlainText();
-    QString password = ui->passwordField->toPlainText();
-
-    if (password != ui->repPasswordField->toPlainText() || password.length() < 6 || username.length() == 0 || email.length() == 0) {
-        // TODO: handle this
-        return;
-    }
 
     Backend::Instance.SignUp(ui->fullNameField->toPlainText(), username, email, password);
 }
