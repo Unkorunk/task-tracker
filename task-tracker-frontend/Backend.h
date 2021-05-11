@@ -33,6 +33,7 @@ public:
 
     QString taskName;
     QString taskDescription;
+    QVector<QString> team;
 };
 
 inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
@@ -59,6 +60,8 @@ public:
     void GetTasks(const ProjectInfo& projectInfo);
 
     void CreateTask(const ProjectInfo& projectInfo, const TaskInfo& taskInfo);
+
+    void UpdateTask(const ProjectInfo& projectInfo, const TaskInfo& taskInfo);
 
 signals:
     void Authenticated(Status status);

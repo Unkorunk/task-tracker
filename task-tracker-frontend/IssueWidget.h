@@ -12,6 +12,11 @@ class IssueWidget : public QWidget
 {
     Q_OBJECT
 
+public slots:
+    void OnEdit();
+    void OnSave();
+    //void OnOpen();
+
 public:
     explicit IssueWidget(QWidget *parent = nullptr);
     ~IssueWidget();
@@ -20,6 +25,9 @@ public:
 
 private:
     Ui::IssueWidget *ui;
+    bool edited;
+    TaskInfo task_info;
+    //QString text;
 };
 
 #endif // ISSUEWIDGET_H

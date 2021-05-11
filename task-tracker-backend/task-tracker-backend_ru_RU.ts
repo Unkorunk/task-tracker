@@ -68,6 +68,16 @@ an account?</source>
         <source>*Task Name*</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../task-tracker-frontend/IssueWidget.ui" line="116"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/IssueWidget.ui" line="139"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -149,17 +159,22 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="210"/>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="205"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="262"/>
         <source>Team:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="278"/>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="330"/>
         <source>Invite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="351"/>
+        <location filename="../task-tracker-frontend/ProjectSettingsWidget.ui" line="415"/>
         <source>Enter recipient&apos;s email</source>
         <translation type="unfinished"></translation>
     </message>

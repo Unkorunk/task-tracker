@@ -72,6 +72,12 @@ void Backend::CreateTask(const ProjectInfo &projectInfo, const TaskInfo &taskInf
     emit TasksLoaded(Status(true, ""), myProjectTasksDictionary[projectInfo]);
 }
 
+void Backend::UpdateTask(const ProjectInfo& projectInfo, const TaskInfo &taskInfo)
+{
+    myProjectTasksDictionary[projectInfo].at(taskInfo.taskId);
+    //emit TasksLoaded(Status(true, ""), myProjectTasksDictionary[projectInfo]);
+}
+
 void Backend::OnAuth(QNetworkReply *reply)
 {
 
