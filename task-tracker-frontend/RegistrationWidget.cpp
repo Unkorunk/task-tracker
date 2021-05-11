@@ -51,7 +51,8 @@ void RegistrationWidget::OnSignup(Status status)
 
     if (status.isSuccess) {
         // TODO: instant login
-        emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);
+        emit SignedUp();
+        //emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);
 
         return;
     }

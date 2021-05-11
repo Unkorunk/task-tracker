@@ -172,6 +172,10 @@ void Backend::OnResponse(QNetworkReply* reply)
 
         emit SignedIn(status);
     } else if (pattern == SignUpAccountUrl()) {
+        if (status.isSuccess) {
+            myToken = root["data"].toObject()["access_token"].toString();
+        }
+
         emit SignedUp(status);
     } else if (pattern == GetAccountUrl()) {
         if (status.isSuccess) {
