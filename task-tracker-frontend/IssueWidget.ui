@@ -83,14 +83,16 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="taskName">
+        <widget class="QLineEdit" name="taskNameEdit">
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
-         <property name="text">
-          <string>*Task Name*</string>
+         <property name="placeholderText">
+          <string>Task Title</string>
          </property>
         </widget>
        </item>
@@ -190,7 +192,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QTextEdit" name="textEdit"/>
+        <widget class="QTextEdit" name="descriptionEdit"/>
        </item>
        <item>
         <spacer name="horizontalSpacer_6">

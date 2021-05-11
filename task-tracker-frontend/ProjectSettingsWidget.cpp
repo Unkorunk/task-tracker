@@ -60,6 +60,9 @@ void ProjectSettingsWidget::SetupProject(const ProjectInfo &project)
 {
     myProject = project;
     ui->editProjectName->setText(project.projectName);
+
+    UnlockUi();
+    ToReadonlyMode();
 }
 
 void ProjectSettingsWidget::ToEditMode()

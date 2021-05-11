@@ -79,7 +79,7 @@ public:
 
     void CreateTask(const TaskInfo& taskInfo);
 
-    void UpdateTask(const TaskInfo& taskInfo);
+    void EditTask(const TaskInfo& taskInfo);
 
     UserInfo GetProfile();
 
@@ -100,7 +100,7 @@ signals:
 
     void ProfileUpdated(Status status);
 
-    void TaskUpdated(Status status);
+    void TaskEdited(Status status);
 
 private slots:
     void OnResponse(QNetworkReply* reply);

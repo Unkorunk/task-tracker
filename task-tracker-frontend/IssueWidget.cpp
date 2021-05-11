@@ -8,13 +8,10 @@ IssueWidget::IssueWidget(QWidget *parent) :
 {
     this->ui->setupUi(this);
     this->SetupTask(task_info);
-    this->edited = false;
 
-    this->ui->saveButton->setVisible(false);
-    this->ui->textEdit->setReadOnly(true);
-
-    connect(ui->editButton, &QPushButton::clicked, this, &IssueWidget::OnEdit);
-    connect(ui->saveButton, &QPushButton::clicked, this, &IssueWidget::OnSave);
+    connect(ui->editButton, &QPushButton::clicked, this, &IssueWidget::OnEditClicked);
+    connect(ui->saveButton, &QPushButton::clicked, this, &IssueWidget::OnSaveClicked);
+    connect(&Backend::Instance, &Backend::TaskEdited, this, &IssueWidget::OnTaskUpdated);
 }
 
 IssueWidget::~IssueWidget()
@@ -22,41 +19,88 @@ IssueWidget::~IssueWidget()
     delete ui;
 }
 
-void IssueWidget::OnEdit(){
+void IssueWidget::OnEditClicked(){
     if (this->edited){
-        this->edited = false;
-        this->ui->editButton->setText("Edit");
-        this->ui->saveButton->setVisible(false);
-        //lock objects
-        this->ui->textEdit->setText(task_info.taskDescription);
-        this->ui->textEdit->setReadOnly(true);
-        // lock task name
-
+        // Cancel btn
+        ToReadOnlyMode();
+        this->ui->taskNameEdit->setText(task_info.taskName);
+        this->ui->descriptionEdit->setText(task_info.taskDescription);
     } else {
-        this->edited = true;
-        this->ui->editButton->setText("Cancel");
-        this->ui->saveButton->setVisible(true);
-        //unclock objects
-        this->ui->textEdit->setReadOnly(false);
-        //unlock task name
+        // Edit btn
+        ToEditMode();
     }
 }
 
-void IssueWidget::OnSave(){
-    //save
-    task_info.taskDescription = this->ui->textEdit->toPlainText();
-    this->ui->textEdit->setText(task_info.taskDescription);
-    //and lock
-    this->edited = false;
-    this->ui->textEdit->setReadOnly(true);
-    this->ui->editButton->setText("Edit");
-    this->ui->saveButton->setVisible(false);
+void IssueWidget::OnSaveClicked(){
+    if (ui->taskNameEdit->text().count() == 0) {
+        return;
+    }
 
+    LockUi();
+    Backend::Instance.EditTask(TaskInfo(task_info.taskId, task_info.projectId, ui->taskNameEdit->text(), ui->descriptionEdit->toPlainText()));
+}
+
+void IssueWidget::OnTaskUpdated(Status status)
+{
+    UnlockUi();
+    if (status.isSuccess) {
+        //save
+        task_info.taskDescription = this->ui->descriptionEdit->toPlainText();
+        task_info.taskName = this->ui->taskNameEdit->text();
+        //and lock
+        ToReadOnlyMode();
+    } else {
+        // TODO: handle errors;
+    }
 }
 
 void IssueWidget::SetupTask(const TaskInfo &task)
 {
-    this->ui->label->setText(task.taskName);
-    this->ui->textEdit->setText(task.taskDescription);
-    //set (task.team)
+    task_info = task;
+
+    this->ui->taskNameEdit->setText(task.taskName);
+    this->ui->descriptionEdit->setText(task.taskDescription);
+
+    UnlockUi();
+    ToReadOnlyMode();
+}
+
+void IssueWidget::ToEditMode()
+{
+    this->edited = true;
+    this->ui->editButton->setText("Cancel");
+    this->ui->saveButton->setVisible(true);
+
+    this->ui->taskNameEdit->setStyleSheet("* { background-color: rgba(255, 255, 255, 255); }");
+
+    this->ui->taskNameEdit->setReadOnly(false);
+    this->ui->descriptionEdit->setReadOnly(false);
+}
+
+void IssueWidget::ToReadOnlyMode()
+{
+    this->edited = false;
+    this->ui->editButton->setText("Edit");
+    this->ui->saveButton->setVisible(false);
+
+    this->ui->taskNameEdit->setStyleSheet("* { background-color: rgba(0, 0, 0, 0); }");
+
+    this->ui->taskNameEdit->setReadOnly(true);
+    this->ui->descriptionEdit->setReadOnly(true);
+}
+
+void IssueWidget::LockUi()
+{
+    this->ui->editButton->setEnabled(false);
+    this->ui->saveButton->setEnabled(false);
+    this->ui->taskNameEdit->setReadOnly(true);
+    this->ui->descriptionEdit->setReadOnly(true);
+}
+
+void IssueWidget::UnlockUi()
+{
+    this->ui->editButton->setEnabled(true);
+    this->ui->saveButton->setEnabled(true);
+    this->ui->taskNameEdit->setReadOnly(false);
+    this->ui->descriptionEdit->setReadOnly(false);
 }

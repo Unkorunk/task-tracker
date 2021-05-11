@@ -64,17 +64,17 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="93"/>
-        <source>*Task Name*</source>
+        <location filename="IssueWidget.ui" line="95"/>
+        <source>Task Title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="116"/>
+        <location filename="IssueWidget.ui" line="118"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="139"/>
+        <location filename="IssueWidget.ui" line="141"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>

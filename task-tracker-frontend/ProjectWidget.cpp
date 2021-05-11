@@ -27,7 +27,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(ui->ProjectStatisticsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectStatisticsBtnClicked);
     connect(this, &ProjectWidget::ProjectStatisticsClicked, MainWindow::Instance, &MainWindow::OnProjectStatisticsTransition);
 
-    connect(&Backend::Instance, &Backend::TaskUpdated, this, &ProjectWidget::OnTaskUpdate);
+    connect(&Backend::Instance, &Backend::TaskEdited, this, &ProjectWidget::OnTaskUpdate);
 }
 
 ProjectWidget::~ProjectWidget()

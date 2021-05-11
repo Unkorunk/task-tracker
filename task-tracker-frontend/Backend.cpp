@@ -162,7 +162,7 @@ void Backend::CreateTask(const TaskInfo &taskInfo)
     qInfo() << request.url();
 }
 
-void Backend::UpdateTask(const TaskInfo &taskInfo)
+void Backend::EditTask(const TaskInfo &taskInfo)
 {
     QUrlQuery query;
     query.addQueryItem("access_token", myToken);
@@ -269,9 +269,9 @@ void Backend::OnResponse(QNetworkReply* reply)
 
         emit TasksLoaded(status, tasks);
     } else if (pattern == CreateTaskUrl()) {
-        emit TaskUpdated(status);
+        emit TaskEdited(status);
     } else if (pattern == EditTaskUrl()) {
-        emit TaskUpdated(status);
+        emit TaskEdited(status);
     }
 }
 
