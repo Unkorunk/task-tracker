@@ -116,14 +116,33 @@ public:
                 QJsonObject task_result;
 
                 task_result.insert( "id", task_id );
-                task_result.insert( "created_by", q.value( "created_by" ).toInt() );
+
+                if (q.value( "created_by" ).isNull()) {
+                    task_result.insert( "created_by", -1 );
+                } else {
+                    task_result.insert( "created_by", q.value( "created_by" ).toInt() );
+                }
+
                 task_result.insert( "created_at", q.value( "created_at" ).toString() );
-                task_result.insert( "updated_by", q.value( "updated_by" ).toInt() );
+
+                if (q.value( "updated_by" ).isNull()) {
+                    task_result.insert( "updated_by", -1 );
+                } else {
+                    task_result.insert( "updated_by", q.value( "updated_by" ).toInt() );
+                }
+
                 task_result.insert( "updated_at", q.value( "updated_at" ).toString() );
                 task_result.insert( "project_id", q.value( "project_id" ).toInt() );
                 task_result.insert( "story_points", q.value( "story_points" ).toInt() );
                 task_result.insert( "title", q.value( "title" ).toString() );
                 task_result.insert( "description", q.value( "description" ).toString() );
+
+                if (q.value( "assigned_to" ).isNull()) {
+                    task_result.insert( "assigned_to", -1 );
+                } else {
+                    task_result.insert( "assigned_to", q.value( "assigned_to" ).toInt() );
+                }
+
                 QJsonArray property_value_ids;
                 property_value_ids.append( q.value( "tag_value_id" ).toInt() );
                 task_result.insert( "property_value_ids", property_value_ids );
@@ -171,6 +190,9 @@ public:
         if (request.query().hasQueryItem("description")) {
             st += ", description = ?";
         }
+        if (request.query().hasQueryItem("assigned_to")) {
+            st += ", assigned_to = ?";
+        }
         st += " WHERE id = ?;";
 
         database->transaction();
@@ -192,6 +214,9 @@ public:
         }
         if (request.query().hasQueryItem("description")) {
             q.addBindValue(request.query().queryItemValue("description"));
+        }
+        if (request.query().hasQueryItem("assigned_to")) {
+            q.addBindValue(request.query().queryItemValue("assigned_to").toInt());
         }
         q.addBindValue(id);
 

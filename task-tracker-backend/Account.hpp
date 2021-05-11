@@ -118,7 +118,11 @@ public:
             result.full_name = q.value("full_name").toString();
             result.username = q.value("username").toString();
             result.password = q.value("password").toString();
-            result.photo = q.value("photo").toString();
+            if (q.value("photo").isNull()) {
+                result.photo = "null";
+            } else {
+                result.photo = q.value("photo").toString();
+            }
             result.email = q.value("email").toString();
             result.access_token = q.value("access_token").toString();
             result.valid_until = q.value("valid_until").toInt();
@@ -269,7 +273,7 @@ public:
         data.insert("id", result.id);
         data.insert("full_name", result.full_name);
         data.insert("username", result.username);
-        data.insert("photo", result.username);
+        data.insert("photo", result.photo);
         data.insert("email", result.email);
 
         return QJsonObject{
@@ -347,8 +351,10 @@ public:
 
         if (fields_obj.contains("photo")) {
             q.addBindValue(fields_obj["photo"].toString());
-        } else {
+        } else if (user.photo != "null") {
             q.addBindValue(user.photo);
+        } else {
+            q.addBindValue( QVariant() );
         }
 
         if (fields_obj.contains("email")) {
