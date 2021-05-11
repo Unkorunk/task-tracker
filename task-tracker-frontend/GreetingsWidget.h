@@ -21,6 +21,8 @@ private slots:
 
     void OnProjectAdd(const QString& name);
 
+    void OnProfileUpdate(Status status);
+
 private:
     Ui::GreetingsWidget *ui;
 

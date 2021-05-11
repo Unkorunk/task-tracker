@@ -13,7 +13,7 @@ class ProjectSettingsWidget : public QWidget
     Q_OBJECT
 
 private slots:
-    void OnSaveProjectName();
+    void OnSaveProjectName(const ProjectInfo &project);
 
 public:
     explicit ProjectSettingsWidget(QWidget *parent = nullptr);

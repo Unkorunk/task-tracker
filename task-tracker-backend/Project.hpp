@@ -1,5 +1,4 @@
-#ifndef PROJECT_HPP
-#define PROJECT_HPP
+#pragma once
 
 #include <QObject>
 #include <QtSql/QSqlDatabase>
@@ -11,6 +10,8 @@
 #include <QVector>
 #include <QtHttpServer>
 
+#include "Account.hpp"
+
 class Project {
 public:
     static QSqlDatabase *database;
@@ -19,50 +20,6 @@ public:
     if (!request.query().hasQueryItem(arg_name))\
         return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, QString("missing %1").arg(arg_name)} };\
     QString var_name = request.query().queryItemValue(arg_name);
-
-    struct UserModel {
-        bool is_valid = false;
-
-        int id;
-        QString full_name;
-        QString username;
-        QString password;
-        QString photo;
-        QString email;
-        QString access_token;
-    };
-
-    static UserModel GetUser(const QString& access_token) {
-        UserModel result;
-
-        database->transaction();
-
-        QSqlQuery q;
-        if (!q.prepare(GET_USER_SQL)) {
-            database->rollback();
-            return result;
-        }
-        q.addBindValue(access_token);
-        if (!q.exec()) {
-            database->rollback();
-            return result;
-        }
-
-        if (q.next()) {
-            result.is_valid = true;
-            result.id = q.value("id").toInt();
-            result.full_name = q.value("full_name").toString();
-            result.username = q.value("username").toString();
-            result.password = q.value("password").toString();
-            result.photo = q.value("photo").toString();
-            result.email = q.value("email").toString();
-            result.access_token = q.value("access_token").toString();
-        }
-
-        database->commit();
-
-        return result;
-    }
 
     struct ProjectModel {
         bool is_valid = false;
@@ -109,7 +66,7 @@ public:
         int role_id;
     };
 
-    static QVector<UserProjectLink> GetUserProjects(const UserModel& user) {
+    static QVector<UserProjectLink> GetUserProjects(int user_id) {
         QVector<UserProjectLink> result;
 
         database->transaction();
@@ -119,7 +76,7 @@ public:
             database->rollback();
             return result;
         }
-        q.addBindValue(user.id);
+        q.addBindValue(user_id);
         if (!q.exec()) {
             database->rollback();
             return result;
@@ -151,7 +108,7 @@ public:
         ARG(full_name, "full_name");
         ARG(access_token, "access_token");
 
-        UserModel user = GetUser(access_token);
+        auto user = Account::GetUser(access_token);
         if (!user.is_valid) {
             return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, "invalid access_token"} };
         }
@@ -201,7 +158,7 @@ public:
         int project_id = raw_project_id.toInt();
 
         // todo in one query
-        auto user = GetUser(access_token);
+        auto user = Account::GetUser(access_token);
 
         if (!user.is_valid) {
             return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, "invalid access_token"} };
@@ -214,7 +171,7 @@ public:
         }
 
         bool ok = false;
-        auto links = GetUserProjects(user);
+        auto links = GetUserProjects(user.id);
         for (const auto& link : links) {
             if (link.project_id == project_id && link.role_id == 0) {
                 ok = true;
@@ -265,7 +222,7 @@ public:
         QJsonObject fields_obj = fields_doc.object();
 
         // todo in one query
-        auto user = GetUser(access_token);
+        auto user = Account::GetUser(access_token);
 
         if (!user.is_valid) {
             return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, "invalid access_token"} };
@@ -278,7 +235,7 @@ public:
         }
 
         bool ok = false;
-        auto links = GetUserProjects(user);
+        auto links = GetUserProjects(user.id);
         for (const auto& link : links) {
             if (link.project_id == project_id && link.role_id == 0) {
                 ok = true;
@@ -333,13 +290,13 @@ public:
 
         ARG(access_token, "access_token");
 
-        auto user = GetUser(access_token);
+        auto user = Account::GetUser(access_token);
 
         if (!user.is_valid) {
             return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, "invalid access_token"} };
         }
 
-        auto links = GetUserProjects(user);
+        auto links = GetUserProjects(user.id);
         for (const auto& link : links) {
             QJsonObject dt;
             dt.insert("id", link.id);
@@ -359,7 +316,7 @@ public:
         };
     }
 private:
-    const static QString GET_USER_SQL;
+
     const static QString GET_PROJECT_SQL;
     const static QString ADD_USER_TO_PROJECT_SQL;
     const static QString GET_USER_PROJECTS_SQL;
@@ -369,10 +326,6 @@ private:
 };
 
 QSqlDatabase *Project::database = nullptr;
-
-const QString Project::GET_USER_SQL = QString(R"(
-    SELECT * FROM users WHERE access_token = ?;
-)");
 
 const QString Project::GET_PROJECT_SQL = QString(R"(
     SELECT * FROM projects WHERE id = ?;
@@ -397,5 +350,3 @@ const QString Project::UPDATE_PROJECT_SQL = QString(R"(
 const QString Project::DELETE_PROJECT_SQL = QString(R"(
     DELETE FROM projects WHERE id = ?;
 )");
-
-#endif // PROJECT_HPP

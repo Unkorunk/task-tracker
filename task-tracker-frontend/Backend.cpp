@@ -8,6 +8,9 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDebug>
+#include <QMetaEnum>
+
+Status::Status() : Status(true, "") {}
 
 Status::Status(bool success, const QString &message)
 {
@@ -19,7 +22,7 @@ Backend Backend::Instance = Backend();
 
 const QString Backend::BaseUrl = "http://localhost:8080";
 
-Backend::Backend() : myNetworkManager(std::make_unique<QNetworkAccessManager>())
+Backend::Backend() : myUserInfo("", "", ""), myNetworkManager(std::make_unique<QNetworkAccessManager>())
 {
     // Temporary
     myToken = "abc121cba";
@@ -37,14 +40,54 @@ QString Backend::CreateProjectUrl()
     return BaseUrl + "/project/create/";
 }
 
-void Backend::Auth(const QString& username, const QString& password)
+QString Backend::SignInAccountUrl()
 {
-    emit Authenticated(Status(false, "Not implemented"));
+    return BaseUrl + "/account/enter";
 }
 
-void Backend::Register(const QString& username, const QString& email, const QString& password)
+QString Backend::SignUpAccountUrl()
 {
-    emit Authenticated(Status(false, "Not implemented"));
+    return BaseUrl + "/account/create";
+}
+
+QString Backend::GetAccountUrl()
+{
+    return BaseUrl + "/account/get";
+}
+
+QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status)
+{
+    QNetworkReply::NetworkError error = reply->error();
+
+    status.response = QMetaEnum::fromType<QNetworkReply::NetworkError>().valueToKey(error);
+    if (error == QNetworkReply::NoError) {
+        status.response = "";
+    }
+
+    QJsonDocument json = QJsonDocument::fromJson(reply->readAll());
+    QJsonObject root = json.object();
+
+    if (root["status"] != "ok") {
+        status.response = root["status"].toString() + " : " + root["description"].toString();
+    }
+
+    status.isSuccess = status.response == "";
+
+    return root;
+}
+
+void Backend::SignIn(const QString& username, const QString& password)
+{
+    QUrl url = QUrl(SignInAccountUrl() + "?username=" + username + "&password=" + password);
+    myNetworkManager->get(QNetworkRequest(url));
+    qInfo() << url;
+}
+
+void Backend::SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password)
+{
+    QUrl url = QUrl(SignUpAccountUrl() + "?full_name=" + fullName+ "&username=" + username + "&email=" + email + "&password=" + password);
+    myNetworkManager->get(QNetworkRequest(url));
+    qInfo() << url;
 }
 
 void Backend::GetProjects()
@@ -60,6 +103,11 @@ void Backend::CreateProject(const QString &projectName)
     myNetworkManager->get(QNetworkRequest(url));
     qInfo() << url;
 }
+
+void Backend::UpdateProject(const ProjectInfo& projectInfo)
+{
+
+};
 
 void Backend::GetTasks(const ProjectInfo &projectInfo)
 {
@@ -78,28 +126,41 @@ void Backend::UpdateTask(const ProjectInfo& projectInfo, const TaskInfo &taskInf
     //emit TasksLoaded(Status(true, ""), myProjectTasksDictionary[projectInfo]);
 }
 
-void Backend::OnAuth(QNetworkReply *reply)
-{
+UserInfo Backend::GetProfile()
 
+{
+    return myUserInfo;
+}
+
+void Backend::UpdateProfile()
+{
+    QUrl url = QUrl(GetAccountUrl() + "?access_token=" + myToken);
+    myNetworkManager->get(QNetworkRequest(url));
+    qInfo() << url;
 }
 
 void Backend::OnResponse(QNetworkReply* reply)
 {
-    qInfo() << reply->error();
+    Status status;
+    QJsonObject root = GetRootFromReply(reply, status);
+
+    if (!status.isSuccess) {
+        qInfo() << status.response;
+    } else {
+        qInfo() << reply->error();
+    }
+
     QString request = reply->request().url().toString();
+    if (request.indexOf('?') == -1) {
+        return;
+    }
+
     QString pattern = request.sliced(0, request.indexOf('?'));
+
     if (pattern == GetProjectsUrl()) {
-        QNetworkReply::NetworkError error = reply->error();
-        bool isSuccess = error == QNetworkReply::NoError;
-
-        QJsonDocument json = QJsonDocument::fromJson(reply->readAll());
-        QJsonObject root = json.object();
-
-        isSuccess &= root["status"] == "ok";
-
         QList<ProjectInfo> projects;
 
-        if (isSuccess) {
+        if (status.isSuccess) {
             for (QJsonValueRef it : root["data"].toArray()) {
                 QJsonObject obj = it.toObject();
 
@@ -111,9 +172,30 @@ void Backend::OnResponse(QNetworkReply* reply)
             }
         }
 
-        emit ProjectsLoaded(Status(isSuccess, ""), projects);
+        emit ProjectsLoaded(status, projects);
     } else if (pattern == CreateProjectUrl()) {
         GetProjects();
+
+        emit ProjectCreated(status);
+    } else if (pattern == SignInAccountUrl()) {
+        if (status.isSuccess) {
+            myToken = root["data"].toObject()["access_token"].toString();
+        }
+
+        emit SignedIn(status);
+    } else if (pattern == SignUpAccountUrl()) {
+        if (status.isSuccess) {
+            myToken = root["data"].toObject()["access_token"].toString();
+        }
+
+        emit SignedUp(status);
+    } else if (pattern == GetAccountUrl()) {
+        if (status.isSuccess) {
+            QJsonObject data = root["data"].toObject();
+            myUserInfo = UserInfo(data["username"].toString(), data["full_name"].toString(), data["email"].toString());
+        }
+
+        emit ProfileUpdated(status);
     }
 }
 
@@ -125,4 +207,24 @@ ProjectInfo::ProjectInfo(int id, int projectId, const QString& projectName) : id
 TaskInfo::TaskInfo(int taskId, int projectId, const QString &taskName, const QString &taskDesc)
     : taskId(taskId), projectId(projectId), taskName(taskName), taskDescription(taskDesc)
 {
+}
+
+UserInfo::UserInfo(const QString &username, const QString &fullName, const QString &email)
+    : myUsername(username), myFullName(fullName), myEmail(email)
+{
+}
+
+QString UserInfo::GetUsername()
+{
+    return myUsername;
+}
+
+QString UserInfo::GetFullName()
+{
+    return myFullName;
+}
+
+QString UserInfo::GetEmail()
+{
+    return myEmail;
 }

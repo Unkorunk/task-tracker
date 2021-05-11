@@ -15,9 +15,10 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
 
 }
 
-void ProjectSettingsWidget:: OnSaveProjectName(){
+void ProjectSettingsWidget:: OnSaveProjectName(const ProjectInfo &project){
     //later need change ProjectInfo
-    QString Obama = ui->editProjectName->text();
+    ProjectInfo new_project_info(project.id, project.projectId, ui->editProjectName->text());
+    Backend::Instance.UpdateProject(new_project_info);
 }
 
 ProjectSettingsWidget::~ProjectSettingsWidget()

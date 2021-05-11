@@ -19,10 +19,10 @@ public:
 private slots:
     void OnLogInBtnClicked();
     void OnMoveToSignUpBtnClicked();
-
+    void OnLogin(Status status);
 signals:
-    void OnLoggedIn();
-    void OnAuthClicked(AuthorizationWindow::Transition transition);
+    void LoggedIn();
+    void AuthClicked(AuthorizationWindow::Transition transition);
 
 private:
     Ui::AuthorizationWidget *ui;
