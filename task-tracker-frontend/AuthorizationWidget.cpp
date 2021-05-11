@@ -22,7 +22,7 @@ void AuthorizationWidget::OnLogInBtnClicked() {
     ui->usernameField->setReadOnly(true);
     ui->passwordField->setReadOnly(true);
 
-    Backend::Instance.SignIn(ui->usernameField->toPlainText(), ui->passwordField->text());
+    Backend::Instance.SignIn(ui->usernameField->text(), ui->passwordField->text());
 }
 
 void AuthorizationWidget::OnMoveToSignUpBtnClicked() {

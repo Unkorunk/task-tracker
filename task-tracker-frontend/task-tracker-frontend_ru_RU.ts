@@ -14,17 +14,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="144"/>
+        <location filename="AuthorizationWidget.ui" line="150"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="202"/>
+        <location filename="AuthorizationWidget.ui" line="208"/>
         <source>Log in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="233"/>
+        <location filename="AuthorizationWidget.ui" line="239"/>
         <source>Don&apos;t have 
 an account?</source>
         <translation type="unfinished"></translation>
@@ -287,32 +287,32 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="144"/>
+        <location filename="RegistrationWidget.ui" line="147"/>
         <source>Login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="191"/>
+        <location filename="RegistrationWidget.ui" line="197"/>
         <source>Email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="238"/>
+        <location filename="RegistrationWidget.ui" line="247"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="288"/>
+        <location filename="RegistrationWidget.ui" line="297"/>
         <source>Repeat password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="343"/>
+        <location filename="RegistrationWidget.ui" line="352"/>
         <source>Sign up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="374"/>
+        <location filename="RegistrationWidget.ui" line="383"/>
         <source>Already have 
 an account?</source>
         <translation type="unfinished"></translation>
