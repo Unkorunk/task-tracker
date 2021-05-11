@@ -107,22 +107,38 @@ public:
             return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, q.lastError().text()} };
         }
 
-        QJsonArray result;
+        QMap<int, QJsonObject> raw_result;
 
         while (q.next()) {
-            QJsonObject task_result;
+            const int task_id = q.value( "id" ).toInt();
 
-            task_result.insert( "id", q.value( "id" ).toInt() );
-            task_result.insert( "created_by", q.value( "created_by" ).toInt() );
-            task_result.insert( "created_at", q.value( "created_at" ).toString() );
-            task_result.insert( "updated_by", q.value( "updated_by" ).toInt() );
-            task_result.insert( "updated_at", q.value( "updated_at" ).toString() );
-            task_result.insert( "project_id", q.value( "project_id" ).toInt() );
-            task_result.insert( "story_points", q.value( "story_points" ).toInt() );
-            task_result.insert( "title", q.value( "title" ).toString() );
-            task_result.insert( "description", q.value( "description" ).toString() );
+            if (!raw_result.contains(task_id)) {
+                QJsonObject task_result;
 
-            result.append(task_result);
+                task_result.insert( "id", task_id );
+                task_result.insert( "created_by", q.value( "created_by" ).toInt() );
+                task_result.insert( "created_at", q.value( "created_at" ).toString() );
+                task_result.insert( "updated_by", q.value( "updated_by" ).toInt() );
+                task_result.insert( "updated_at", q.value( "updated_at" ).toString() );
+                task_result.insert( "project_id", q.value( "project_id" ).toInt() );
+                task_result.insert( "story_points", q.value( "story_points" ).toInt() );
+                task_result.insert( "title", q.value( "title" ).toString() );
+                task_result.insert( "description", q.value( "description" ).toString() );
+                QJsonArray property_value_ids;
+                property_value_ids.append( q.value( "tag_value_id" ).toInt() );
+                task_result.insert( "property_value_ids", property_value_ids );
+
+                raw_result.insert( task_id, task_result );
+            } else {
+                auto property_value_ids = raw_result[task_id]["property_value_ids"].toArray();
+                property_value_ids.append( q.value( "tag_value_id" ).toInt() );
+                raw_result[task_id]["property_value_ids"] = property_value_ids;
+            }
+        }
+
+        QJsonArray result;
+        for ( auto it : raw_result ) {
+            result.append( it );
         }
 
         database->commit();
@@ -191,10 +207,79 @@ public:
         };
     }
 
+    static QJsonObject GetProperties(const QHttpServerRequest &request) {
+
+        const char *FAIL_DESCRIPTION = "description";
+
+
+        database->transaction();
+
+        QSqlQuery q;
+        if (!q.prepare(GET_PROPERTIES_SQL)) {
+            database->rollback();
+            return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, q.lastError().text()} };
+        }
+
+        if (!q.exec()) {
+            database->rollback();
+            return QJsonObject{ {"status", "fail"}, {FAIL_DESCRIPTION, q.lastError().text()} };
+        }
+
+        QMap<int, QJsonObject> raw_result;
+
+
+
+        while (q.next()) {
+            const int property_id = q.value( "property_id" ).toInt();
+
+            if (!raw_result.contains(property_id)) {
+                QJsonObject task_result;
+
+                task_result.insert( "property_id", property_id );
+                task_result.insert( "caption", q.value( "caption" ).toString() );
+
+                QJsonArray property_values;
+
+                QJsonObject value;
+                value.insert( "id", q.value( "property_value_id" ).toInt() );
+                value.insert( "title", q.value( "value" ).toString() );
+
+                property_values.append( value );
+
+                task_result.insert( "property_values", property_values );
+
+                raw_result.insert( property_id, task_result );
+            } else {
+                auto property_values = raw_result[property_id]["property_values"].toArray();
+
+                QJsonObject value;
+                value.insert( "id", q.value( "property_value_id" ).toInt() );
+                value.insert( "title", q.value( "value" ).toString() );
+
+                property_values.append( value );
+
+                raw_result[property_id]["property_values"] = property_values;
+            }
+        }
+
+        QJsonArray result;
+        for ( auto it : raw_result ) {
+            result.append( it );
+        }
+
+        database->commit();
+
+        return QJsonObject{
+            { "status", "ok" },
+            { "data", result }
+        };
+    }
+
 private:
     const static QString CREATE_TASK_SQL;
     const static QString DELETE_TASK_SQL;
     const static QString GET_TASK_SQL;
+    const static QString GET_PROPERTIES_SQL;
 };
 
 QSqlDatabase *Task::database = nullptr;
@@ -208,6 +293,9 @@ const QString Task::DELETE_TASK_SQL = R"(
 )";
 
 const QString Task::GET_TASK_SQL = R"(
-    SELECT * FROM tasks WHERE project_id = ?;
+    SELECT * FROM tasks LEFT JOIN taskstags ON tasks.id = taskstags.task_id WHERE project_id = ?;
 )";
 
+const QString Task::GET_PROPERTIES_SQL = R"(
+    SELECT tagcaptions.id as property_id, caption, tagvalues.id as property_value_id, value FROM tagcaptions LEFT JOIN tagvalues ON tagcaptions.id = tagvalues.tagcaption_id;
+)";

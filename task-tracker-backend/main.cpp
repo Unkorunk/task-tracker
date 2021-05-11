@@ -83,8 +83,9 @@ int main(int argc, char *argv[])
     http_server.route("/project/get/",    &Project::Get   );
     http_server.route("/project/edit/", QHttpServerRequest::Method::POST, &Project::Edit);
 
-    http_server.route("/task/delete", &Task::Delete);
-    http_server.route("/task/get",    &Task::Get   );
+    http_server.route("/task/delete",     &Task::Delete       );
+    http_server.route("/task/get",        &Task::Get          );
+    http_server.route("/task/properties", &Task::GetProperties);
     http_server.route("/task/create", QHttpServerRequest::Method::POST, &Task::Create);
     http_server.route("/task/edit",   QHttpServerRequest::Method::POST, &Task::Edit  );
 
