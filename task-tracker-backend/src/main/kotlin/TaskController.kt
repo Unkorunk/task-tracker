@@ -1,10 +1,14 @@
 package timelimit.main
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 @Controller
 @RequestMapping(path = ["/task"])
@@ -13,6 +17,8 @@ class TaskController {
     data class DeleteTaskResult(val status: Boolean)
     data class EditTaskResult(val status: Boolean)
     data class AllTaskResult(val status: Boolean, val tasks: Set<Task> = emptySet())
+
+    private val logger = LoggerFactory.getLogger(ProjectUserRoleController::class.java)
 
     @Autowired
     private lateinit var taskRepository: TaskRepository
@@ -23,6 +29,21 @@ class TaskController {
     @Autowired
     private lateinit var projectRepository: ProjectRepository
 
+    @Autowired
+    private lateinit var notificationRepository: NotificationRepository
+
+    private fun notify(user: User, text: String) {
+        val notification = Notification()
+        notification.isRead = false
+        notification.text = text
+        notification.user = user
+        try {
+            notificationRepository.save(notification)
+        } catch (ex: java.lang.Exception) {
+            logger.error("error saving notification")
+        }
+    }
+
     @PostMapping(path = ["/create"])
     @ResponseBody
     fun create(
@@ -31,7 +52,8 @@ class TaskController {
         @RequestParam(value = "story_points") storyPoints: Int?,
         @RequestParam(value = "title") title: String,
         @RequestParam(value = "description") description: String,
-        @RequestParam(value = "assigned_id") assignedId: Int?
+        @RequestParam(value = "assigned_id") assignedId: Int?,
+        @RequestParam(value = "deadline") deadline: String?
     ): CreateTaskResult {
         val user = userRepository.findByAccessToken(accessToken) ?: return CreateTaskResult(false)
         if (user.validUntil < Date()) {
@@ -64,6 +86,17 @@ class TaskController {
             }
             val assignedUser = assignedUserOptional.get()
             task.assignedTo = assignedUser
+            if (task.assignedTo != null) {
+                notify(task.assignedTo!!, "You have been assigned to the '${task.title}' task.")
+            }
+        }
+
+        if (deadline != null) {
+            val formatter = SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.ENGLISH)
+            task.deadline = formatter.parse(deadline)
+            if (task.assignedTo != null) {
+                notify(task.assignedTo!!, "The deadline for the '${task.title}' task has been moved to '${task.deadline}'")
+            }
         }
 
         try {
@@ -93,7 +126,8 @@ class TaskController {
         @RequestParam(value = "story_points") storyPoints: Int?,
         @RequestParam(value = "title") title: String?,
         @RequestParam(value = "description") description: String?,
-        @RequestParam(value = "assigned_id") assignedId: Int?
+        @RequestParam(value = "assigned_id") assignedId: Int?,
+        @RequestParam(value = "deadline") deadline: String?
     ): EditTaskResult {
         val user = userRepository.findByAccessToken(accessToken) ?: return EditTaskResult(false)
         if (user.validUntil < Date()) {
@@ -127,7 +161,21 @@ class TaskController {
                 return EditTaskResult(false)
             }
             val assignedUser = assignedUserOptional.get()
+            if (task.assignedTo != null) {
+                notify(task.assignedTo!!, "You have been removed from the '${task.title}' task.")
+            }
             task.assignedTo = assignedUser
+            if (task.assignedTo != null) {
+                notify(task.assignedTo!!, "You have been assigned to the '${task.title}' task.")
+            }
+        }
+
+        if (deadline != null) {
+            val formatter = SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.ENGLISH)
+            task.deadline = formatter.parse(deadline)
+            if (task.assignedTo != null) {
+                notify(task.assignedTo!!, "The deadline for the '${task.title}' task has been moved to '${task.deadline}'")
+            }
         }
 
         try {

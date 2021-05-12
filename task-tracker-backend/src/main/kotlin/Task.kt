@@ -45,6 +45,10 @@ class Task {
     @JoinColumn(name = "assigned_to_id", nullable = true)
     var assignedTo: User? = null
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = true)
+    var deadline: Date? = null
+
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE], mappedBy = "task")
     val tags: Set<TaskTag> = emptySet()
 

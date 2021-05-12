@@ -1,5 +1,6 @@
 package timelimit.main
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +15,8 @@ class ProjectUserRoleController {
     data class AddResult(val status: Boolean)
     data class RemoveResult(val status: Boolean)
 
+    private val logger = LoggerFactory.getLogger(ProjectUserRoleController::class.java)
+
     @Autowired
     private lateinit var projectUserRoleRepository: ProjectUserRoleRepository
 
@@ -25,6 +28,29 @@ class ProjectUserRoleController {
 
     @Autowired
     private lateinit var roleRepository: RoleRepository
+
+    @Autowired
+    private lateinit var notificationRepository: NotificationRepository
+
+    private fun notifyAdd(project: Project, user: User) {
+        notify(user, "You have been added to the '${project.fullName}' project.")
+    }
+
+    private fun notifyRemove(project: Project, user: User) {
+        notify(user, "You have been removed from the '${project.fullName}' project.")
+    }
+
+    private fun notify(user: User, text: String) {
+        val notification = Notification()
+        notification.isRead = false
+        notification.text = text
+        notification.user = user
+        try {
+            notificationRepository.save(notification)
+        } catch (ex: Exception) {
+            logger.error("error saving notification")
+        }
+    }
 
     @GetMapping(path = ["/addById"])
     @ResponseBody
@@ -55,6 +81,8 @@ class ProjectUserRoleController {
             return AddResult(false)
         }
 
+        notifyAdd(project, user)
+
         return AddResult(true)
     }
 
@@ -82,6 +110,8 @@ class ProjectUserRoleController {
         } catch (ex: Exception) {
             return AddResult(false)
         }
+
+        notifyAdd(project, user)
 
         return AddResult(true)
     }
@@ -111,6 +141,8 @@ class ProjectUserRoleController {
             return AddResult(false)
         }
 
+        notifyAdd(project, user)
+
         return AddResult(true)
     }
 
@@ -128,6 +160,8 @@ class ProjectUserRoleController {
         } catch (ex: Exception) {
             return RemoveResult(false)
         }
+
+        notifyRemove(projectUserRole.project, projectUserRole.user)
 
         return RemoveResult(true)
     }
@@ -149,6 +183,8 @@ class ProjectUserRoleController {
             return RemoveResult(false)
         }
 
+        notifyRemove(projectUserRole.project, projectUserRole.user)
+
         return RemoveResult(true)
     }
 
@@ -168,6 +204,8 @@ class ProjectUserRoleController {
         } catch (ex: Exception) {
             return RemoveResult(false)
         }
+
+        notifyRemove(projectUserRole.project, projectUserRole.user)
 
         return RemoveResult(true)
     }

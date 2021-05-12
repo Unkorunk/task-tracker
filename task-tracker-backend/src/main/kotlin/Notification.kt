@@ -12,11 +12,11 @@ class Notification {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    val user: User = User()
+    var user: User = User()
 
     @Column(nullable = false)
-    val text: String = ""
+    var text: String = ""
 
     @Column(nullable = false)
-    val isRead: Boolean = false
+    var isRead: Boolean = false
 }
