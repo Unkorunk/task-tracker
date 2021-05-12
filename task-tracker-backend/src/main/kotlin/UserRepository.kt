@@ -9,4 +9,7 @@ interface UserRepository : CrudRepository<User, Int> {
 
     @Query(value = "select u from User u where u.accessToken = ?1")
     fun findByAccessToken(accessToken: String): User?
+
+    @Query(value = "select u from User u where u.email = ?1")
+    fun findByEmail(email: String): User?
 }
