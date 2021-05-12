@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(task-tracker LANGUAGES CXX)
 
-add_subdirectory(qthttpserver)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -87,21 +85,9 @@ set(PROJECT_SOURCES_FRONTEND
   ${TS_FILES_FRONTEND}
 )
 
-set(PROJECT_SOURCES_BACKEND
-  task-tracker-backend/main.cpp
-  task-tracker-backend/Project.hpp
-  task-tracker-backend/Account.hpp
-  task-tracker-backend/Task.hpp
-  task-tracker-backend/TaskComment.hpp
-)
-
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(task-tracker-frontend
     ${PROJECT_SOURCES_FRONTEND}
-  )
-
-  qt_add_executable(task-tracker-backend
-    ${PROJECT_SOURCES_BACKEND}
   )
 
   qt_create_translation(QM_FILES
@@ -113,10 +99,6 @@ else()
     ${PROJECT_SOURCES_FRONTEND}
   )
 
-  add_executable(task-tracker-backend
-    ${PROJECT_SOURCES_BACKEND}
-  )
-
   qt5_create_translation(QM_FILES
     ${CMAKE_SOURCE_DIR}/task-tracker-frontend
     ${TS_FILES_FRONTEND}
@@ -125,4 +107,3 @@ endif()
 
 target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Network)
-target_link_libraries(task-tracker-backend PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt::HttpServer)
