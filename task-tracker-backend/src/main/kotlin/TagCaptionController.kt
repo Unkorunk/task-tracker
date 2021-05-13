@@ -18,10 +18,23 @@ class TagCaptionController {
     @Autowired
     private lateinit var tagCaptionRepository: TagCaptionRepository
 
+    @Autowired
+    private lateinit var projectRepository: ProjectRepository
+
     @GetMapping(path = ["/create"])
     @ResponseBody
-    fun create(@RequestParam(value = "caption") caption: String): CreateTagCaptionResult {
+    fun create(
+        @RequestParam(value = "project_id") projectId: Int,
+        @RequestParam(value = "caption") caption: String
+    ): CreateTagCaptionResult {
+        val projectOptional = projectRepository.findById(projectId)
+        if (projectOptional.isEmpty) {
+            return CreateTagCaptionResult(false)
+        }
+        val project = projectOptional.get()
+
         var tagCaption = TagCaption()
+        tagCaption.project = project
         tagCaption.caption = caption
 
         try {

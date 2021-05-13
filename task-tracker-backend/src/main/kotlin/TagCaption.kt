@@ -11,6 +11,10 @@ class TagCaption {
     @Column(nullable = false, unique = true)
     val id: Int = 0
 
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    var project: Project = Project()
+
     @Column(nullable = false)
     var caption: String = ""
 
