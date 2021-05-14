@@ -9,11 +9,11 @@ import java.util.*
 @Controller
 @RequestMapping(path = ["/user"])
 class UserController {
-    data class CreateUserResult(val status: Boolean, val access_token: String? = null)
+    data class CreateUserResult(val status: Boolean, val user: User? = null, val access_token: String? = null)
     data class DeleteUserResult(val status: Boolean)
     data class GetUserResult(val status: Boolean, val user: User? = null)
     data class EditUserResult(val status: Boolean)
-    data class EnterResult(val status: Boolean, val accessToken: String? = null)
+    data class EnterResult(val status: Boolean, val user: User? = null, val accessToken: String? = null)
 
     @Autowired
     private lateinit var userRepository: UserRepository
@@ -26,7 +26,7 @@ class UserController {
         @RequestParam(value = "email") email: String,
         @RequestParam(value = "password") password: String
     ): CreateUserResult {
-        val user = User()
+        var user = User()
         user.fullName = fullName
         user.screenName = screenName
         user.email = email
@@ -34,12 +34,12 @@ class UserController {
         user.updateToken()
 
         try {
-            userRepository.save(user)
+            user = userRepository.save(user)
         } catch (ex: Exception) {
             return CreateUserResult(false)
         }
 
-        return CreateUserResult(true, user.accessToken)
+        return CreateUserResult(true, user, user.accessToken)
     }
 
     @GetMapping(path = ["/delete"])
@@ -167,6 +167,6 @@ class UserController {
             return EnterResult(false)
         }
 
-        return EnterResult(true, user.accessToken)
+        return EnterResult(true, user, user.accessToken)
     }
 }

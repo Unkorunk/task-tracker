@@ -56,7 +56,8 @@ class ProjectUserRoleController {
     @ResponseBody
     fun addById(
         @RequestParam(value = "user_id") userId: Int,
-        @RequestParam(value = "project_id") projectId: Int
+        @RequestParam(value = "project_id") projectId: Int,
+        @RequestParam(value = "role_id") roleId: Int
     ): AddResult {
         val userOptional = userRepository.findById(userId)
         if (userOptional.isEmpty) {
@@ -73,7 +74,11 @@ class ProjectUserRoleController {
         val projectUserRole = ProjectUserRole()
         projectUserRole.user = user
         projectUserRole.project = project
-        projectUserRole.role = roleRepository.findAll().firstOrNull() ?: return AddResult(false) // todo
+        val roleOptional = roleRepository.findById(roleId)
+        if (roleOptional.isEmpty) {
+            return AddResult(false)
+        }
+        projectUserRole.role = roleOptional.get()
 
         try {
             projectUserRoleRepository.save(projectUserRole)
@@ -90,7 +95,8 @@ class ProjectUserRoleController {
     @ResponseBody
     fun addByEmail(
         @RequestParam(value = "email") email: String,
-        @RequestParam(value = "project_id") projectId: Int
+        @RequestParam(value = "project_id") projectId: Int,
+        @RequestParam(value = "role_id") roleId: Int
     ): AddResult {
         val user = userRepository.findByEmail(email) ?: return AddResult(false)
 
@@ -103,7 +109,11 @@ class ProjectUserRoleController {
         val projectUserRole = ProjectUserRole()
         projectUserRole.user = user
         projectUserRole.project = project
-        projectUserRole.role = roleRepository.findAll().firstOrNull() ?: return AddResult(false) // todo
+        val roleOptional = roleRepository.findById(roleId)
+        if (roleOptional.isEmpty) {
+            return AddResult(false)
+        }
+        projectUserRole.role = roleOptional.get()
 
         try {
             projectUserRoleRepository.save(projectUserRole)
@@ -120,7 +130,8 @@ class ProjectUserRoleController {
     @ResponseBody
     fun addByScreenName(
         @RequestParam(value = "screen_name") screenName: String,
-        @RequestParam(value = "project_id") projectId: Int
+        @RequestParam(value = "project_id") projectId: Int,
+        @RequestParam(value = "role_id") roleId: Int
     ): AddResult {
         val user = userRepository.findByScreenName(screenName) ?: return AddResult(false)
 
@@ -133,7 +144,11 @@ class ProjectUserRoleController {
         val projectUserRole = ProjectUserRole()
         projectUserRole.user = user
         projectUserRole.project = project
-        projectUserRole.role = roleRepository.findAll().firstOrNull() ?: return AddResult(false) // todo
+        val roleOptional = roleRepository.findById(roleId)
+        if (roleOptional.isEmpty) {
+            return AddResult(false)
+        }
+        projectUserRole.role = roleOptional.get()
 
         try {
             projectUserRoleRepository.save(projectUserRole)

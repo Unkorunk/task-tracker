@@ -52,7 +52,6 @@ class Task {
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE], mappedBy = "task")
     val tags: Set<TaskTag> = emptySet()
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE], mappedBy = "task")
     val comments: Set<Comment> = emptySet()
 }

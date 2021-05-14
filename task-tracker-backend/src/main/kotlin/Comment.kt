@@ -13,16 +13,16 @@ class Comment {
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = true)
-    val author: User? = null
+    var author: User? = null
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    val createdAt: Date = Date()
+    var createdAt: Date = Date()
 
     @Column(nullable = false)
-    val text: String = ""
+    var text: String = ""
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
-    val task: Task = Task()
+    var task: Task = Task()
 }

@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -95,7 +93,10 @@ class TaskController {
             val formatter = SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.ENGLISH)
             task.deadline = formatter.parse(deadline)
             if (task.assignedTo != null) {
-                notify(task.assignedTo!!, "The deadline for the '${task.title}' task has been moved to '${task.deadline}'")
+                notify(
+                    task.assignedTo!!,
+                    "The deadline for the '${task.title}' task has been moved to '${task.deadline}'"
+                )
             }
         }
 
@@ -174,7 +175,10 @@ class TaskController {
             val formatter = SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.ENGLISH)
             task.deadline = formatter.parse(deadline)
             if (task.assignedTo != null) {
-                notify(task.assignedTo!!, "The deadline for the '${task.title}' task has been moved to '${task.deadline}'")
+                notify(
+                    task.assignedTo!!,
+                    "The deadline for the '${task.title}' task has been moved to '${task.deadline}'"
+                )
             }
         }
 
@@ -189,23 +193,48 @@ class TaskController {
 
     @GetMapping(path = ["/allAssignedTasks"])
     @ResponseBody
-    fun allAssignedTasks(@RequestParam(value = "access_token") accessToken: String): AllTaskResult {
+    fun allAssignedTasks(
+        @RequestParam(value = "access_token") accessToken: String,
+        @RequestParam(value = "project_id") projectId: Int
+    ): AllTaskResult {
         val user = userRepository.findByAccessToken(accessToken) ?: return AllTaskResult(false)
         if (user.validUntil < Date()) {
             return AllTaskResult(false)
         }
 
-        return AllTaskResult(true, user.assignedTasks)
+        return AllTaskResult(
+            true,
+            user.assignedTasks.filter { it.project.id == projectId }.toSet()
+        ) // todo in one query
     }
 
     @GetMapping(path = ["/allCreatedTasks"])
     @ResponseBody
-    fun allCreatedTasks(@RequestParam(value = "access_token") accessToken: String): AllTaskResult {
+    fun allCreatedTasks(
+        @RequestParam(value = "access_token") accessToken: String,
+        @RequestParam(value = "project_id") projectId: Int
+    ): AllTaskResult {
         val user = userRepository.findByAccessToken(accessToken) ?: return AllTaskResult(false)
         if (user.validUntil < Date()) {
             return AllTaskResult(false)
         }
 
-        return AllTaskResult(true, user.createdTasks)
+        return AllTaskResult(true, user.createdTasks.filter { it.project.id == projectId }.toSet()) // todo in one query
+    }
+
+    @GetMapping(path = ["/all"])
+    @ResponseBody
+    fun all(
+        @RequestParam(value = "access_token") accessToken: String,
+        @RequestParam(value = "project_id") projectId: Int
+    ): AllTaskResult {
+        val user = userRepository.findByAccessToken(accessToken) ?: return AllTaskResult(false)
+        if (user.validUntil < Date()) {
+            return AllTaskResult(false)
+        }
+
+        return AllTaskResult(true, taskRepository.findAll().filter { task ->
+            user.projects.any { project -> project.id == task.project.id } && task.project.id == projectId
+        }.toSet()) // todo in one query
     }
 }
