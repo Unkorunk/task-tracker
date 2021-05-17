@@ -6,7 +6,7 @@
 ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProjectSettingsWidget),
-    myProject(0, 0, "Default project")
+    myProject(-1, "Default project")
 {
     ui->setupUi(this);
 
@@ -25,7 +25,7 @@ void ProjectSettingsWidget::OnSaveClicked() {
             return;
         }
 
-        ProjectInfo newProjectInfo(myProject.id, myProject.projectId, ui->editProjectName->text());
+        ProjectInfo newProjectInfo(myProject.projectId, ui->editProjectName->text());
         Backend::Instance.EditProject(newProjectInfo);
         LockUi();
     } else {

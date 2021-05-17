@@ -19,9 +19,8 @@ public:
 
 class ProjectInfo {
 public:
-    ProjectInfo(int id, int projectId, const QString& projectName);
+    ProjectInfo(int projectId, const QString& projectName);
 
-    int id;
     int projectId;
     QString projectName;
 };
@@ -61,7 +60,7 @@ public:
 
 class UserInfo {
 public:
-    UserInfo(const QString& username, const QString& fullName, const QString& email);
+    UserInfo(const QString& username, const QString& fullName, const QString& email, int id);
 
     QString GetUsername();
     QString GetFullName();
@@ -71,6 +70,7 @@ private:
     QString myUsername;
     QString myFullName;
     QString myEmail;
+    int myId;
 };
 
 inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
@@ -135,10 +135,6 @@ private:
 
     Backend();
 
-    void GetProperties();
-
-    QString GetPropertiesUrl();
-
     QString GetProjectsUrl();
     QString CreateProjectUrl();
     QString EditProjectUrl();
@@ -153,6 +149,10 @@ private:
     QString DeleteTaskUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
+
+    void PostRequest(const QString& urlString, const QMap<QString, QString>& args);
+
+    void GetRequest(const QString& urlString, const QMap<QString, QString>& args);
 
     QMap<int, PropertyValue> valIdToVal;
     QMap<int, QList<PropertyValue>> propIdToVals;
