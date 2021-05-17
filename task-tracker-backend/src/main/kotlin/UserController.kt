@@ -9,7 +9,7 @@ import java.util.*
 @Controller
 @RequestMapping(path = ["/user"])
 class UserController {
-    data class CreateUserResult(val status: Boolean, val user: User? = null, val access_token: String? = null)
+    data class CreateUserResult(val status: Boolean, val user: User? = null, val accessToken: String? = null)
     data class DeleteUserResult(val status: Boolean)
     data class GetUserResult(val status: Boolean, val user: User? = null)
     data class EditUserResult(val status: Boolean)
