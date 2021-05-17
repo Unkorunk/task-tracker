@@ -84,6 +84,10 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/TaskItemWidget.h
   task-tracker-frontend/TaskItemWidget.ui
 
+  task-tracker-frontend/CreateProjectDialog.cpp
+  task-tracker-frontend/CreateProjectDialog.h
+  task-tracker-frontend/CreateProjectDialog.ui
+
   ${TS_FILES_FRONTEND}
 )
 
