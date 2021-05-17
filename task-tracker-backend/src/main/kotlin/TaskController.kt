@@ -233,8 +233,8 @@ class TaskController {
             return AllTaskResult(false)
         }
 
-        return AllTaskResult(true, taskRepository.findAll().filter { task ->
-            user.projects.any { project -> project.id == task.project.id } && task.project.id == projectId
-        }.toSet()) // todo in one query
+        val projectUserRole = user.projects.find { it.project.id == projectId } ?: return AllTaskResult(false)
+
+        return AllTaskResult(true, projectUserRole.project.tasks)
     }
 }
