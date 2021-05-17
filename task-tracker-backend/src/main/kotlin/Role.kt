@@ -1,5 +1,6 @@
 package timelimit.main
 
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -18,5 +19,12 @@ class Role {
     var value: String = ""
 
     @Column(nullable = false)
-    val permissions: Int = 0
+    var permissions: ByteArray = ByteArray(4)
+
+    companion object {
+        val PERMISSIONS_PROJECT_CREATOR: ByteArray = BitSet().let {
+            it.set(0, 64, true)
+            it
+        }.toByteArray()
+    }
 }

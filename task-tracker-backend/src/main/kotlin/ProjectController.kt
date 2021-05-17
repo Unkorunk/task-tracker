@@ -49,10 +49,21 @@ class ProjectController {
             return CreateProjectResult(false)
         }
 
+        var role = Role()
+        role.project = project
+        role.value = "Project creator"
+        role.permissions = Role.PERMISSIONS_PROJECT_CREATOR
+
+        try {
+            role = roleRepository.save(role)
+        } catch (ex: Exception) {
+            return CreateProjectResult(false)
+        }
+
         val projectUserRole = ProjectUserRole()
         projectUserRole.project = project
         projectUserRole.user = user
-        projectUserRole.role = roleRepository.findAll().firstOrNull() ?: return CreateProjectResult(false) // todo
+        projectUserRole.role = role
 
         try {
             projectUserRoleRepository.save(projectUserRole)
@@ -77,7 +88,7 @@ class ProjectController {
 
         // todo make custom query
         // todo check user role
-        val projectUserRole = projectUserRoleRepository.findAll().find { it.project.id == projectId && it.user == user }
+        projectUserRoleRepository.findAll().find { it.project.id == projectId && it.user == user }
             ?: return DeleteProjectResult(false)
 
         try {
@@ -113,7 +124,7 @@ class ProjectController {
 
         // todo make custom query
         // todo check user role
-        val projectUserRole = projectUserRoleRepository.findAll().find { it.project == project && it.user == user }
+        projectUserRoleRepository.findAll().find { it.project == project && it.user == user }
             ?: return EditProjectResult(false)
 
         if (fullName != null) {
