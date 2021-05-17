@@ -121,6 +121,7 @@ class TaskController {
     }
 
     @PostMapping(path = ["/edit"])
+    @ResponseBody
     fun edit(
         @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "task_id") taskId: Int,
