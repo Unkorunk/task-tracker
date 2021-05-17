@@ -5,8 +5,8 @@
 IssueWidget::IssueWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::IssueWidget),
-    task_info(0, 0, "Task name", "Task description"),
-    project_info(0, 0, "")
+    task_info(-1, -1, "Task name", "Task description"),
+    project_info(-1, "")
 {
     this->ui->setupUi(this);
     this->SetupTask(project_info, task_info);

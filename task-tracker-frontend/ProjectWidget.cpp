@@ -8,7 +8,7 @@
 ProjectWidget::ProjectWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProjectWidget),
-    myProject(0, 0, "")
+    myProject(-1, "")
 {
     ui->setupUi(this);
 

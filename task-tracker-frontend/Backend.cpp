@@ -21,60 +21,48 @@ Status::Status(bool success, const QString &message)
 
 Backend Backend::Instance = Backend();
 
-const QString Backend::BaseUrl = "http://localhost:8080";
+const QString Backend::BaseUrl = "http://139.59.144.121:8080";
 
-Backend::Backend() : myUserInfo("", "", ""), myNetworkManager(std::make_unique<QNetworkAccessManager>())
+Backend::Backend() : myUserInfo("", "", "", -1), myNetworkManager(std::make_unique<QNetworkAccessManager>())
 {
     myToken = "";
 
     connect(myNetworkManager.get(), &QNetworkAccessManager::finished, this, &Backend::OnResponse);
 }
 
-void Backend::GetProperties()
-{
-    QUrl url = QUrl(GetPropertiesUrl());
-    myNetworkManager->get(QNetworkRequest(url));
-    qInfo() << url;
-}
-
-QString Backend::GetPropertiesUrl()
-{
-    return BaseUrl + "/task/properties/get";
-}
-
 QString Backend::GetProjectsUrl()
 {
-    return BaseUrl + "/project/get/";
+    return BaseUrl + "/project/all";
 }
 
 QString Backend::CreateProjectUrl()
 {
-    return BaseUrl + "/project/create/";
+    return BaseUrl + "/project/create";
 }
 
 QString Backend::EditProjectUrl()
 {
-    return BaseUrl + "/project/edit/";
+    return BaseUrl + "/project/edit";
 }
 
 QString Backend::SignInAccountUrl()
 {
-    return BaseUrl + "/account/enter";
+    return BaseUrl + "/user/enter";
 }
 
 QString Backend::SignUpAccountUrl()
 {
-    return BaseUrl + "/account/create";
+    return BaseUrl + "/user/create";
 }
 
 QString Backend::GetAccountUrl()
 {
-    return BaseUrl + "/account/get";
+    return BaseUrl + "/user/getByAccessToken";
 }
 
 QString Backend::GetTasksUrl()
 {
-    return BaseUrl + "/task/get";
+    return BaseUrl + "/task/all";
 }
 
 QString Backend::CreateTaskUrl()
@@ -102,109 +90,119 @@ QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status)
     status.response = QMetaEnum::fromType<QNetworkReply::NetworkError>().valueToKey(error);
     status.response += " :: " + root["status"].toString() + " >> " + root["description"].toString();
 
-    status.isSuccess = (error == QNetworkReply::NoError) && (root["status"] == "ok");
+    status.isSuccess = (error == QNetworkReply::NoError) && root["status"].toBool();
 
     return root;
 }
 
-void Backend::SignIn(const QString& username, const QString& password)
+void Backend::PostRequest(const QString &urlString, const QMap<QString, QString> &args)
 {
-    QUrl url = QUrl(SignInAccountUrl() + "?username=" + username + "&password=" + password);
+    QUrlQuery query;
+
+    for (auto& entry : args.toStdMap()) {
+        query.addQueryItem(entry.first, entry.second);
+    }
+
+    QUrl url = QUrl(urlString);
+    url.setQuery(query.toString(QUrl::FullyEncoded).toUtf8());
+    QNetworkRequest request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+    myNetworkManager->post(request, "");
+    qInfo() << request.url();
+}
+
+void Backend::GetRequest(const QString &urlString, const QMap<QString, QString> &args)
+{
+    QString fullUrl = urlString + "?";
+    for (auto& entry : args.toStdMap()) {
+        fullUrl += entry.first + "=" + entry.second + "&";
+    }
+    fullUrl.chop(1);
+    QUrl url = QUrl(fullUrl);
     myNetworkManager->get(QNetworkRequest(url));
     qInfo() << url;
+}
+
+void Backend::SignIn(const QString& username, const QString& password)
+{
+    GetRequest(SignInAccountUrl(), QMap<QString, QString> {
+                   { "screen_name", username },
+                   { "password", password }
+               });
 }
 
 void Backend::SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password)
 {
-    QUrl url = QUrl(SignUpAccountUrl() + "?full_name=" + fullName+ "&username=" + username + "&email=" + email + "&password=" + password);
-    myNetworkManager->get(QNetworkRequest(url));
-    qInfo() << url;
+    PostRequest(SignUpAccountUrl(), QMap<QString, QString> {
+                    { "full_name", fullName },
+                    { "screen_name", username },
+                    { "email", email },
+                    { "password", password }
+                });
 }
 
 void Backend::GetProjects()
 {
-    QUrl url = QUrl(GetProjectsUrl() + "?access_token=" + myToken);
-    myNetworkManager->get(QNetworkRequest(url));
-    qInfo() << url;
+    GetRequest(GetProjectsUrl(), QMap<QString, QString> {
+                  { "access_token", myToken }
+               });
 }
 
 void Backend::CreateProject(const QString &projectName)
 {
-    QUrl url = QUrl(CreateProjectUrl() + "?access_token=" + myToken + "&full_name=" + projectName);
-    myNetworkManager->get(QNetworkRequest(url));
-    qInfo() << url;
+    // TODO: photo
+    PostRequest(CreateProjectUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "full_name", projectName }
+                });
 }
 
 void Backend::EditProject(const ProjectInfo& projectInfo)
 {
-    QUrlQuery query;
-
-    query.addQueryItem("project_id", QString("%1").arg(projectInfo.projectId));
-    query.addQueryItem("access_token", myToken);
-    query.addQueryItem("fields", QString("{\"full_name\":\"%1\"}").arg(projectInfo.projectName));
-
-    QUrl url = QUrl(EditProjectUrl());
-    url.setQuery(query.toString(QUrl::FullyEncoded).toUtf8());
-    QNetworkRequest request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-
-    myNetworkManager->post(request, "");
-    qInfo() << request.url();
+    // TODO: photo
+    PostRequest(EditProjectUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "project_id", QString("%1").arg(projectInfo.projectId) },
+                    { "full_name", projectInfo.projectName }
+                });
 };
 
 void Backend::GetTasks(const ProjectInfo &projectInfo)
 {
-    QUrl url = QUrl(GetTasksUrl() + QString("?project_id=%1").arg(projectInfo.projectId));
-    myNetworkManager->get(QNetworkRequest(url));
-    qInfo() << url;
+    GetRequest(GetTasksUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "project_id", QString("%1").arg(projectInfo.projectId) }
+               });
 }
 
 void Backend::CreateTask(const TaskInfo &taskInfo)
 {
-    QUrlQuery query;
-    query.addQueryItem("project_id", QString("%1").arg(taskInfo.projectId));
-    query.addQueryItem("access_token", myToken);
-
-    // TODO: support story points
-    query.addQueryItem("story_points", QString("%1").arg(1));
-    query.addQueryItem("title", taskInfo.taskName);
-    query.addQueryItem("description", taskInfo.taskDescription);
-
-    QUrl url = QUrl(CreateTaskUrl());
-    url.setQuery(query.toString(QUrl::FullyEncoded).toUtf8());
-    QNetworkRequest request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-
-    myNetworkManager->post(request, "");
-    qInfo() << request.url();
+    PostRequest(CreateTaskUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "project_id", QString("%1").arg(taskInfo.projectId) },
+                    { "title", taskInfo.taskName },
+                    { "description", taskInfo.taskDescription }
+                });
 }
 
 void Backend::DeleteTask(const TaskInfo &taskInfo)
 {
-    QUrl url = QUrl(DeleteTaskUrl() + QString("?id=%1").arg(taskInfo.taskId));
-    myNetworkManager->get(QNetworkRequest(url));
-    qInfo() << url;
+    GetRequest(DeleteTaskUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "task_id", QString("%1").arg(taskInfo.taskId) }
+               });
 }
 
 void Backend::EditTask(const TaskInfo &taskInfo)
 {
-    QUrlQuery query;
-    query.addQueryItem("access_token", myToken);
-
-    // TODO: support story points
-    query.addQueryItem("story_points", QString("%1").arg(1));
-    query.addQueryItem("title", taskInfo.taskName);
-    query.addQueryItem("description", taskInfo.taskDescription);
-    query.addQueryItem("id", QString("%1").arg(taskInfo.taskId));
-
-    QUrl url = QUrl(EditTaskUrl());
-    url.setQuery(query.toString(QUrl::FullyEncoded).toUtf8());
-    QNetworkRequest request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-
-    myNetworkManager->post(request, "");
-    qInfo() << request.url();
-    //emit TasksLoaded(Status(true, ""), myProjectTasksDictionary[projectInfo]);
+    // TODO: other params
+    PostRequest(EditTaskUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "task_id", QString("%1").arg(taskInfo.taskId) },
+                    { "title", taskInfo.taskName },
+                    { "description", taskInfo.taskDescription }
+                });
 }
 
 UserInfo Backend::GetProfile()
@@ -214,9 +212,9 @@ UserInfo Backend::GetProfile()
 
 void Backend::UpdateProfile()
 {
-    QUrl url = QUrl(GetAccountUrl() + "?access_token=" + myToken);
-    myNetworkManager->get(QNetworkRequest(url));
-    qInfo() << url;
+    GetRequest(GetAccountUrl(), QMap<QString, QString> {
+                   { "access_token", myToken }
+               });
 }
 
 void Backend::OnResponse(QNetworkReply* reply)
@@ -224,7 +222,8 @@ void Backend::OnResponse(QNetworkReply* reply)
     Status status;
     QJsonObject root = GetRootFromReply(reply, status);
 
-    qInfo() << status.response;
+
+    qInfo() << status.isSuccess << " " << status.response;
 
     QString request = reply->request().url().toString();
     if (request.indexOf('?') == -1) {
@@ -237,14 +236,13 @@ void Backend::OnResponse(QNetworkReply* reply)
         QList<ProjectInfo> projects;
 
         if (status.isSuccess) {
-            for (QJsonValueRef it : root["data"].toArray()) {
+            for (QJsonValueRef it : root["projects"].toArray()) {
                 QJsonObject obj = it.toObject();
+                QJsonObject projectDescription = obj["project"].toObject();
 
-                QString projName = obj["full_name"].toString();
-                int id = obj["id"].toInt();
-                int projId = obj["project_id"].toInt();
+                projects.push_back(ProjectInfo(projectDescription["id"].toInt(), projectDescription["fullName"].toString()));
 
-                projects.push_back(ProjectInfo(id, projId, projName));
+                // TODO: process role description
             }
         }
 
@@ -261,32 +259,37 @@ void Backend::OnResponse(QNetworkReply* reply)
         emit ProjectEdited(status);
     } else if (pattern == SignInAccountUrl()) {
         if (status.isSuccess) {
-            myToken = root["data"].toObject()["access_token"].toString();
+            myToken = root["accessToken"].toString();
+            QJsonObject user = root["user"].toObject();
+            myUserInfo = UserInfo(user["screenName"].toString(), user["fullName"].toString(), user["email"].toString(), user["id"].toInt());
         }
 
         emit SignedIn(status);
     } else if (pattern == SignUpAccountUrl()) {
         if (status.isSuccess) {
-            myToken = root["data"].toObject()["access_token"].toString();
+            myToken = root["accessToken"].toString();
+            QJsonObject user = root["user"].toObject();
+            myUserInfo = UserInfo(user["screenName"].toString(), user["fullName"].toString(), user["email"].toString(), user["id"].toInt());
         }
 
         emit SignedUp(status);
     } else if (pattern == GetAccountUrl()) {
         if (status.isSuccess) {
-            QJsonObject data = root["data"].toObject();
-            myUserInfo = UserInfo(data["username"].toString(), data["full_name"].toString(), data["email"].toString());
+            QJsonObject user = root["user"].toObject();
+            myUserInfo = UserInfo(user["screenName"].toString(), user["fullName"].toString(), user["email"].toString(), user["id"].toInt());
         }
 
         emit ProfileUpdated(status);
     } else if (pattern == GetTasksUrl()) {
         QList<TaskInfo> tasks;
-        for (QJsonValueRef it : root["data"].toArray()) {
+        // TODO: process all information
+        for (QJsonValueRef it : root["tasks"].toArray()) {
             QJsonObject obj = it.toObject();
 
             QString taskTitle = obj["title"].toString();
             QString taskDesc = obj["description"].toString();
             int id = obj["id"].toInt();
-            int projId = obj["project_id"].toInt();
+            int projId = obj["project"].toObject()["id"].toInt();
 
             tasks.push_back(TaskInfo(id, projId, taskTitle, taskDesc));
         }
@@ -298,36 +301,10 @@ void Backend::OnResponse(QNetworkReply* reply)
         emit TaskEdited(status);
     } else if (pattern == DeleteTaskUrl()) {
         emit TaskDeleted(status);
-    } else if (pattern == GetPropertiesUrl()) {
-        propIdToCaption.clear();
-        propIdToVals.clear();
-        valIdToVal.clear();
-
-        for (QJsonValueRef prop : root["data"].toArray()) {
-            QJsonObject obj = prop.toObject();
-
-            QString caption = obj["caption"].toString();
-            int propId = obj["property_id"].toInt();
-
-            QList<PropertyValue> values;
-
-            for (QJsonValueRef val : obj["property_value"].toArray()) {
-                QJsonObject valObj = val.toObject();
-                int valId = valObj["id"].toInt();
-                QString title = valObj["title"].toString();
-
-                PropertyValue propVal(valId, propId, title);
-                values.push_back(propVal);
-                valIdToVal[valId] = propVal;
-            }
-
-            propIdToCaption[propId] = caption;
-            propIdToVals[propId] = values;
-        }
     }
 }
 
-ProjectInfo::ProjectInfo(int id, int projectId, const QString& projectName) : id(id), projectId(projectId), projectName(projectName)
+ProjectInfo::ProjectInfo(int projectId, const QString& projectName) : projectId(projectId), projectName(projectName)
 {
 }
 
@@ -337,8 +314,8 @@ TaskInfo::TaskInfo(int taskId, int projectId, const QString &taskName, const QSt
 {
 }
 
-UserInfo::UserInfo(const QString &username, const QString &fullName, const QString &email)
-    : myUsername(username), myFullName(fullName), myEmail(email)
+UserInfo::UserInfo(const QString &username, const QString &fullName, const QString &email, int id)
+    : myUsername(username), myFullName(fullName), myEmail(email), myId(id)
 {
 }
 
