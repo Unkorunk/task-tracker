@@ -15,6 +15,8 @@ public:
     explicit CreateProjectDialog(QWidget *parent = nullptr);
     ~CreateProjectDialog();
 
+    void clear();
+
 signals:
     void createProject(QString& projectName);
 

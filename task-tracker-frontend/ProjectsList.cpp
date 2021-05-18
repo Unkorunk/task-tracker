@@ -6,9 +6,13 @@
 
 ProjectsList::ProjectsList(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProjectsList)
+    ui(new Ui::ProjectsList),
+    dialog(std::make_unique<CreateProjectDialog>(this))
 {
     ui->setupUi(this);
+
+    dialog->setModal(true);
+    dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
 
     connect(ui->addProjectBtn, &QAbstractButton::clicked, this, &ProjectsList::OnAddProjectBtnClicked);
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
@@ -45,22 +49,17 @@ void ProjectsList::SetProjects(const QList<ProjectInfo>& list)
 
 void  ProjectsList::OnProjectCreated(QString& projectName)
 {
-    qInfo() << "add project name to list";
-    qInfo() << projectName;
     emit AddProjectClicked(projectName);
 }
 
 void ProjectsList::OnAddProjectBtnClicked()
 {
-    dialog = std::make_unique<CreateProjectDialog>(this);
-    dialog->setModal(true);
-    dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+    dialog->clear();
     dialog->show();
 }
 
 void ProjectsList::OnItemClicked(QListWidgetItem* item)
 {
     auto index = ui->listWidget->indexFromItem(item);
-    qInfo() << index.row();
     emit ProjectSelected(myProjects[index.row()]);
 }

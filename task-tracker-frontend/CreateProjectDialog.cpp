@@ -14,7 +14,6 @@ CreateProjectDialog::CreateProjectDialog(QWidget *parent) :
 
     connect(ui->createBtn, &QPushButton::clicked, this, &CreateProjectDialog::onCreateProjectBtnClicked);
     connect(ui->cancelBtn, &QPushButton::clicked, this, &CreateProjectDialog::onCancelBtnClicked);
-    connect(this, SIGNAL(createProject(QString&)), parent, SLOT(OnProjectCreated(QString&)));
 }
 
 CreateProjectDialog::~CreateProjectDialog()
@@ -22,6 +21,10 @@ CreateProjectDialog::~CreateProjectDialog()
     delete ui;
 }
 
+void CreateProjectDialog::clear()
+{
+    ui->projectName->clear();
+}
 
 void CreateProjectDialog::onCreateProjectBtnClicked()
 {
