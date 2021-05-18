@@ -89,6 +89,8 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/LoadingBar.h
   task-tracker-frontend/LoadingBar.ui
 
+  icons.qrc
+
   ${TS_FILES_FRONTEND}
 )
 
