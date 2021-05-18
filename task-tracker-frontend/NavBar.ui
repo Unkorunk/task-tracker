@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>551</width>
-    <height>90</height>
+    <height>88</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -34,15 +34,28 @@
   <property name="windowTitle">
    <string>GroupBox</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">border: none;</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>0</number>
+      <number>17</number>
      </property>
      <property name="sizeConstraint">
       <enum>QLayout::SetMaximumSize</enum>
      </property>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>C:/Users/kvidi/Downloads/logo.png</pixmap>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="projectsBtn">
        <property name="sizePolicy">
@@ -50,6 +63,9 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border:none;</string>
        </property>
        <property name="text">
         <string>Projects</string>
@@ -71,16 +87,38 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="LeftNavBar">
+       <property name="spacing">
+        <number>28</number>
+       </property>
        <item>
         <widget class="QPushButton" name="notificationBtn">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>50</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border:none;</string>
+         </property>
          <property name="text">
-          <string>notifications</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>C:/Users/kvidi/Downloads/notification.png</normaloff>C:/Users/kvidi/Downloads/notification.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>50</width>
+           <height>50</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -91,6 +129,9 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border:none;</string>
          </property>
          <property name="text">
           <string>Profile</string>
@@ -104,6 +145,9 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border:none;</string>
          </property>
          <property name="text">
           <string>Log out</string>
