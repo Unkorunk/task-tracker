@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStack>
 #include "Backend.h"
 
 QT_BEGIN_NAMESPACE
@@ -46,9 +47,13 @@ private slots:
 
     void OnTransition(MainWindow::Transition transition);
 
+    void OnBackButtonClicked();
+
 private:
     Ui::MainWindow *ui;
 
     QMainWindow& myAuthWindow;
+
+    QStack<MainWindow::Transition> myTransitionsHistory;
 };
 #endif // MAINWINDOW_H
