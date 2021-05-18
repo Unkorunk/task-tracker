@@ -14,6 +14,8 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
 
     connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnTransition);
     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);
+
+    connect(ui->navBar, &NavBar::BackButtonClicked, this, &MainWindow::OnBackButtonClicked);
 }
 
 MainWindow::~MainWindow()
@@ -71,7 +73,19 @@ void MainWindow::OnTransition(MainWindow::Transition transition)
         break;
     }
 
+    myTransitionsHistory.push((Transition)ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex((int)transition);
+}
+
+void MainWindow::OnBackButtonClicked()
+{
+    if (myTransitionsHistory.empty()) {
+        return;
+    }
+
+    Transition prevTransition = myTransitionsHistory.pop();
+    OnTransition(prevTransition);
+    myTransitionsHistory.pop();
 }
 
 void MainWindow::OnLogout()

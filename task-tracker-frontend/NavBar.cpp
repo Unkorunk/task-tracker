@@ -10,6 +10,7 @@ NavBar::NavBar(QWidget *parent) :
     connect(ui->notificationBtn, SIGNAL(clicked()), this, SLOT(OnNotificationBtnClicked()));
     connect(ui->profileBtn, SIGNAL(clicked()), this, SLOT(OnProfileBtnClicked()));
     connect(ui->logOutBtn, SIGNAL(clicked()), this, SLOT(OnLogoutBtnClicked()));
+    connect(ui->backButton, &QAbstractButton::clicked, this, &NavBar::OnBackBtnClicked);
 }
 
 NavBar::~NavBar()
@@ -35,4 +36,9 @@ void NavBar::OnProfileBtnClicked()
 void NavBar::OnLogoutBtnClicked()
 {
     emit Logout();
+}
+
+void NavBar::OnBackBtnClicked()
+{
+    emit BackButtonClicked();
 }

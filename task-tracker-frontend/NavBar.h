@@ -19,12 +19,14 @@ public:
 signals:
     void NavButtonClicked(MainWindow::Transition transition);
     void Logout();
+    void BackButtonClicked();
 
 private slots:
     void OnProjectBtnClicked();
     void OnNotificationBtnClicked();
     void OnProfileBtnClicked();
     void OnLogoutBtnClicked();
+    void OnBackBtnClicked();
 
 private:
     Ui::NavBar *ui;
