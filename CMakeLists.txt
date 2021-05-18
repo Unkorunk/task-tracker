@@ -18,6 +18,9 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Network REQUIRED)
 set(TS_FILES_FRONTEND task-tracker-frontend/task-tracker-frontend_ru_RU.ts)
 
 set(PROJECT_SOURCES_FRONTEND
+  QtWaitingSpinner/waitingspinnerwidget.cpp
+  QtWaitingSpinner/waitingspinnerwidget.h
+
   task-tracker-frontend/main.cpp
   task-tracker-frontend/MainWindow.cpp
   task-tracker-frontend/MainWindow.h
@@ -81,6 +84,10 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/TaskItemWidget.cpp
   task-tracker-frontend/TaskItemWidget.h
   task-tracker-frontend/TaskItemWidget.ui
+
+  task-tracker-frontend/LoadingBar.cpp
+  task-tracker-frontend/LoadingBar.h
+  task-tracker-frontend/LoadingBar.ui
 
   ${TS_FILES_FRONTEND}
 )

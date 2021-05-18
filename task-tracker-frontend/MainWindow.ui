@@ -43,7 +43,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>0</number>
       </property>
       <widget class="GreetingsWidget" name="page">
        <property name="sizePolicy">
@@ -61,10 +61,19 @@
       <widget class="IssueWidget" name="page_7"/>
      </widget>
     </item>
+    <item>
+     <widget class="LoadingBar" name="loadingBar" native="true"/>
+    </item>
    </layout>
   </widget>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>LoadingBar</class>
+   <extends>QWidget</extends>
+   <header>LoadingBar.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>NavBar</class>
    <extends>QGroupBox</extends>

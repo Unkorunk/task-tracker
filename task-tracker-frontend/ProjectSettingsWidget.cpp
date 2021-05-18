@@ -1,6 +1,7 @@
 #include "ProjectSettingsWidget.h"
 #include "ui_ProjectSettingsWidget.h"
 #include "Backend.h"
+#include "MainWindow.h"
 
 
 ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
@@ -25,6 +26,7 @@ void ProjectSettingsWidget::OnSaveClicked() {
             return;
         }
 
+        MainWindow::Instance->StartLoading();
         ProjectInfo newProjectInfo(myProject.projectId, ui->editProjectName->text());
         Backend::Instance.EditProject(newProjectInfo);
         LockUi();
@@ -42,6 +44,7 @@ void ProjectSettingsWidget::OnCancelClicked() {
 void ProjectSettingsWidget::OnProjectEdited(Status status)
 {
     UnlockUi();
+    MainWindow::Instance->StopLoading();
     if (status.isSuccess) {
        myProject.projectName = ui->editProjectName->text();
        ToReadonlyMode();
