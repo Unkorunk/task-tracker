@@ -12,6 +12,8 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->listWidget->clear();
+
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 
     connect(ui->CreateTaskBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnCreateTaskBtnClicked);
