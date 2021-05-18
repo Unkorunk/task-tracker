@@ -119,21 +119,26 @@ an account?</source>
     </message>
     <message>
         <location filename="NavBar.ui" line="55"/>
+        <source>Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="NavBar.ui" line="68"/>
         <source>Projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="83"/>
+        <location filename="NavBar.ui" line="96"/>
         <source>notifications</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="96"/>
+        <location filename="NavBar.ui" line="109"/>
         <source>Profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="109"/>
+        <location filename="NavBar.ui" line="122"/>
         <source>Log out</source>
         <translation type="unfinished"></translation>
     </message>
