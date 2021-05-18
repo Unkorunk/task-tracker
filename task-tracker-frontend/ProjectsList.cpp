@@ -2,6 +2,7 @@
 #include "ui_ProjectsList.h"
 #include "ProjectItemWidget.h"
 #include <QDialog>
+#include <QGraphicsDropShadowEffect>
 
 ProjectsList::ProjectsList(QWidget *parent) :
     QWidget(parent),
@@ -9,8 +10,15 @@ ProjectsList::ProjectsList(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    dialog = new CreateProjectDialog(this);
+
+    dialog->setModal(true);
+    dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+
     connect(ui->addProjectBtn, &QAbstractButton::clicked, this, &ProjectsList::OnAddProjectBtnClicked);
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
+
+    connect(dialog, SIGNAL(createProject(QString&)), this, SLOT(OnProjectCreated(QString&)));
 }
 
 ProjectsList::~ProjectsList()
@@ -40,27 +48,19 @@ void ProjectsList::SetProjects(const QList<ProjectInfo>& list)
     }
 }
 
+void  ProjectsList::OnProjectCreated(QString& projectName)
+{
+    emit AddProjectClicked(projectName);
+}
+
 void ProjectsList::OnAddProjectBtnClicked()
 {
-//    model->insertRow(model->rowCount());
-//    QModelIndex idx = model->index(model->rowCount() - 1);
-//    model->setData(idx, "testsss");
-
-//    if (myDialog.get() != nullptr && myDialog->isVisible()) {
-//        myDialog->close();
-//    }
-
-//    myDialog = std::make_unique<QDialog>(this->parent());
-//    QVBoxLayout dialogLayout;
-//    dialogLayout.addItem(new QTextBlock());
-
-//    myDialog->setLayout()
-    emit AddProjectClicked(QString("NewProject%1").arg(ui->listWidget->count()));
+    dialog->clear();
+    dialog->show();
 }
 
 void ProjectsList::OnItemClicked(QListWidgetItem* item)
 {
     auto index = ui->listWidget->indexFromItem(item);
-    qInfo() << index.row();
     emit ProjectSelected(myProjects[index.row()]);
 }
