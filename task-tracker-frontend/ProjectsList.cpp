@@ -6,10 +6,11 @@
 
 ProjectsList::ProjectsList(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProjectsList),
-    dialog(std::make_unique<CreateProjectDialog>(this))
+    ui(new Ui::ProjectsList)
 {
     ui->setupUi(this);
+
+    dialog = new CreateProjectDialog(this);
 
     dialog->setModal(true);
     dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
@@ -17,7 +18,7 @@ ProjectsList::ProjectsList(QWidget *parent) :
     connect(ui->addProjectBtn, &QAbstractButton::clicked, this, &ProjectsList::OnAddProjectBtnClicked);
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 
-    connect(dialog.get(), SIGNAL(createProject(QString&)), this, SLOT(OnProjectCreated(QString&)));
+    connect(dialog, SIGNAL(createProject(QString&)), this, SLOT(OnProjectCreated(QString&)));
 }
 
 ProjectsList::~ProjectsList()

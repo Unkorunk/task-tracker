@@ -41,9 +41,7 @@ private:
 
     QList<ProjectInfo> myProjects;
 
-    std::unique_ptr<QDialog> myDialog;
-
-    std::unique_ptr<CreateProjectDialog> dialog;
+    CreateProjectDialog* dialog;
 };
 
 #endif // PROJECTSLIST_H
