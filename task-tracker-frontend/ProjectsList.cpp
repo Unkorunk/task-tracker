@@ -47,8 +47,7 @@ void  ProjectsList::OnProjectCreated(QString& projectName)
 {
     qInfo() << "add project name to list";
     qInfo() << projectName;
- //   emit AddProjectClicked(projectName);
-
+    emit AddProjectClicked(projectName);
 }
 
 void ProjectsList::OnAddProjectBtnClicked()

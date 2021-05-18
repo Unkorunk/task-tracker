@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(task-tracker LANGUAGES CXX)
 
-add_subdirectory(qthttpserver)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -20,6 +18,9 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Network REQUIRED)
 set(TS_FILES_FRONTEND task-tracker-frontend/task-tracker-frontend_ru_RU.ts)
 
 set(PROJECT_SOURCES_FRONTEND
+  QtWaitingSpinner/waitingspinnerwidget.cpp
+  QtWaitingSpinner/waitingspinnerwidget.h
+
   task-tracker-frontend/main.cpp
   task-tracker-frontend/MainWindow.cpp
   task-tracker-frontend/MainWindow.h
@@ -88,24 +89,16 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/CreateProjectDialog.h
   task-tracker-frontend/CreateProjectDialog.ui
 
-  ${TS_FILES_FRONTEND}
-)
+  task-tracker-frontend/LoadingBar.cpp
+  task-tracker-frontend/LoadingBar.h
+  task-tracker-frontend/LoadingBar.ui
 
-set(PROJECT_SOURCES_BACKEND
-  task-tracker-backend/main.cpp
-  task-tracker-backend/Project.hpp
-  task-tracker-backend/Account.hpp
-  task-tracker-backend/Task.hpp
-  task-tracker-backend/TaskComment.hpp
+  ${TS_FILES_FRONTEND}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(task-tracker-frontend
     ${PROJECT_SOURCES_FRONTEND}
-  )
-
-  qt_add_executable(task-tracker-backend
-    ${PROJECT_SOURCES_BACKEND}
   )
 
   qt_create_translation(QM_FILES
@@ -117,10 +110,6 @@ else()
     ${PROJECT_SOURCES_FRONTEND}
   )
 
-  add_executable(task-tracker-backend
-    ${PROJECT_SOURCES_BACKEND}
-  )
-
   qt5_create_translation(QM_FILES
     ${CMAKE_SOURCE_DIR}/task-tracker-frontend
     ${TS_FILES_FRONTEND}
@@ -129,4 +118,3 @@ endif()
 
 target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Network)
-target_link_libraries(task-tracker-backend PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt::HttpServer)

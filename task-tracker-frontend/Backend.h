@@ -19,11 +19,30 @@ public:
 
 class ProjectInfo {
 public:
-    ProjectInfo(int id, int projectId, const QString& projectName);
+    ProjectInfo(int projectId, const QString& projectName);
 
-    int id;
     int projectId;
     QString projectName;
+};
+
+class PropertyValue {
+public:
+    PropertyValue();
+
+    PropertyValue(int valueId, int propId, QString title);
+
+    int propertyValueId;
+    int propertyId;
+    QString valueTitle;
+};
+
+class PropertyInfo {
+public:
+    QString caption;
+    int propertyId;
+
+    QList<PropertyValue> values;
+    int selectedId;
 };
 
 class TaskInfo {
@@ -36,11 +55,12 @@ public:
     QString taskName;
     QString taskDescription;
     QVector<QString> team;
+    QVector<PropertyInfo> properties;
 };
 
 class UserInfo {
 public:
-    UserInfo(const QString& username, const QString& fullName, const QString& email);
+    UserInfo(const QString& username, const QString& fullName, const QString& email, int id);
 
     QString GetUsername();
     QString GetFullName();
@@ -50,6 +70,7 @@ private:
     QString myUsername;
     QString myFullName;
     QString myEmail;
+    int myId;
 };
 
 inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
@@ -79,6 +100,8 @@ public:
 
     void CreateTask(const TaskInfo& taskInfo);
 
+    void DeleteTask(const TaskInfo& taskInfo);
+
     void EditTask(const TaskInfo& taskInfo);
 
     UserInfo GetProfile();
@@ -96,11 +119,13 @@ signals:
 
     void ProjectEdited(Status status);
 
-    void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
-
     void ProfileUpdated(Status status);
 
+    void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
+
     void TaskEdited(Status status);
+
+    void TaskDeleted(Status status);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -121,8 +146,17 @@ private:
     QString GetTasksUrl();
     QString CreateTaskUrl();
     QString EditTaskUrl();
+    QString DeleteTaskUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
+
+    void PostRequest(const QString& urlString, const QMap<QString, QString>& args);
+
+    void GetRequest(const QString& urlString, const QMap<QString, QString>& args);
+
+    QMap<int, PropertyValue> valIdToVal;
+    QMap<int, QList<PropertyValue>> propIdToVals;
+    QMap<int, QString> propIdToCaption;
 
     QString myToken;
     UserInfo myUserInfo;

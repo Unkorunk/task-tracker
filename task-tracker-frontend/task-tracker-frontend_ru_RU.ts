@@ -9,22 +9,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="97"/>
+        <location filename="AuthorizationWidget.ui" line="100"/>
         <source>Username</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="144"/>
+        <location filename="AuthorizationWidget.ui" line="153"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="202"/>
+        <location filename="AuthorizationWidget.ui" line="211"/>
         <source>Log in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="233"/>
+        <location filename="AuthorizationWidget.ui" line="242"/>
         <source>Don&apos;t have 
 an account?</source>
         <translation type="unfinished"></translation>
@@ -74,8 +74,31 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="141"/>
+        <location filename="IssueWidget.ui" line="125"/>
         <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="IssueWidget.ui" line="132"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="IssueWidget.ui" line="188"/>
+        <source>Status:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LoadingBar</name>
+    <message>
+        <location filename="LoadingBar.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LoadingBar.ui" line="58"/>
+        <source>Waiting for response...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -272,37 +295,37 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="97"/>
+        <location filename="RegistrationWidget.ui" line="100"/>
         <source>Full name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="144"/>
+        <location filename="RegistrationWidget.ui" line="150"/>
         <source>Login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="191"/>
+        <location filename="RegistrationWidget.ui" line="200"/>
         <source>Email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="238"/>
+        <location filename="RegistrationWidget.ui" line="250"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="288"/>
+        <location filename="RegistrationWidget.ui" line="300"/>
         <source>Repeat password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="343"/>
+        <location filename="RegistrationWidget.ui" line="355"/>
         <source>Sign up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="374"/>
+        <location filename="RegistrationWidget.ui" line="386"/>
         <source>Already have 
 an account?</source>
         <translation type="unfinished"></translation>

@@ -18,6 +18,10 @@ public:
     MainWindow(QMainWindow& authWindow, QWidget *parent = nullptr);
     ~MainWindow();
 
+    void StartLoading();
+
+    void StopLoading();
+
     enum class Transition {
         Greetings = 0,
         Profile = 1,
@@ -31,15 +35,16 @@ public:
 public slots:
     void OnProjectTransition(const ProjectInfo& projectInfo);
 
-    void OnIssueTransition(const TaskInfo& taskInfo);
+    void OnIssueTransition(const ProjectInfo& project, const TaskInfo& taskInfo);
 
     void OnProjectSettingsTransition(const ProjectInfo& projectInfo);
 
     void OnProjectStatisticsTransition(const ProjectInfo& projectInfo);
 
 private slots:
-    void OnTransition(MainWindow::Transition transition);
     void OnLogout();
+
+    void OnTransition(MainWindow::Transition transition);
 
 private:
     Ui::MainWindow *ui;

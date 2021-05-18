@@ -19,9 +19,8 @@ RegistrationWidget::~RegistrationWidget()
 }
 
 void RegistrationWidget::OnSignUpBtnClicked() {
-
-    QString username = ui->usernameField->toPlainText();
-    QString email = ui->emailField->toPlainText();
+    QString username = ui->usernameField->text();
+    QString email = ui->emailField->text();
     QString password = ui->passwordField->text();
 
     if (password != ui->repPasswordField->text() || password.length() < 6 || username.length() == 0 || email.length() == 0) {
@@ -35,16 +34,22 @@ void RegistrationWidget::OnSignUpBtnClicked() {
     ui->passwordField->setReadOnly(true);
     ui->repPasswordField->setReadOnly(true);
 
-
-    Backend::Instance.SignUp(ui->fullNameField->toPlainText(), username, email, password);
+    ui->loadingBar->StartLoading();
+    Backend::Instance.SignUp(ui->fullNameField->text(), username, email, password);
 }
 
 void RegistrationWidget::OnMoveToLogInBtnClicked() {
+    ui->fullNameField->setText("");
+    ui->emailField->setText("");
+    ui->usernameField->setText("");
+    ui->passwordField->setText("");
+    ui->repPasswordField->setText("");
     emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);
 }
 
 void RegistrationWidget::OnSignup(Status status)
 {
+    ui->loadingBar->StopLoading();
     ui->fullNameField->setReadOnly(false);
     ui->emailField->setReadOnly(false);
     ui->usernameField->setReadOnly(false);
@@ -52,9 +57,13 @@ void RegistrationWidget::OnSignup(Status status)
     ui->repPasswordField->setReadOnly(false);
 
     if (status.isSuccess) {
-        // TODO: instant login
         emit SignedUp();
         //emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);
+        ui->fullNameField->setText("");
+        ui->emailField->setText("");
+        ui->usernameField->setText("");
+        ui->passwordField->setText("");
+        ui->repPasswordField->setText("");
 
         return;
     }

@@ -24,7 +24,7 @@ public:
     void SetupProject(const ProjectInfo& project);
 
 signals:
-    void TaskSelected(const TaskInfo& taskInfo);
+    void TaskSelected(const ProjectInfo& project, const TaskInfo& taskInfo);
 
     void ProjectSettingsClicked(const ProjectInfo& projectInfo);
 

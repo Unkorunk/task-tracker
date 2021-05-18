@@ -21,6 +21,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::StartLoading()
+{
+    ui->loadingBar->StartLoading();
+}
+
+void MainWindow::StopLoading()
+{
+    ui->loadingBar->StopLoading();
+}
+
 void MainWindow::OnProjectTransition(const ProjectInfo &projectInfo)
 {
     ProjectWidget* widget = dynamic_cast<ProjectWidget*>(ui->stackedWidget->widget(int(Transition::Project)));
@@ -28,10 +38,10 @@ void MainWindow::OnProjectTransition(const ProjectInfo &projectInfo)
     OnTransition(Transition::Project);
 }
 
-void MainWindow::OnIssueTransition(const TaskInfo &taskInfo)
+void MainWindow::OnIssueTransition(const ProjectInfo& project, const TaskInfo &taskInfo)
 {
     IssueWidget* widget = dynamic_cast<IssueWidget*>(ui->stackedWidget->widget(int(Transition::Issue)));
-    widget->SetupTask(taskInfo);
+    widget->SetupTask(project, taskInfo);
     OnTransition(Transition::Issue);
 }
 
@@ -54,6 +64,7 @@ void MainWindow::OnTransition(MainWindow::Transition transition)
     switch (transition) {
     case Transition::Greetings:
         Backend::Instance.GetProjects();
+        StartLoading();
         break;
     case Transition::Notifications:
     case Transition::Profile:
