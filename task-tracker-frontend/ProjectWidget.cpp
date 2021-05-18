@@ -41,19 +41,7 @@ ProjectWidget::~ProjectWidget()
 void ProjectWidget::OnCreateTaskBtnClicked()
 {
     Backend::Instance.CreateTask(TaskInfo(0, myProject.projectId, QString("NewTask"), "Default task description"));
-
-//    if (myDialog.get() != nullptr && myDialog->isVisible()) {
-//        myDialog->close();
-//    }
-
-//    myDialog = std::make_unique<QDialog>(this->parent());
-//    QVBoxLayout dialogLayout;
-//    dialogLayout.addItem(new QTextBlock());
-
-//    myDialog->setLayout()
-    //   emit CreateTaskClicked(QString("NewTask%1").arg(model->rowCount()));
-
-
+    MainWindow::Instance->StartLoading();
 }
 
 void ProjectWidget::OnProjectSettingsBtnClicked()
@@ -77,6 +65,7 @@ void ProjectWidget::OnItemClicked(QListWidgetItem* item)
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
 {
+    MainWindow::Instance->StopLoading();
     ui->listWidget->clear();
     for (auto& task : tasks) {
         //TODO: change
@@ -94,6 +83,7 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
 
 void ProjectWidget::OnTaskUpdate(Status status)
 {
+    MainWindow::Instance->StopLoading();
     if (status.isSuccess) {
         Backend::Instance.GetTasks(myProject);
     }
@@ -108,5 +98,6 @@ void ProjectWidget::SetupProject(const ProjectInfo &project)
 
     ui->ProjectNameLabel->setText(myProject.projectName);
 
+    MainWindow::Instance->StartLoading();
     Backend::Instance.GetTasks(myProject);
 }

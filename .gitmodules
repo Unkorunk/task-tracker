@@ -1,3 +1,6 @@
 [submodule "qthttpserver"]
 	path = qthttpserver
 	url = https://codereview.qt-project.org/qt-extensions/qthttpserver
+[submodule "QtWaitingSpinner"]
+	path = QtWaitingSpinner
+	url = https://github.com/snowwlex/QtWaitingSpinner.git

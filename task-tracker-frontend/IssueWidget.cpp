@@ -41,18 +41,21 @@ void IssueWidget::OnSaveClicked(){
     }
 
     LockUi();
+    MainWindow::Instance->StartLoading();
     Backend::Instance.EditTask(TaskInfo(task_info.taskId, task_info.projectId, ui->taskNameEdit->text(), ui->descriptionEdit->toPlainText()));
 }
 
 void IssueWidget::OnDeleteClicked()
 {
     LockUi();
+    MainWindow::Instance->StartLoading();
     Backend::Instance.DeleteTask(task_info);
 }
 
 void IssueWidget::OnTaskUpdated(Status status)
 {
     UnlockUi();
+    MainWindow::Instance->StopLoading();
     if (status.isSuccess) {
         //save
         task_info.taskDescription = this->ui->descriptionEdit->toPlainText();
@@ -67,6 +70,7 @@ void IssueWidget::OnTaskUpdated(Status status)
 void IssueWidget::OnTaskDeleted(Status status)
 {
     UnlockUi();
+    MainWindow::Instance->StopLoading();
     if (status.isSuccess) {
         MainWindow::Instance->OnProjectTransition(project_info);
     }

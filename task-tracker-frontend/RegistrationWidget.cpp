@@ -34,7 +34,7 @@ void RegistrationWidget::OnSignUpBtnClicked() {
     ui->passwordField->setReadOnly(true);
     ui->repPasswordField->setReadOnly(true);
 
-
+    ui->loadingBar->StartLoading();
     Backend::Instance.SignUp(ui->fullNameField->text(), username, email, password);
 }
 
@@ -49,6 +49,7 @@ void RegistrationWidget::OnMoveToLogInBtnClicked() {
 
 void RegistrationWidget::OnSignup(Status status)
 {
+    ui->loadingBar->StopLoading();
     ui->fullNameField->setReadOnly(false);
     ui->emailField->setReadOnly(false);
     ui->usernameField->setReadOnly(false);

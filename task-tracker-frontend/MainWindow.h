@@ -18,6 +18,10 @@ public:
     MainWindow(QMainWindow& authWindow, QWidget *parent = nullptr);
     ~MainWindow();
 
+    void StartLoading();
+
+    void StopLoading();
+
     enum class Transition {
         Greetings = 0,
         Profile = 1,

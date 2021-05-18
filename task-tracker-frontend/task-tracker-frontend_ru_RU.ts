@@ -9,22 +9,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="97"/>
+        <location filename="AuthorizationWidget.ui" line="100"/>
         <source>Username</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="150"/>
+        <location filename="AuthorizationWidget.ui" line="153"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="208"/>
+        <location filename="AuthorizationWidget.ui" line="211"/>
         <source>Log in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="239"/>
+        <location filename="AuthorizationWidget.ui" line="242"/>
         <source>Don&apos;t have 
 an account?</source>
         <translation type="unfinished"></translation>
@@ -86,6 +86,19 @@ an account?</source>
     <message>
         <location filename="IssueWidget.ui" line="188"/>
         <source>Status:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LoadingBar</name>
+    <message>
+        <location filename="LoadingBar.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LoadingBar.ui" line="58"/>
+        <source>Waiting for response...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -282,37 +295,37 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="97"/>
+        <location filename="RegistrationWidget.ui" line="100"/>
         <source>Full name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="147"/>
+        <location filename="RegistrationWidget.ui" line="150"/>
         <source>Login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="197"/>
+        <location filename="RegistrationWidget.ui" line="200"/>
         <source>Email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="247"/>
+        <location filename="RegistrationWidget.ui" line="250"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="297"/>
+        <location filename="RegistrationWidget.ui" line="300"/>
         <source>Repeat password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="352"/>
+        <location filename="RegistrationWidget.ui" line="355"/>
         <source>Sign up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="383"/>
+        <location filename="RegistrationWidget.ui" line="386"/>
         <source>Already have 
 an account?</source>
         <translation type="unfinished"></translation>
