@@ -39,6 +39,39 @@ an account?</source>
     </message>
 </context>
 <context>
+    <name>CreateProjectDialog</name>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="20"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="84"/>
+        <source>Create project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="124"/>
+        <source>Enter project name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="134"/>
+        <source>Personal project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="192"/>
+        <source>Create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="239"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>GreetingsWidget</name>
     <message>
         <location filename="GreetingsWidget.ui" line="20"/>

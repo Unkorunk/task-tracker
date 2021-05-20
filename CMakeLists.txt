@@ -74,6 +74,9 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/ProjectsList.h
   task-tracker-frontend/ProjectsList.ui
 
+  task-tracker-frontend/DataClasses.cpp
+  task-tracker-frontend/DataClasses.h
+
   task-tracker-frontend/Backend.cpp
   task-tracker-frontend/Backend.h
 

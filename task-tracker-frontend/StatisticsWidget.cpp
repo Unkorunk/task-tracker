@@ -16,5 +16,5 @@ StatisticsWidget::~StatisticsWidget()
 
 void StatisticsWidget::SetupProject(const ProjectInfo &project)
 {
-    ui->label->setText(project.projectName);
+    ui->label->setText(project.GetTitle());
 }

@@ -27,7 +27,7 @@ void ProjectSettingsWidget::OnSaveClicked() {
         }
 
         MainWindow::Instance->StartLoading();
-        ProjectInfo newProjectInfo(myProject.projectId, ui->editProjectName->text());
+        ProjectInfo newProjectInfo(myProject.GetId(), ui->editProjectName->text());
         Backend::Instance.EditProject(newProjectInfo);
         LockUi();
     } else {
@@ -37,7 +37,7 @@ void ProjectSettingsWidget::OnSaveClicked() {
 }
 
 void ProjectSettingsWidget::OnCancelClicked() {
-    ui->editProjectName->setText(myProject.projectName);
+    ui->editProjectName->setText(myProject.GetTitle());
     ToReadonlyMode();
 }
 
@@ -46,7 +46,7 @@ void ProjectSettingsWidget::OnProjectEdited(Status status)
     UnlockUi();
     MainWindow::Instance->StopLoading();
     if (status.isSuccess) {
-       myProject.projectName = ui->editProjectName->text();
+       myProject.SetTitle(ui->editProjectName->text());
        ToReadonlyMode();
     } else {
         // TODO: Handle errors
@@ -62,7 +62,7 @@ ProjectSettingsWidget::~ProjectSettingsWidget()
 void ProjectSettingsWidget::SetupProject(const ProjectInfo &project)
 {
     myProject = project;
-    ui->editProjectName->setText(project.projectName);
+    ui->editProjectName->setText(project.GetTitle());
 
     UnlockUi();
     ToReadonlyMode();

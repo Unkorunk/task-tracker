@@ -5,7 +5,7 @@
 IssueWidget::IssueWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::IssueWidget),
-    task_info(-1, -1, "Task name", "Task description"),
+    task_info(-1, ProjectInfo(-1, ""), "", "", std::optional<UserInfo>(), QDateTime::currentDateTime(), 0),
     project_info(-1, "")
 {
     this->ui->setupUi(this);
@@ -27,8 +27,8 @@ void IssueWidget::OnEditClicked(){
     if (this->edited){
         // Cancel btn
         ToReadOnlyMode();
-        this->ui->taskNameEdit->setText(task_info.taskName);
-        this->ui->descriptionEdit->setText(task_info.taskDescription);
+        this->ui->taskNameEdit->setText(task_info.GetTitle());
+        this->ui->descriptionEdit->setText(task_info.GetDescription());
     } else {
         // Edit btn
         ToEditMode();
@@ -42,7 +42,11 @@ void IssueWidget::OnSaveClicked(){
 
     LockUi();
     MainWindow::Instance->StartLoading();
-    Backend::Instance.EditTask(TaskInfo(task_info.taskId, task_info.projectId, ui->taskNameEdit->text(), ui->descriptionEdit->toPlainText()));
+    TaskInfo taskInfo(task_info.GetId(), task_info.GetProject(), ui->taskNameEdit->text(),
+                      ui->descriptionEdit->toPlainText(), task_info.GetCreator(), task_info.GetCreationTime(), task_info.GetStoryPoints());
+    // TODO: is current time?
+    taskInfo.SetUpdater(Backend::Instance.GetProfile(), QDateTime::currentDateTime());
+    Backend::Instance.EditTask(taskInfo);
 }
 
 void IssueWidget::OnDeleteClicked()
@@ -58,8 +62,8 @@ void IssueWidget::OnTaskUpdated(Status status)
     MainWindow::Instance->StopLoading();
     if (status.isSuccess) {
         //save
-        task_info.taskDescription = this->ui->descriptionEdit->toPlainText();
-        task_info.taskName = this->ui->taskNameEdit->text();
+        task_info.SetDescription(this->ui->descriptionEdit->toPlainText());
+        task_info.SetTitle(this->ui->taskNameEdit->text());
         //and lock
         ToReadOnlyMode();
     } else {
@@ -81,8 +85,8 @@ void IssueWidget::SetupTask(const ProjectInfo& project, const TaskInfo &task)
     project_info = project;
     task_info = task;
 
-    this->ui->taskNameEdit->setText(task.taskName);
-    this->ui->descriptionEdit->setText(task.taskDescription);
+    this->ui->taskNameEdit->setText(task.GetTitle());
+    this->ui->descriptionEdit->setText(task.GetDescription());
 
     this->ui->statusComboBox->clear();
     this->ui->statusComboBox->addItem("TODO");
