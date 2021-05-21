@@ -96,21 +96,21 @@ TaskInfo TaskInfo::ParseFromJson(const QJsonObject &object) {
     }
 
     TaskInfo task(object["id"].toInt(), ProjectInfo::ParseFromJson(object["project"].toObject()), object["title"].toString(),
-            object["description"].toString(), creator, QDateTime::fromString(object["createdAt"].toString()), object["storyPoints"].toInt());
+            object["description"].toString(), creator, QDateTime::fromString(object["createdAt"].toString(), DATE_FORMAT), object["storyPoints"].toInt());
 
     std::optional<UserInfo> updater;
     if (object.contains("updatedBy") && !object["updatedBy"].isNull()) {
         updater.emplace(UserInfo::ParseFromJson(object["updatedBy"].toObject()));
     }
 
-    task.SetUpdater(updater, QDateTime::fromString(object["updatedAt"].toString()));
+    task.SetUpdater(updater, QDateTime::fromString(object["updatedAt"].toString(), DATE_FORMAT));
 
     if (object.contains("assignedTo") && !object["assignedTo"].isNull()) {
         task.SetAssignee(UserInfo::ParseFromJson(object["assignedTo"].toObject()));
     }
 
     if (object.contains("deadline") && !object["deadline"].isNull()) {
-        task.SetDeadline(QDateTime::fromString(object["deadline"].toString()));
+        task.SetDeadline(QDateTime::fromString(object["deadline"].toString(), DATE_FORMAT));
     }
 
     return task;

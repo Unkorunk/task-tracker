@@ -1,6 +1,10 @@
 #include "IssueWidget.h"
 #include "ui_IssueWidget.h"
 #include "MainWindow.h"
+#include "LabelPropertyWidget.h"
+#include "DateTimePropertyWidget.h"
+#include "UserSelectorWidget.h"
+#include "IntegerSelectorWidget.h"
 
 IssueWidget::IssueWidget(QWidget *parent) :
     QWidget(parent),
@@ -80,6 +84,7 @@ void IssueWidget::OnTaskDeleted(Status status)
     }
 }
 
+// TODO: refactor, add users
 void IssueWidget::SetupTask(const ProjectInfo& project, const TaskInfo &task)
 {
     project_info = project;
@@ -88,10 +93,40 @@ void IssueWidget::SetupTask(const ProjectInfo& project, const TaskInfo &task)
     this->ui->taskNameEdit->setText(task.GetTitle());
     this->ui->descriptionEdit->setText(task.GetDescription());
 
-    this->ui->statusComboBox->clear();
-    this->ui->statusComboBox->addItem("TODO");
-    this->ui->statusComboBox->addItem("In progress");
-    this->ui->statusComboBox->addItem("Done");
+    this->ui->propertyList->clear();
+
+    auto creatorWidget = new UserSelectorWidget(this);
+    creatorWidget->SetData("Creator", task.GetCreator(), QList<UserInfo> { Backend::Instance.GetProfile() });
+    AddPropertyItem(creatorWidget);
+
+    auto creationTimeWidget = new DateTimePropertyWidget(this);
+    creationTimeWidget->SetData("Creation time", task.GetCreationTime());
+    AddPropertyItem(creationTimeWidget);
+
+
+    auto updaterWidget = new UserSelectorWidget(this);
+    updaterWidget->SetData("Updater", task.GetUpdater(), QList<UserInfo> { Backend::Instance.GetProfile() });
+    AddPropertyItem(updaterWidget);
+
+    auto updateTimeWidget = new DateTimePropertyWidget(this);
+    updateTimeWidget->SetData("Update time", task.GetUpdateTime());
+    AddPropertyItem(updateTimeWidget);
+
+    auto deadlineTimeWidget = new DateTimePropertyWidget(this);
+    deadlineTimeWidget->SetData("Deadline", task.GetDeadline());
+    deadlineTimeWidget->SetEditable(true);
+    AddPropertyItem(deadlineTimeWidget);
+
+    auto assigneeWidget = new UserSelectorWidget(this);
+    assigneeWidget->SetData("Assignee", task.GetAssignee(), QList<UserInfo> {Backend::Instance.GetProfile() });
+    assigneeWidget->SetEditable(true);
+    AddPropertyItem(assigneeWidget);
+    //update();
+
+    auto storyPointsWidget = new IntegerSelectorWidget(this);
+    storyPointsWidget->SetData("Story points", task.GetStoryPoints());
+    storyPointsWidget->SetEditable(true);
+    AddPropertyItem(storyPointsWidget);
 
     UnlockUi();
     ToReadOnlyMode();
@@ -103,8 +138,7 @@ void IssueWidget::ToEditMode()
     this->ui->editButton->setText("Cancel");
     this->ui->saveButton->setVisible(true);
 
-    this->ui->taskNameEdit->setStyleSheet("* { background-color: rgba(255, 255, 255, 255); }");
-
+    this->ui->taskNameEdit->setEnabled(true);
     this->ui->taskNameEdit->setReadOnly(false);
     this->ui->descriptionEdit->setReadOnly(false);
 }
@@ -115,8 +149,7 @@ void IssueWidget::ToReadOnlyMode()
     this->ui->editButton->setText("Edit");
     this->ui->saveButton->setVisible(false);
 
-    this->ui->taskNameEdit->setStyleSheet("* { background-color: rgba(0, 0, 0, 0); }");
-
+    this->ui->taskNameEdit->setEnabled(false);
     this->ui->taskNameEdit->setReadOnly(true);
     this->ui->descriptionEdit->setReadOnly(true);
 }
@@ -139,4 +172,12 @@ void IssueWidget::UnlockUi()
 
     this->ui->taskNameEdit->setReadOnly(false);
     this->ui->descriptionEdit->setReadOnly(false);
+}
+
+void IssueWidget::AddPropertyItem(QWidget *propertyWidget) {
+    auto item = new QListWidgetItem();
+    item->setSizeHint(QSize(200, 50));
+
+    ui->propertyList->addItem(item);
+    ui->propertyList->setItemWidget(item, propertyWidget);
 }

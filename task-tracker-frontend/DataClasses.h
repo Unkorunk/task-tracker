@@ -6,6 +6,8 @@
 #include <QString>
 
 
+const QString DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.zzz'+00:00'";
+
 class ProjectInfo {
 public:
     static ProjectInfo ParseFromJson(const QJsonObject& object);

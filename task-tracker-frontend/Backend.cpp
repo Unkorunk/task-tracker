@@ -24,7 +24,6 @@ const QString Backend::BaseUrl = "http://139.59.144.121:8080";
 
 Backend::Backend() : myUserInfo(-1, "", "", ""), myNetworkManager(std::make_unique<QNetworkAccessManager>()) {
     myToken = "";
-
     connect(myNetworkManager.get(), &QNetworkAccessManager::finished, this, &Backend::OnResponse);
 }
 

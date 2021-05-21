@@ -33,6 +33,8 @@ private:
     void LockUi();
     void UnlockUi();
 
+    void AddPropertyItem(QWidget* propertyWidget);
+
     Ui::IssueWidget *ui;
     bool edited;
     TaskInfo task_info;
