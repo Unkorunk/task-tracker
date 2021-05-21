@@ -29,7 +29,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>90</height>
+        <height>60</height>
        </size>
       </property>
       <property name="title">
@@ -38,7 +38,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QWidget" name="widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -46,26 +46,49 @@
        </sizepolicy>
       </property>
       <property name="styleSheet">
-       <string notr="true">border-radius: 20px;
-background-color: rgb(232, 227, 227);</string>
+       <string notr="true">
+background-color: rgb(232, 227, 227);
+border-radius: 20px;
+</string>
       </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="GreetingsWidget" name="page">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-      <widget class="ProfileWidget" name="page_2"/>
-      <widget class="NotificationsWidget" name="page_3"/>
-      <widget class="ProjectWidget" name="page_4"/>
-      <widget class="ProjectSettingsWidget" name="page_5"/>
-      <widget class="StatisticsWidget" name="page_6"/>
-      <widget class="IssueWidget" name="page_7"/>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QStackedWidget" name="stackedWidget">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(232, 227, 227);
+margin-top: 20px;
+margin-right: 20px;
+</string>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="GreetingsWidget" name="page_15">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+         <widget class="ProfileWidget" name="page_16"/>
+         <widget class="NotificationsWidget" name="page_17"/>
+         <widget class="ProjectWidget" name="page_18"/>
+         <widget class="ProjectSettingsWidget" name="page_19"/>
+         <widget class="StatisticsWidget" name="page_20"/>
+         <widget class="IssueWidget" name="page_21"/>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item>

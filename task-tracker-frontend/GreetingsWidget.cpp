@@ -10,6 +10,8 @@ GreetingsWidget::GreetingsWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->personalProjectsList->ChangeHeader("Personal projects");
 
+    ui->personalProjectsList->setStyleSheet("QWidget {background-color: white}");
+
     connect(ui->projectList, &ProjectsList::AddProjectClicked, this, &GreetingsWidget::OnProjectAdd);
     connect(ui->projectList, &ProjectsList::ProjectSelected, MainWindow::Instance, &MainWindow::OnProjectTransition);
 
@@ -40,5 +42,5 @@ void GreetingsWidget::OnProjectAdd(const QString& name)
 
 void GreetingsWidget::OnProfileUpdate(Status status)
 {
-    ui->greetingsLabel->setText("Greetings, " + Backend::Instance.GetProfile().GetFullName() + "!");
+    ui->greetingsLabel->setText("Welcome, " + Backend::Instance.GetProfile().GetFullName() + "!");
 }

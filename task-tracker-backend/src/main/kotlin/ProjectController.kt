@@ -86,10 +86,12 @@ class ProjectController {
             return DeleteProjectResult(false)
         }
 
-        // todo make custom query
-        // todo check user role
-        projectUserRoleRepository.findAll().find { it.project.id == projectId && it.user == user }
+        val projectUserRole = user.projects.find { it.project.id == projectId }
             ?: return DeleteProjectResult(false)
+
+        if (!projectUserRole.role.checkPermission(Permission.DELETE_PROJECT)) {
+            return DeleteProjectResult(false)
+        }
 
         try {
             projectRepository.deleteById(projectId)
@@ -109,7 +111,6 @@ class ProjectController {
         @RequestParam(value = "photo") photo: String?
     ): EditProjectResult {
         val user = userRepository.findByAccessToken(accessToken) ?: return EditProjectResult(false)
-
         if (user.validUntil < Date()) {
             return EditProjectResult(false)
         }
@@ -122,10 +123,11 @@ class ProjectController {
 
         val project = projectOptional.get()
 
-        // todo make custom query
-        // todo check user role
-        projectUserRoleRepository.findAll().find { it.project == project && it.user == user }
-            ?: return EditProjectResult(false)
+        val projectUserRole = user.projects.find { it.project.id == project.id } ?: return EditProjectResult(false)
+
+        if (!projectUserRole.role.checkPermission(Permission.EDIT_PROJECT)) {
+            return EditProjectResult(false)
+        }
 
         if (fullName != null) {
             project.fullName = fullName

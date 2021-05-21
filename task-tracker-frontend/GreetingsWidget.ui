@@ -55,7 +55,11 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="ProjectsList" name="personalProjectsList" native="true"/>
+      <widget class="ProjectsList" name="personalProjectsList" native="true">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="ProjectsList" name="projectList" native="true"/>

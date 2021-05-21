@@ -4,5 +4,6 @@
         <file>assets/eye-closed.png</file>
         <file>assets/logo.png</file>
         <file>assets/notification.png</file>
+        <file>assets/back.ico</file>
     </qresource>
 </RCC>
