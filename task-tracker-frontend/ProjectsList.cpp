@@ -39,7 +39,7 @@ void ProjectsList::SetProjects(const QList<ProjectInfo>& list)
     for (auto& project : myProjects) {
        auto item = new QListWidgetItem();
        auto widget = new ProjectItemWidget(this);
-       widget->setProject(project.projectName);
+       widget->setProject(project.GetTitle());
        item->setSizeHint(QSize(200, 50));
 
        ui->listWidget->addItem(item);

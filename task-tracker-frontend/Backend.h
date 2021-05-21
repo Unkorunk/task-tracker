@@ -1,11 +1,12 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
+#include "DataClasses.h"
+
 #include <QtCore/QObject>
 #include <QString>
 #include <QMap>
 #include <QtNetwork/QNetworkAccessManager>
-#include <memory>
 
 class Status {
 public:
@@ -16,69 +17,6 @@ public:
     bool isSuccess;
     QString response;
 };
-
-class ProjectInfo {
-public:
-    ProjectInfo(int projectId, const QString& projectName);
-
-    int projectId;
-    QString projectName;
-};
-
-class PropertyValue {
-public:
-    PropertyValue();
-
-    PropertyValue(int valueId, int propId, QString title);
-
-    int propertyValueId;
-    int propertyId;
-    QString valueTitle;
-};
-
-class PropertyInfo {
-public:
-    QString caption;
-    int propertyId;
-
-    QList<PropertyValue> values;
-    int selectedId;
-};
-
-class TaskInfo {
-public:
-    TaskInfo(int taskId, int projectId, const QString& taskName, const QString& taskDesc);
-
-    int taskId;
-    int projectId;
-
-    QString taskName;
-    QString taskDescription;
-    QVector<QString> team;
-    QVector<PropertyInfo> properties;
-};
-
-class UserInfo {
-public:
-    UserInfo(const QString& username, const QString& fullName, const QString& email, int id);
-
-    QString GetUsername();
-    QString GetFullName();
-    QString GetEmail();
-
-private:
-    QString myUsername;
-    QString myFullName;
-    QString myEmail;
-    int myId;
-};
-
-inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
-{
-    if (proj1.projectId != proj2.projectId)
-        return proj1.projectId < proj2.projectId;
-    return proj1.projectName < proj2.projectName;
-}
 
 class Backend : public QObject {
     Q_OBJECT
@@ -123,7 +61,7 @@ signals:
 
     void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
 
-    void TaskEdited(Status status);
+    void TaskEdited(Status status, const TaskInfo& task);
 
     void TaskDeleted(Status status);
 
@@ -154,9 +92,9 @@ private:
 
     void GetRequest(const QString& urlString, const QMap<QString, QString>& args);
 
-    QMap<int, PropertyValue> valIdToVal;
-    QMap<int, QList<PropertyValue>> propIdToVals;
-    QMap<int, QString> propIdToCaption;
+//    QMap<int, PropertyValue> valIdToVal;
+//    QMap<int, QList<PropertyValue>> propIdToVals;
+//    QMap<int, QString> propIdToCaption;
 
     QString myToken;
     UserInfo myUserInfo;

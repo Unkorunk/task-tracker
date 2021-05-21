@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include "Backend.h"
+#include "DateTimePropertyWidget.h"
+#include "IntegerSelectorWidget.h"
+#include "UserSelectorWidget.h"
 
 namespace Ui {
 class IssueWidget;
@@ -17,7 +20,7 @@ private slots:
     void OnSaveClicked();
     void OnDeleteClicked();
 
-    void OnTaskUpdated(Status status);
+    void OnTaskUpdated(Status status, const TaskInfo& task);
     void OnTaskDeleted(Status status);
 
 public:
@@ -29,14 +32,23 @@ public:
 private:
     void ToEditMode();
     void ToReadOnlyMode();
+    void InternalSetupTask(const TaskInfo& task);
 
     void LockUi();
     void UnlockUi();
+
+    void AddPropertyItem(QWidget* propertyWidget);
 
     Ui::IssueWidget *ui;
     bool edited;
     TaskInfo task_info;
     ProjectInfo project_info;
+
+    UserSelectorWidget* myUpdaterSelector;
+    DateTimePropertyWidget* myUpdateTimeSelector;
+    DateTimePropertyWidget* myDeadlineSelector;
+    IntegerSelectorWidget* myStorypointSelector;
+    UserSelectorWidget* myAssigneeSelector;
     //QString text;
 };
 
