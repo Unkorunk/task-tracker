@@ -33,6 +33,9 @@ void IssueWidget::OnEditClicked(){
         ToReadOnlyMode();
         this->ui->taskNameEdit->setText(task_info.GetTitle());
         this->ui->descriptionEdit->setText(task_info.GetDescription());
+        myAssigneeSelector->ChangeData(task_info.GetAssignee());
+        myDeadlineSelector->ChangeData(task_info.GetDeadline());
+        myStorypointSelector->ChangeData(task_info.GetStoryPoints());
     } else {
         // Edit btn
         ToEditMode();
@@ -48,6 +51,10 @@ void IssueWidget::OnSaveClicked(){
     MainWindow::Instance->StartLoading();
     TaskInfo taskInfo(task_info.GetId(), task_info.GetProject(), ui->taskNameEdit->text(),
                       ui->descriptionEdit->toPlainText(), task_info.GetCreator(), task_info.GetCreationTime(), task_info.GetStoryPoints());
+
+    taskInfo.SetDeadline(myDeadlineSelector->GetData());
+    taskInfo.SetAssignee(myAssigneeSelector->GetData());
+    taskInfo.SetStoryPoints(myStorypointSelector->GetData());
     // TODO: is current time?
     taskInfo.SetUpdater(Backend::Instance.GetProfile(), QDateTime::currentDateTime());
     Backend::Instance.EditTask(taskInfo);
@@ -60,7 +67,7 @@ void IssueWidget::OnDeleteClicked()
     Backend::Instance.DeleteTask(task_info);
 }
 
-void IssueWidget::OnTaskUpdated(Status status)
+void IssueWidget::OnTaskUpdated(Status status, const TaskInfo& task)
 {
     UnlockUi();
     MainWindow::Instance->StopLoading();
@@ -68,6 +75,11 @@ void IssueWidget::OnTaskUpdated(Status status)
         //save
         task_info.SetDescription(this->ui->descriptionEdit->toPlainText());
         task_info.SetTitle(this->ui->taskNameEdit->text());
+        task_info.SetDeadline(myDeadlineSelector->GetData());
+        task_info.SetStoryPoints(myStorypointSelector->GetData());
+        task_info.SetAssignee(myAssigneeSelector->GetData());
+        task_info.SetUpdater(Backend::Instance.GetProfile(), QDateTime::currentDateTimeUtc());
+
         //and lock
         ToReadOnlyMode();
     } else {
@@ -88,6 +100,41 @@ void IssueWidget::OnTaskDeleted(Status status)
 void IssueWidget::SetupTask(const ProjectInfo& project, const TaskInfo &task)
 {
     project_info = project;
+    InternalSetupTask(task);
+}
+
+void IssueWidget::ToEditMode()
+{
+    this->edited = true;
+    this->ui->editButton->setText("Cancel");
+    this->ui->saveButton->setVisible(true);
+
+    this->ui->taskNameEdit->setEnabled(true);
+    this->ui->taskNameEdit->setReadOnly(false);
+    this->ui->descriptionEdit->setReadOnly(false);
+
+    myDeadlineSelector->SetEditable(true);
+    myAssigneeSelector->SetEditable(true);
+    myStorypointSelector->SetEditable(true);
+}
+
+void IssueWidget::ToReadOnlyMode()
+{
+    this->edited = false;
+    this->ui->editButton->setText("Edit");
+    this->ui->saveButton->setVisible(false);
+
+    this->ui->taskNameEdit->setEnabled(false);
+    this->ui->taskNameEdit->setReadOnly(true);
+    this->ui->descriptionEdit->setReadOnly(true);
+
+    myDeadlineSelector->SetEditable(false);
+    myAssigneeSelector->SetEditable(false);
+    myStorypointSelector->SetEditable(false);
+}
+
+void IssueWidget::InternalSetupTask(const TaskInfo &task)
+{
     task_info = task;
 
     this->ui->taskNameEdit->setText(task.GetTitle());
@@ -104,54 +151,31 @@ void IssueWidget::SetupTask(const ProjectInfo& project, const TaskInfo &task)
     AddPropertyItem(creationTimeWidget);
 
 
-    auto updaterWidget = new UserSelectorWidget(this);
-    updaterWidget->SetData("Updater", task.GetUpdater(), QList<UserInfo> { Backend::Instance.GetProfile() });
-    AddPropertyItem(updaterWidget);
+    myUpdaterSelector = new UserSelectorWidget(this);
+    myUpdaterSelector->SetData("Updater", task.GetUpdater(), QList<UserInfo> { Backend::Instance.GetProfile() });
+    AddPropertyItem(myUpdaterSelector);
 
-    auto updateTimeWidget = new DateTimePropertyWidget(this);
-    updateTimeWidget->SetData("Update time", task.GetUpdateTime());
-    AddPropertyItem(updateTimeWidget);
+    myUpdateTimeSelector = new DateTimePropertyWidget(this);
+    myUpdateTimeSelector->SetData("Update time", task.GetUpdateTime());
+    AddPropertyItem(myUpdateTimeSelector);
 
-    auto deadlineTimeWidget = new DateTimePropertyWidget(this);
-    deadlineTimeWidget->SetData("Deadline", task.GetDeadline());
-    deadlineTimeWidget->SetEditable(true);
-    AddPropertyItem(deadlineTimeWidget);
+    myDeadlineSelector = new DateTimePropertyWidget(this);
+    myDeadlineSelector->SetData("Deadline", task.GetDeadline());
+    myDeadlineSelector->SetEditable(true);
+    AddPropertyItem(myDeadlineSelector);
 
-    auto assigneeWidget = new UserSelectorWidget(this);
-    assigneeWidget->SetData("Assignee", task.GetAssignee(), QList<UserInfo> {Backend::Instance.GetProfile() });
-    assigneeWidget->SetEditable(true);
-    AddPropertyItem(assigneeWidget);
-    //update();
+    myAssigneeSelector = new UserSelectorWidget(this);
+    myAssigneeSelector->SetData("Assignee", task.GetAssignee(), QList<UserInfo> {Backend::Instance.GetProfile() });
+    myAssigneeSelector->SetEditable(true);
+    AddPropertyItem(myAssigneeSelector);
 
-    auto storyPointsWidget = new IntegerSelectorWidget(this);
-    storyPointsWidget->SetData("Story points", task.GetStoryPoints());
-    storyPointsWidget->SetEditable(true);
-    AddPropertyItem(storyPointsWidget);
+    myStorypointSelector = new IntegerSelectorWidget(this);
+    myStorypointSelector->SetData("Story points", task.GetStoryPoints());
+    myStorypointSelector->SetEditable(true);
+    AddPropertyItem(myStorypointSelector);
 
     UnlockUi();
     ToReadOnlyMode();
-}
-
-void IssueWidget::ToEditMode()
-{
-    this->edited = true;
-    this->ui->editButton->setText("Cancel");
-    this->ui->saveButton->setVisible(true);
-
-    this->ui->taskNameEdit->setEnabled(true);
-    this->ui->taskNameEdit->setReadOnly(false);
-    this->ui->descriptionEdit->setReadOnly(false);
-}
-
-void IssueWidget::ToReadOnlyMode()
-{
-    this->edited = false;
-    this->ui->editButton->setText("Edit");
-    this->ui->saveButton->setVisible(false);
-
-    this->ui->taskNameEdit->setEnabled(false);
-    this->ui->taskNameEdit->setReadOnly(true);
-    this->ui->descriptionEdit->setReadOnly(true);
 }
 
 void IssueWidget::LockUi()
@@ -162,6 +186,10 @@ void IssueWidget::LockUi()
 
     this->ui->taskNameEdit->setReadOnly(true);
     this->ui->descriptionEdit->setReadOnly(true);
+
+    myDeadlineSelector->SetEditable(false);
+    myAssigneeSelector->SetEditable(false);
+    myStorypointSelector->SetEditable(false);
 }
 
 void IssueWidget::UnlockUi()
@@ -172,6 +200,10 @@ void IssueWidget::UnlockUi()
 
     this->ui->taskNameEdit->setReadOnly(false);
     this->ui->descriptionEdit->setReadOnly(false);
+
+    myDeadlineSelector->SetEditable(true);
+    myAssigneeSelector->SetEditable(true);
+    myStorypointSelector->SetEditable(true);
 }
 
 void IssueWidget::AddPropertyItem(QWidget *propertyWidget) {

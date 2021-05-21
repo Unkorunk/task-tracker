@@ -16,6 +16,7 @@ public:
     ~IntegerSelectorWidget();
 
     void SetData(const QString& caption, int data);
+    void ChangeData(int data);
     int GetData() const;
 
     void SetEditable(bool editable);

@@ -18,7 +18,8 @@ public:
     ~UserSelectorWidget();
 
     void SetData(const QString& caption, const std::optional<UserInfo>& selectedUser, const QList<UserInfo>& users);
-    UserInfo GetData() const;
+    void ChangeData(const std::optional<UserInfo>& selectedUser);
+    std::optional<UserInfo> GetData() const;
 
     void SetEditable(bool editable);
     bool GetEditable() const;

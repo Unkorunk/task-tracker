@@ -61,7 +61,7 @@ signals:
 
     void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
 
-    void TaskEdited(Status status);
+    void TaskEdited(Status status, const TaskInfo& task);
 
     void TaskDeleted(Status status);
 

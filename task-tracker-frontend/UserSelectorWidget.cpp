@@ -16,19 +16,35 @@ void UserSelectorWidget::SetData(const QString &caption, const std::optional<Use
     ui->captionLabel->setText(caption);
     myUsers = QList<UserInfo>();
     myUsers.append(UserInfo(-1, "None", "None", "None"));
+    ui->userSelector->clear();
     ui->userSelector->addItem("None");
     ui->userSelector->setCurrentIndex(0);
 
-    for (int i = 0; i < users.count(); i++) {
-        ui->userSelector->addItem(users[i].GetFullName());
-        if (selectedUser.has_value() && users[i].GetId() == selectedUser.value().GetId()) {
-            ui->userSelector->setCurrentIndex(i + 1);
+    for (auto& user : users) {
+        myUsers.append(user);
+        ui->userSelector->addItem(user.GetFullName());
+    }
+
+    ChangeData(selectedUser);
+}
+
+void UserSelectorWidget::ChangeData(const std::optional<UserInfo> &selectedUser) {
+    ui->userSelector->setCurrentIndex(0);
+
+    for (int i = 0; i < myUsers.count(); i++) {
+        if (selectedUser.has_value() && myUsers[i].GetId() == selectedUser.value().GetId()) {
+            ui->userSelector->setCurrentIndex(i);
         }
     }
 }
 
-UserInfo UserSelectorWidget::GetData() const {
-    return myUsers[ui->userSelector->currentIndex()];
+std::optional<UserInfo> UserSelectorWidget::GetData() const {
+    std::optional<UserInfo> user;
+    if (ui->userSelector->currentIndex() != 0) {
+        user.emplace(myUsers[ui->userSelector->currentIndex()]);
+    }
+
+    return user;
 }
 
 void UserSelectorWidget::SetEditable(bool editable) {

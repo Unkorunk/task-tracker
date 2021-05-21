@@ -58,8 +58,6 @@ void ProjectWidget::OnProjectStatisticsBtnClicked()
 void ProjectWidget::OnItemClicked(QListWidgetItem* item)
 {
     auto index = ui->listWidget->indexFromItem(item);
-    qInfo() << index.row();
-    qInfo() << taskList[taskList.count() - index.row() - 1].GetTitle();
     emit TaskSelected(myProject, taskList[taskList.count() - index.row() - 1]);
 }
 
@@ -72,7 +70,7 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
         taskList.append(task);
         auto item = new QListWidgetItem();
         auto widget = new TaskItemWidget(this);
-        widget->setTask(task.GetTitle());
+        widget->SetTask(task);
         item->setSizeHint(QSize(200, 100));
 
         ui->listWidget->addItem(item);

@@ -175,13 +175,21 @@ void Backend::DeleteTask(const TaskInfo &taskInfo)
 
 void Backend::EditTask(const TaskInfo &taskInfo)
 {
-    // TODO: other params
-    PostRequest(EditTaskUrl(), QMap<QString, QString> {
-                    { "access_token", myToken },
-                    { "task_id", QString("%1").arg(taskInfo.GetId()) },
-                    { "title", taskInfo.GetTitle() },
-                    { "description", taskInfo.GetDescription() }
-                });
+    QMap<QString, QString> query {
+        { "access_token", myToken },
+        { "task_id", QString("%1").arg(taskInfo.GetId()) },
+        { "title", taskInfo.GetTitle() },
+        { "description", taskInfo.GetDescription() },
+        { "story_points", QString("%1").arg(taskInfo.GetStoryPoints()) }
+    };
+    if (taskInfo.GetAssignee().has_value()) {
+        query.insert("assigned_id", QString("%1").arg(taskInfo.GetAssignee().value().GetId()));
+    }
+    if (taskInfo.GetDeadline().has_value()) {
+        query.insert("deadline", taskInfo.GetDeadline().value().toString("dd-MM-yyyy HH:mm:ss.zzz"));
+    }
+
+    PostRequest(EditTaskUrl(), query);
 }
 
 UserInfo Backend::GetProfile()
@@ -264,9 +272,9 @@ void Backend::OnResponse(QNetworkReply* reply)
 
         emit TasksLoaded(status, tasks);
     } else if (pattern == CreateTaskUrl()) {
-        emit TaskEdited(status);
+        emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));
     } else if (pattern == EditTaskUrl()) {
-        emit TaskEdited(status);
+        emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));
     } else if (pattern == DeleteTaskUrl()) {
         emit TaskDeleted(status);
     }

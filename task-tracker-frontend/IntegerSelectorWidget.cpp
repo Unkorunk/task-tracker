@@ -14,6 +14,10 @@ IntegerSelectorWidget::~IntegerSelectorWidget() {
 
 void IntegerSelectorWidget::SetData(const QString &caption, int data) {
     ui->captionLabel->setText(caption);
+    ChangeData(data);
+}
+
+void IntegerSelectorWidget::ChangeData(int data) {
     ui->integerSelector->setValue(data);
 }
 

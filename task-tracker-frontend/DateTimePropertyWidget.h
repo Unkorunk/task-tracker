@@ -16,16 +16,16 @@ public:
     ~DateTimePropertyWidget();
 
     void SetData(const QString& caption, const std::optional<QDateTime> &data);
+    void ChangeData(const std::optional<QDateTime> &data);
     std::optional<QDateTime> GetData() const;
 
     void SetEditable(bool editable);
     bool GetEditable() const;
 
 private:
-    static QDate EmptyDate;
-
     Ui::DateTimePropertyWidget *ui;
     bool isEditable;
+    bool isEmpty;
 };
 
 #endif // DATETIMEPROPERTYWIDGET_H
