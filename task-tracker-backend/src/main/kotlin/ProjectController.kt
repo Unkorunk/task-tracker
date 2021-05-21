@@ -8,9 +8,9 @@ import java.util.*
 @Controller
 @RequestMapping(path = ["/project"])
 class ProjectController {
-    data class CreateProjectResult(val status: Boolean)
+    data class CreateProjectResult(val status: Boolean, val project: Project? = null)
     data class DeleteProjectResult(val status: Boolean)
-    data class EditProjectResult(val status: Boolean)
+    data class EditProjectResult(val status: Boolean, val project: Project? = null)
     data class ProjectRolePair(val project: Project, val role: Role)
     data class AllProjectResult(val status: Boolean, val projects: Set<ProjectRolePair> = emptySet())
 
@@ -71,7 +71,7 @@ class ProjectController {
             return CreateProjectResult(false)
         }
 
-        return CreateProjectResult(true)
+        return CreateProjectResult(true, project)
     }
 
     @GetMapping(path = ["/delete"])
@@ -86,10 +86,12 @@ class ProjectController {
             return DeleteProjectResult(false)
         }
 
-        // todo make custom query
-        // todo check user role
-        projectUserRoleRepository.findAll().find { it.project.id == projectId && it.user == user }
+        val projectUserRole = user.projects.find { it.project.id == projectId }
             ?: return DeleteProjectResult(false)
+
+        if (!projectUserRole.role.checkPermission(Permission.DELETE_PROJECT)) {
+            return DeleteProjectResult(false)
+        }
 
         try {
             projectRepository.deleteById(projectId)
@@ -109,7 +111,6 @@ class ProjectController {
         @RequestParam(value = "photo") photo: String?
     ): EditProjectResult {
         val user = userRepository.findByAccessToken(accessToken) ?: return EditProjectResult(false)
-
         if (user.validUntil < Date()) {
             return EditProjectResult(false)
         }
@@ -120,12 +121,13 @@ class ProjectController {
             return EditProjectResult(false)
         }
 
-        val project = projectOptional.get()
+        var project = projectOptional.get()
 
-        // todo make custom query
-        // todo check user role
-        projectUserRoleRepository.findAll().find { it.project == project && it.user == user }
-            ?: return EditProjectResult(false)
+        val projectUserRole = user.projects.find { it.project.id == project.id } ?: return EditProjectResult(false)
+
+        if (!projectUserRole.role.checkPermission(Permission.EDIT_PROJECT)) {
+            return EditProjectResult(false)
+        }
 
         if (fullName != null) {
             project.fullName = fullName
@@ -136,12 +138,12 @@ class ProjectController {
         }
 
         try {
-            projectRepository.save(project)
+            project = projectRepository.save(project)
         } catch (ex: Exception) {
             return EditProjectResult(false)
         }
 
-        return EditProjectResult(true)
+        return EditProjectResult(true, project)
     }
 
     @GetMapping(path = ["/all"])

@@ -3,17 +3,16 @@ package timelimit.main
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.*
 import java.lang.Exception
+import java.util.*
 
 @Controller
 @RequestMapping(path = ["/projectUserRole"])
 class ProjectUserRoleController {
-    data class AddResult(val status: Boolean)
-    data class RemoveResult(val status: Boolean)
+    data class CreateResult(val status: Boolean)
+    data class DeleteResult(val status: Boolean)
+    data class EditResult(val status: Boolean)
 
     private val logger = LoggerFactory.getLogger(ProjectUserRoleController::class.java)
 
@@ -52,22 +51,33 @@ class ProjectUserRoleController {
         }
     }
 
-    @GetMapping(path = ["/addById"])
+    @PostMapping(path = ["/createById"])
     @ResponseBody
-    fun addById(
+    fun createById(
+        @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "user_id") userId: Int,
         @RequestParam(value = "project_id") projectId: Int,
         @RequestParam(value = "role_id") roleId: Int
-    ): AddResult {
+    ): CreateResult {
+        val sender = userRepository.findByAccessToken(accessToken) ?: return CreateResult(false)
+        if (sender.validUntil < Date()) {
+            return CreateResult(false)
+        }
+
+        val senderRole = sender.projects.find { it.project.id == projectId }?.role ?: return CreateResult(false)
+        if (!senderRole.checkPermission(Permission.MANAGE_TEAM)) {
+            return CreateResult(false)
+        }
+
         val userOptional = userRepository.findById(userId)
         if (userOptional.isEmpty) {
-            return AddResult(false)
+            return CreateResult(false)
         }
         val user = userOptional.get()
 
         val projectOptional = projectRepository.findById(projectId)
         if (projectOptional.isEmpty) {
-            return AddResult(false)
+            return CreateResult(false)
         }
         val project = projectOptional.get()
 
@@ -76,33 +86,48 @@ class ProjectUserRoleController {
         projectUserRole.project = project
         val roleOptional = roleRepository.findById(roleId)
         if (roleOptional.isEmpty) {
-            return AddResult(false)
+            return CreateResult(false)
         }
         projectUserRole.role = roleOptional.get()
+
+        if (!projectUserRole.role.isSubset(senderRole)) {
+            return CreateResult(false)
+        }
 
         try {
             projectUserRoleRepository.save(projectUserRole)
         } catch (ex: Exception) {
-            return AddResult(false)
+            return CreateResult(false)
         }
 
         notifyAdd(project, user)
 
-        return AddResult(true)
+        return CreateResult(true)
     }
 
-    @GetMapping(path = ["/addByEmail"])
+    @PostMapping(path = ["/createByEmail"])
     @ResponseBody
-    fun addByEmail(
+    fun createByEmail(
+        @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "email") email: String,
         @RequestParam(value = "project_id") projectId: Int,
         @RequestParam(value = "role_id") roleId: Int
-    ): AddResult {
-        val user = userRepository.findByEmail(email) ?: return AddResult(false)
+    ): CreateResult {
+        val sender = userRepository.findByAccessToken(accessToken) ?: return CreateResult(false)
+        if (sender.validUntil < Date()) {
+            return CreateResult(false)
+        }
+
+        val senderRole = sender.projects.find { it.project.id == projectId }?.role ?: return CreateResult(false)
+        if (!senderRole.checkPermission(Permission.MANAGE_TEAM)) {
+            return CreateResult(false)
+        }
+
+        val user = userRepository.findByEmail(email) ?: return CreateResult(false)
 
         val projectOptional = projectRepository.findById(projectId)
         if (projectOptional.isEmpty) {
-            return AddResult(false)
+            return CreateResult(false)
         }
         val project = projectOptional.get()
 
@@ -111,33 +136,48 @@ class ProjectUserRoleController {
         projectUserRole.project = project
         val roleOptional = roleRepository.findById(roleId)
         if (roleOptional.isEmpty) {
-            return AddResult(false)
+            return CreateResult(false)
         }
         projectUserRole.role = roleOptional.get()
+
+        if (!projectUserRole.role.isSubset(senderRole)) {
+            return CreateResult(false)
+        }
 
         try {
             projectUserRoleRepository.save(projectUserRole)
         } catch (ex: Exception) {
-            return AddResult(false)
+            return CreateResult(false)
         }
 
         notifyAdd(project, user)
 
-        return AddResult(true)
+        return CreateResult(true)
     }
 
-    @GetMapping(path = ["/addByScreenName"])
+    @PostMapping(path = ["/createByScreenName"])
     @ResponseBody
-    fun addByScreenName(
+    fun createByScreenName(
+        @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "screen_name") screenName: String,
         @RequestParam(value = "project_id") projectId: Int,
         @RequestParam(value = "role_id") roleId: Int
-    ): AddResult {
-        val user = userRepository.findByScreenName(screenName) ?: return AddResult(false)
+    ): CreateResult {
+        val sender = userRepository.findByAccessToken(accessToken) ?: return CreateResult(false)
+        if (sender.validUntil < Date()) {
+            return CreateResult(false)
+        }
+
+        val senderRole = sender.projects.find { it.project.id == projectId }?.role ?: return CreateResult(false)
+        if (!senderRole.checkPermission(Permission.MANAGE_TEAM)) {
+            return CreateResult(false)
+        }
+
+        val user = userRepository.findByScreenName(screenName) ?: return CreateResult(false)
 
         val projectOptional = projectRepository.findById(projectId)
         if (projectOptional.isEmpty) {
-            return AddResult(false)
+            return CreateResult(false)
         }
         val project = projectOptional.get()
 
@@ -146,82 +186,172 @@ class ProjectUserRoleController {
         projectUserRole.project = project
         val roleOptional = roleRepository.findById(roleId)
         if (roleOptional.isEmpty) {
-            return AddResult(false)
+            return CreateResult(false)
         }
         projectUserRole.role = roleOptional.get()
+
+        if (!projectUserRole.role.isSubset(senderRole)) {
+            return CreateResult(false)
+        }
 
         try {
             projectUserRoleRepository.save(projectUserRole)
         } catch (ex: Exception) {
-            return AddResult(false)
+            return CreateResult(false)
         }
 
         notifyAdd(project, user)
 
-        return AddResult(true)
+        return CreateResult(true)
     }
 
-    @GetMapping(path = ["/removeById"])
+    @GetMapping(path = ["/deleteById"])
     @ResponseBody
-    fun removeById(
+    fun deleteById(
+        @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "user_id") userId: Int,
         @RequestParam(value = "project_id") projectId: Int
-    ): RemoveResult {
+    ): DeleteResult {
+        val sender = userRepository.findByAccessToken(accessToken) ?: return DeleteResult(false)
+        if (sender.validUntil < Date()) {
+            return DeleteResult(false)
+        }
+
+        val senderRole = sender.projects.find { it.project.id == projectId }?.role ?: return DeleteResult(false)
+        if (!senderRole.checkPermission(Permission.MANAGE_TEAM)) {
+            return DeleteResult(false)
+        }
+
         val projectUserRole = projectUserRoleRepository.findByProjectIdAndUserId(projectId, userId)
-            ?: return RemoveResult(false)
+            ?: return DeleteResult(false)
+
+        if (!projectUserRole.role.isSubset(senderRole)) {
+            return DeleteResult(false)
+        }
 
         try {
             projectUserRoleRepository.deleteById(projectUserRole.id)
         } catch (ex: Exception) {
-            return RemoveResult(false)
+            return DeleteResult(false)
         }
 
         notifyRemove(projectUserRole.project, projectUserRole.user)
 
-        return RemoveResult(true)
+        return DeleteResult(true)
     }
 
-    @GetMapping(path = ["/removeByEmail"])
+    @GetMapping(path = ["/deleteByEmail"])
     @ResponseBody
-    fun removeByEmail(
+    fun deleteByEmail(
+        @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "email") email: String,
         @RequestParam(value = "project_id") projectId: Int
-    ): RemoveResult {
-        val user = userRepository.findByEmail(email) ?: return RemoveResult(false)
+    ): DeleteResult {
+        val sender = userRepository.findByAccessToken(accessToken) ?: return DeleteResult(false)
+        if (sender.validUntil < Date()) {
+            return DeleteResult(false)
+        }
+
+        val senderRole = sender.projects.find { it.project.id == projectId }?.role ?: return DeleteResult(false)
+        if (!senderRole.checkPermission(Permission.MANAGE_TEAM)) {
+            return DeleteResult(false)
+        }
+
+        val user = userRepository.findByEmail(email) ?: return DeleteResult(false)
 
         val projectUserRole = projectUserRoleRepository.findByProjectIdAndUserId(projectId, user.id)
-            ?: return RemoveResult(false)
+            ?: return DeleteResult(false)
+
+        if (!projectUserRole.role.isSubset(senderRole)) {
+            return DeleteResult(false)
+        }
 
         try {
             projectUserRoleRepository.deleteById(projectUserRole.id)
         } catch (ex: Exception) {
-            return RemoveResult(false)
+            return DeleteResult(false)
         }
 
         notifyRemove(projectUserRole.project, projectUserRole.user)
 
-        return RemoveResult(true)
+        return DeleteResult(true)
     }
 
-    @GetMapping(path = ["/removeByScreenName"])
+    @GetMapping(path = ["/deleteByScreenName"])
     @ResponseBody
-    fun removeByScreenName(
+    fun deleteByScreenName(
+        @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "screen_name") screenName: String,
         @RequestParam(value = "project_id") projectId: Int
-    ): RemoveResult {
-        val user = userRepository.findByScreenName(screenName) ?: return RemoveResult(false)
+    ): DeleteResult {
+        val sender = userRepository.findByAccessToken(accessToken) ?: return DeleteResult(false)
+        if (sender.validUntil < Date()) {
+            return DeleteResult(false)
+        }
+
+        val senderRole = sender.projects.find { it.project.id == projectId }?.role ?: return DeleteResult(false)
+        if (!senderRole.checkPermission(Permission.MANAGE_TEAM)) {
+            return DeleteResult(false)
+        }
+
+        val user = userRepository.findByScreenName(screenName) ?: return DeleteResult(false)
 
         val projectUserRole = projectUserRoleRepository.findByProjectIdAndUserId(projectId, user.id)
-            ?: return RemoveResult(false)
+            ?: return DeleteResult(false)
+
+        if (!projectUserRole.role.isSubset(senderRole)) {
+            return DeleteResult(false)
+        }
 
         try {
             projectUserRoleRepository.deleteById(projectUserRole.id)
         } catch (ex: Exception) {
-            return RemoveResult(false)
+            return DeleteResult(false)
         }
 
         notifyRemove(projectUserRole.project, projectUserRole.user)
 
-        return RemoveResult(true)
+        return DeleteResult(true)
+    }
+
+    @PostMapping(path = ["/edit"])
+    @ResponseBody
+    fun edit(
+        @RequestParam(value = "access_token") accessToken: String,
+        @RequestParam(value = "user_id") userId: Int,
+        @RequestParam(value = "role_id") roleId: Int
+    ): EditResult {
+        val sender = userRepository.findByAccessToken(accessToken) ?: return EditResult(false)
+        if (sender.validUntil < Date()) {
+            return EditResult(false)
+        }
+
+        val roleOptional = roleRepository.findById(roleId)
+        if (roleOptional.isEmpty) {
+            return EditResult(false)
+        }
+        val role = roleOptional.get()
+
+        val senderRole = sender.projects.find { it.project.id == role.project.id }?.role ?: return EditResult(false)
+        if (!senderRole.checkPermission(Permission.MANAGE_TEAM)) {
+            return EditResult(false)
+        }
+
+        val userOptional = userRepository.findById(userId)
+        if (userOptional.isEmpty) {
+            return EditResult(false)
+        }
+        val user = userOptional.get()
+
+        val projectUserRole = user.projects.find { it.project.id == role.project.id } ?: return EditResult(false)
+        projectUserRole.role = role
+
+        try {
+            projectUserRoleRepository.save(projectUserRole)
+        } catch (ex: Exception) {
+            return EditResult(false)
+        }
+
+        return EditResult(true)
     }
 }
