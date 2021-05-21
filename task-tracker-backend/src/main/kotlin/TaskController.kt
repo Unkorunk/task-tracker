@@ -11,10 +11,10 @@ import java.util.*
 @Controller
 @RequestMapping(path = ["/task"])
 class TaskController {
-    data class CreateTaskResult(val status: Boolean, val task: Task? = null)
-    data class DeleteTaskResult(val status: Boolean)
-    data class EditTaskResult(val status: Boolean)
-    data class AllTaskResult(val status: Boolean, val tasks: Set<Task> = emptySet())
+    data class CreateResult(val status: Boolean, val task: Task? = null)
+    data class DeleteResult(val status: Boolean)
+    data class EditResult(val status: Boolean)
+    data class AllResult(val status: Boolean, val tasks: Set<Task> = emptySet())
 
     private val logger = LoggerFactory.getLogger(ProjectUserRoleController::class.java)
 
@@ -52,15 +52,20 @@ class TaskController {
         @RequestParam(value = "description") description: String,
         @RequestParam(value = "assigned_id") assignedId: Int?,
         @RequestParam(value = "deadline") deadline: String?
-    ): CreateTaskResult {
-        val user = userRepository.findByAccessToken(accessToken) ?: return CreateTaskResult(false)
+    ): CreateResult {
+        val user = userRepository.findByAccessToken(accessToken) ?: return CreateResult(false)
         if (user.validUntil < Date()) {
-            return CreateTaskResult(false)
+            return CreateResult(false)
+        }
+
+        val role = user.projects.find { it.project.id == projectId }?.role ?: return CreateResult(false)
+        if (!role.checkPermission(Permission.MANAGE_OWN_TASK)) {
+            return CreateResult(false)
         }
 
         val projectOptional = projectRepository.findById(projectId)
         if (projectOptional.isEmpty) {
-            return CreateTaskResult(false)
+            return CreateResult(false)
         }
         val project = projectOptional.get()
 
@@ -80,7 +85,7 @@ class TaskController {
         if (assignedId != null) {
             val assignedUserOptional = userRepository.findById(assignedId)
             if (assignedUserOptional.isEmpty) {
-                return CreateTaskResult(false)
+                return CreateResult(false)
             }
             val assignedUser = assignedUserOptional.get()
             task.assignedTo = assignedUser
@@ -103,21 +108,42 @@ class TaskController {
         try {
             task = taskRepository.save(task)
         } catch (ex: Exception) {
-            return CreateTaskResult(false)
+            return CreateResult(false)
         }
 
-        return CreateTaskResult(true, task)
+        return CreateResult(true, task)
     }
 
     @GetMapping(path = ["/delete"])
     @ResponseBody
-    fun delete(@RequestParam(value = "task_id") taskId: Int): DeleteTaskResult {
+    fun delete(
+        @RequestParam(value = "access_token") accessToken: String,
+        @RequestParam(value = "task_id") taskId: Int
+    ): DeleteResult {
+        val user = userRepository.findByAccessToken(accessToken) ?: return DeleteResult(false)
+        if (user.validUntil < Date()) {
+            return DeleteResult(false)
+        }
+
+        val taskOptional = taskRepository.findById(taskId)
+        if (taskOptional.isEmpty) {
+            return DeleteResult(false)
+        }
+        val task = taskOptional.get()
+
+        val role = user.projects.find { it.project.id == task.project.id }?.role ?: return DeleteResult(false)
+
+        val ownTask = role.checkPermission(Permission.MANAGE_OWN_TASK) && task.createdBy?.id == user.id
+        if (!ownTask && !role.checkPermission(Permission.MANAGE_ALL_TASKS)) {
+            return DeleteResult(false)
+        }
+
         try {
             taskRepository.deleteById(taskId)
         } catch (ex: Exception) {
-            return DeleteTaskResult(false)
+            return DeleteResult(false)
         }
-        return DeleteTaskResult(true)
+        return DeleteResult(true)
     }
 
     @PostMapping(path = ["/edit"])
@@ -130,17 +156,24 @@ class TaskController {
         @RequestParam(value = "description") description: String?,
         @RequestParam(value = "assigned_id") assignedId: Int?,
         @RequestParam(value = "deadline") deadline: String?
-    ): EditTaskResult {
-        val user = userRepository.findByAccessToken(accessToken) ?: return EditTaskResult(false)
+    ): EditResult {
+        val user = userRepository.findByAccessToken(accessToken) ?: return EditResult(false)
         if (user.validUntil < Date()) {
-            return EditTaskResult(false)
+            return EditResult(false)
         }
 
         val taskOptional = taskRepository.findById(taskId)
         if (taskOptional.isEmpty) {
-            return EditTaskResult(false)
+            return EditResult(false)
         }
         val task = taskOptional.get()
+
+        val role = user.projects.find { it.project.id == task.project.id }?.role ?: return EditResult(false)
+
+        val ownTask = role.checkPermission(Permission.MANAGE_OWN_TASK) && task.createdBy?.id == user.id
+        if (!ownTask && !role.checkPermission(Permission.MANAGE_ALL_TASKS)) {
+            return EditResult(false)
+        }
 
         task.updatedBy = user
         task.updatedAt = Date()
@@ -160,7 +193,7 @@ class TaskController {
         if (assignedId != null) {
             val assignedUserOptional = userRepository.findById(assignedId)
             if (assignedUserOptional.isEmpty) {
-                return EditTaskResult(false)
+                return EditResult(false)
             }
             val assignedUser = assignedUserOptional.get()
             if (task.assignedTo != null) {
@@ -186,10 +219,10 @@ class TaskController {
         try {
             taskRepository.save(task)
         } catch (ex: Exception) {
-            return EditTaskResult(false)
+            return EditResult(false)
         }
 
-        return EditTaskResult(true)
+        return EditResult(true)
     }
 
     @GetMapping(path = ["/allAssignedTasks"])
@@ -197,16 +230,16 @@ class TaskController {
     fun allAssignedTasks(
         @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "project_id") projectId: Int
-    ): AllTaskResult {
-        val user = userRepository.findByAccessToken(accessToken) ?: return AllTaskResult(false)
+    ): AllResult {
+        val user = userRepository.findByAccessToken(accessToken) ?: return AllResult(false)
         if (user.validUntil < Date()) {
-            return AllTaskResult(false)
+            return AllResult(false)
         }
 
-        return AllTaskResult(
+        return AllResult(
             true,
             user.assignedTasks.filter { it.project.id == projectId }.toSet()
-        ) // todo in one query
+        )
     }
 
     @GetMapping(path = ["/allCreatedTasks"])
@@ -214,13 +247,13 @@ class TaskController {
     fun allCreatedTasks(
         @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "project_id") projectId: Int
-    ): AllTaskResult {
-        val user = userRepository.findByAccessToken(accessToken) ?: return AllTaskResult(false)
+    ): AllResult {
+        val user = userRepository.findByAccessToken(accessToken) ?: return AllResult(false)
         if (user.validUntil < Date()) {
-            return AllTaskResult(false)
+            return AllResult(false)
         }
 
-        return AllTaskResult(true, user.createdTasks.filter { it.project.id == projectId }.toSet()) // todo in one query
+        return AllResult(true, user.createdTasks.filter { it.project.id == projectId }.toSet())
     }
 
     @GetMapping(path = ["/all"])
@@ -228,14 +261,14 @@ class TaskController {
     fun all(
         @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "project_id") projectId: Int
-    ): AllTaskResult {
-        val user = userRepository.findByAccessToken(accessToken) ?: return AllTaskResult(false)
+    ): AllResult {
+        val user = userRepository.findByAccessToken(accessToken) ?: return AllResult(false)
         if (user.validUntil < Date()) {
-            return AllTaskResult(false)
+            return AllResult(false)
         }
 
-        val projectUserRole = user.projects.find { it.project.id == projectId } ?: return AllTaskResult(false)
+        val projectUserRole = user.projects.find { it.project.id == projectId } ?: return AllResult(false)
 
-        return AllTaskResult(true, projectUserRole.project.tasks)
+        return AllResult(true, projectUserRole.project.tasks)
     }
 }

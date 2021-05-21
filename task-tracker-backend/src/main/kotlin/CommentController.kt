@@ -41,6 +41,11 @@ class CommentController {
         }
         val task = taskOptional.get()
 
+        val role = user.projects.find { it.project.id == task.project.id }?.role ?: return CreateResult(false)
+        if (!role.checkPermission(Permission.MANAGE_OWN_COMMENT)) {
+            return CreateResult(false)
+        }
+
         var comment = Comment()
         comment.author = user
         comment.createdAt = Date()
@@ -64,6 +69,19 @@ class CommentController {
     ): DeleteResult {
         val user = userRepository.findByAccessToken(accessToken) ?: return DeleteResult(false)
         if (user.validUntil < Date()) {
+            return DeleteResult(false)
+        }
+
+        val commentOptional = commentRepository.findById(commentId)
+        if (commentOptional.isEmpty) {
+            return DeleteResult(false)
+        }
+        val comment = commentOptional.get()
+
+        val role = user.projects.find { it.project.id == comment.task.project.id }?.role ?: return DeleteResult(false)
+
+        val ownComment = role.checkPermission(Permission.MANAGE_OWN_COMMENT) && comment.author?.id == user.id
+        if (!ownComment && !role.checkPermission(Permission.MANAGE_ALL_COMMENTS)) {
             return DeleteResult(false)
         }
 
@@ -94,6 +112,13 @@ class CommentController {
         }
         val comment = commentOptional.get()
 
+        val role = user.projects.find { it.project.id == comment.task.project.id }?.role ?: return EditResult(false)
+
+        val ownComment = role.checkPermission(Permission.MANAGE_OWN_COMMENT) && comment.author?.id == user.id
+        if (!ownComment && !role.checkPermission(Permission.MANAGE_ALL_COMMENTS)) {
+            return EditResult(false)
+        }
+
         if (text != null) {
             comment.text = text
         }
@@ -105,11 +130,5 @@ class CommentController {
         }
 
         return EditResult(true)
-    }
-
-    @GetMapping(path = ["/all"])
-    @ResponseBody
-    fun getAll(): Iterable<Comment> {
-        return commentRepository.findAll()
     }
 }
