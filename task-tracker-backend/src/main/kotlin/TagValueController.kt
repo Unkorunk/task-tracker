@@ -11,7 +11,7 @@ import java.util.*
 class TagValueController {
     data class CreateResult(val status: Boolean, val tagValue: TagValue? = null)
     data class DeleteResult(val status: Boolean)
-    data class EditResult(val status: Boolean)
+    data class EditResult(val status: Boolean, val tagValue: TagValue? = null)
 
     @Autowired
     private lateinit var tagValueRepository: TagValueRepository
@@ -108,7 +108,7 @@ class TagValueController {
         if (tagValueOptional.isEmpty) {
             return EditResult(false)
         }
-        val tagValue = tagValueOptional.get()
+        var tagValue = tagValueOptional.get()
 
         val senderRole = sender.projects.find {
             it.project.id == tagValue.tagCaption.project.id
@@ -122,11 +122,11 @@ class TagValueController {
         }
 
         try {
-            tagValueRepository.save(tagValue)
+            tagValue = tagValueRepository.save(tagValue)
         } catch (ex: Exception) {
             return EditResult(false)
         }
 
-        return EditResult(true)
+        return EditResult(true, tagValue)
     }
 }

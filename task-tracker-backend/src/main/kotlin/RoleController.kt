@@ -10,7 +10,7 @@ import java.util.*
 @RequestMapping(path = ["/role"])
 class RoleController {
     data class CreateResult(val status: Boolean, val role: Role? = null)
-    data class EditResult(val status: Boolean)
+    data class EditResult(val status: Boolean, val role: Role? = null)
     data class DeleteResult(val status: Boolean)
     data class AllResult(val status: Boolean, val roles: Set<Role> = emptySet())
 
@@ -70,7 +70,7 @@ class RoleController {
         if (roleOptional.isEmpty) {
             return EditResult(false)
         }
-        val role = roleOptional.get()
+        var role = roleOptional.get()
 
         val projectUserRole = user.projects.find { it.project.id == role.project.id } ?: return EditResult(false)
 
@@ -87,12 +87,12 @@ class RoleController {
         }
 
         try {
-            roleRepository.save(role)
+            role = roleRepository.save(role)
         } catch (ex: Exception) {
             return EditResult(false)
         }
 
-        return EditResult(true)
+        return EditResult(true, role)
     }
 
     @GetMapping(path = ["/delete"])

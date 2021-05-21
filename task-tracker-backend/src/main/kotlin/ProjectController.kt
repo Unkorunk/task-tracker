@@ -8,9 +8,9 @@ import java.util.*
 @Controller
 @RequestMapping(path = ["/project"])
 class ProjectController {
-    data class CreateProjectResult(val status: Boolean)
+    data class CreateProjectResult(val status: Boolean, val project: Project? = null)
     data class DeleteProjectResult(val status: Boolean)
-    data class EditProjectResult(val status: Boolean)
+    data class EditProjectResult(val status: Boolean, val project: Project? = null)
     data class ProjectRolePair(val project: Project, val role: Role)
     data class AllProjectResult(val status: Boolean, val projects: Set<ProjectRolePair> = emptySet())
 
@@ -71,7 +71,7 @@ class ProjectController {
             return CreateProjectResult(false)
         }
 
-        return CreateProjectResult(true)
+        return CreateProjectResult(true, project)
     }
 
     @GetMapping(path = ["/delete"])
@@ -121,7 +121,7 @@ class ProjectController {
             return EditProjectResult(false)
         }
 
-        val project = projectOptional.get()
+        var project = projectOptional.get()
 
         val projectUserRole = user.projects.find { it.project.id == project.id } ?: return EditProjectResult(false)
 
@@ -138,12 +138,12 @@ class ProjectController {
         }
 
         try {
-            projectRepository.save(project)
+            project = projectRepository.save(project)
         } catch (ex: Exception) {
             return EditProjectResult(false)
         }
 
-        return EditProjectResult(true)
+        return EditProjectResult(true, project)
     }
 
     @GetMapping(path = ["/all"])

@@ -12,7 +12,7 @@ class UserController {
     data class CreateUserResult(val status: Boolean, val user: User? = null, val accessToken: String? = null)
     data class DeleteUserResult(val status: Boolean)
     data class GetUserResult(val status: Boolean, val user: User? = null)
-    data class EditUserResult(val status: Boolean)
+    data class EditUserResult(val status: Boolean, val user: User? = null)
     data class EnterResult(val status: Boolean, val user: User? = null, val accessToken: String? = null)
 
     @Autowired
@@ -112,7 +112,7 @@ class UserController {
         @RequestParam(value = "photo") photo: String?,
         @RequestParam(value = "password") password: String?
     ): EditUserResult {
-        val user = userRepository.findByAccessToken(accessToken) ?: return EditUserResult(false)
+        var user = userRepository.findByAccessToken(accessToken) ?: return EditUserResult(false)
 
         if (user.validUntil < Date()) {
             return EditUserResult(false)
@@ -139,12 +139,12 @@ class UserController {
         }
 
         try {
-            userRepository.save(user)
+            user = userRepository.save(user)
         } catch (ex: Exception) {
             return EditUserResult(false)
         }
 
-        return EditUserResult(true)
+        return EditUserResult(true, user)
     }
 
     @GetMapping(path = ["/enter"])
