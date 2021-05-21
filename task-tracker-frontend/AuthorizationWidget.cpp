@@ -23,6 +23,8 @@ void AuthorizationWidget::OnLogInBtnClicked() {
     ui->passwordField->setReadOnly(true);
 
     Backend::Instance.SignIn(ui->usernameField->text(), ui->passwordField->text());
+
+    ui->loadingBar->StartLoading();
 }
 
 void AuthorizationWidget::OnMoveToSignUpBtnClicked() {
@@ -35,6 +37,8 @@ void AuthorizationWidget::OnLogin(Status status)
 {
     ui->usernameField->setReadOnly(false);
     ui->passwordField->setReadOnly(false);
+
+    ui->loadingBar->StopLoading();
 
     if (status.isSuccess) {
         emit LoggedIn();

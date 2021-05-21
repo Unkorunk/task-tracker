@@ -9,22 +9,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="97"/>
+        <location filename="AuthorizationWidget.ui" line="100"/>
         <source>Username</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="150"/>
+        <location filename="AuthorizationWidget.ui" line="153"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="208"/>
+        <location filename="AuthorizationWidget.ui" line="211"/>
         <source>Log in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AuthorizationWidget.ui" line="239"/>
+        <location filename="AuthorizationWidget.ui" line="242"/>
         <source>Don&apos;t have 
 an account?</source>
         <translation type="unfinished"></translation>
@@ -39,6 +39,52 @@ an account?</source>
     </message>
 </context>
 <context>
+    <name>CreateProjectDialog</name>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="20"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="84"/>
+        <source>Create project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="124"/>
+        <source>Enter project name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="134"/>
+        <source>Personal project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="192"/>
+        <source>Create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CreateProjectDialog.ui" line="239"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DateTimePropertyWidget</name>
+    <message>
+        <location filename="DateTimePropertyWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="DateTimePropertyWidget.ui" line="20"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>GreetingsWidget</name>
     <message>
         <location filename="GreetingsWidget.ui" line="20"/>
@@ -48,6 +94,19 @@ an account?</source>
     <message>
         <location filename="GreetingsWidget.ui" line="38"/>
         <source>Greetings, &lt;username&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>IntegerSelectorWidget</name>
+    <message>
+        <location filename="IntegerSelectorWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="IntegerSelectorWidget.ui" line="20"/>
+        <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -90,6 +149,37 @@ an account?</source>
     </message>
 </context>
 <context>
+    <name>LabelPropertyWidget</name>
+    <message>
+        <location filename="LabelPropertyWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LabelPropertyWidget.ui" line="27"/>
+        <source>Caption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LabelPropertyWidget.ui" line="34"/>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LoadingBar</name>
+    <message>
+        <location filename="LoadingBar.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LoadingBar.ui" line="58"/>
+        <source>Waiting for response...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="MainWindow.ui" line="14"/>
@@ -106,21 +196,26 @@ an account?</source>
     </message>
     <message>
         <location filename="NavBar.ui" line="55"/>
+        <source>Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="NavBar.ui" line="68"/>
         <source>Projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="83"/>
+        <location filename="NavBar.ui" line="96"/>
         <source>notifications</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="96"/>
+        <location filename="NavBar.ui" line="109"/>
         <source>Profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="109"/>
+        <location filename="NavBar.ui" line="122"/>
         <source>Log out</source>
         <translation type="unfinished"></translation>
     </message>
@@ -282,37 +377,37 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="97"/>
+        <location filename="RegistrationWidget.ui" line="100"/>
         <source>Full name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="147"/>
+        <location filename="RegistrationWidget.ui" line="150"/>
         <source>Login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="197"/>
+        <location filename="RegistrationWidget.ui" line="200"/>
         <source>Email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="247"/>
+        <location filename="RegistrationWidget.ui" line="250"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="297"/>
+        <location filename="RegistrationWidget.ui" line="300"/>
         <source>Repeat password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="352"/>
+        <location filename="RegistrationWidget.ui" line="355"/>
         <source>Sign up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RegistrationWidget.ui" line="383"/>
+        <location filename="RegistrationWidget.ui" line="386"/>
         <source>Already have 
 an account?</source>
         <translation type="unfinished"></translation>
@@ -351,6 +446,19 @@ an account?</source>
     <message>
         <location filename="TaskItemWidget.ui" line="121"/>
         <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserSelectorWidget</name>
+    <message>
+        <location filename="UserSelectorWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="UserSelectorWidget.ui" line="20"/>
+        <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

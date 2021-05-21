@@ -18,6 +18,9 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Network REQUIRED)
 set(TS_FILES_FRONTEND task-tracker-frontend/task-tracker-frontend_ru_RU.ts)
 
 set(PROJECT_SOURCES_FRONTEND
+  QtWaitingSpinner/waitingspinnerwidget.cpp
+  QtWaitingSpinner/waitingspinnerwidget.h
+
   task-tracker-frontend/main.cpp
   task-tracker-frontend/MainWindow.cpp
   task-tracker-frontend/MainWindow.h
@@ -71,6 +74,9 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/ProjectsList.h
   task-tracker-frontend/ProjectsList.ui
 
+  task-tracker-frontend/DataClasses.cpp
+  task-tracker-frontend/DataClasses.h
+
   task-tracker-frontend/Backend.cpp
   task-tracker-frontend/Backend.h
 
@@ -81,6 +87,30 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/TaskItemWidget.cpp
   task-tracker-frontend/TaskItemWidget.h
   task-tracker-frontend/TaskItemWidget.ui
+
+  task-tracker-frontend/CreateProjectDialog.cpp
+  task-tracker-frontend/CreateProjectDialog.h
+  task-tracker-frontend/CreateProjectDialog.ui
+
+  task-tracker-frontend/LoadingBar.cpp
+  task-tracker-frontend/LoadingBar.h
+  task-tracker-frontend/LoadingBar.ui
+
+  task-tracker-frontend/LabelPropertyWidget.cpp
+  task-tracker-frontend/LabelPropertyWidget.h
+  task-tracker-frontend/LabelPropertyWidget.ui
+
+  task-tracker-frontend/DateTimePropertyWidget.cpp
+  task-tracker-frontend/DateTimePropertyWidget.h
+  task-tracker-frontend/DateTimePropertyWidget.ui
+
+  task-tracker-frontend/UserSelectorWidget.cpp
+  task-tracker-frontend/UserSelectorWidget.h
+  task-tracker-frontend/UserSelectorWidget.ui
+
+  task-tracker-frontend/IntegerSelectorWidget.cpp
+  task-tracker-frontend/IntegerSelectorWidget.h
+  task-tracker-frontend/IntegerSelectorWidget.ui
 
   ${TS_FILES_FRONTEND}
 )

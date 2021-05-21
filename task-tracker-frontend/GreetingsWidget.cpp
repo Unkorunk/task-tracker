@@ -24,6 +24,7 @@ GreetingsWidget::~GreetingsWidget()
 
 void GreetingsWidget::OnProjectsLoad(Status status, const QList<ProjectInfo> &projects)
 {
+    MainWindow::Instance->StopLoading();
     if (!status.isSuccess) {
         return;
     }
@@ -33,6 +34,7 @@ void GreetingsWidget::OnProjectsLoad(Status status, const QList<ProjectInfo> &pr
 
 void GreetingsWidget::OnProjectAdd(const QString& name)
 {
+    MainWindow::Instance->StartLoading();
     Backend::Instance.CreateProject(name);
 }
 

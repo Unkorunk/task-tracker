@@ -14,11 +14,23 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
 
     connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnTransition);
     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);
+
+    connect(ui->navBar, &NavBar::BackButtonClicked, this, &MainWindow::OnBackButtonClicked);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::StartLoading()
+{
+    ui->loadingBar->StartLoading();
+}
+
+void MainWindow::StopLoading()
+{
+    ui->loadingBar->StopLoading();
 }
 
 void MainWindow::OnProjectTransition(const ProjectInfo &projectInfo)
@@ -54,13 +66,23 @@ void MainWindow::OnTransition(MainWindow::Transition transition)
     switch (transition) {
     case Transition::Greetings:
         Backend::Instance.GetProjects();
-        break;
-    case Transition::Notifications:
-    case Transition::Profile:
+        StartLoading();
         break;
     }
 
+    myTransitionsHistory.push((Transition)ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex((int)transition);
+}
+
+void MainWindow::OnBackButtonClicked()
+{
+    if (myTransitionsHistory.empty()) {
+        return;
+    }
+
+    Transition prevTransition = myTransitionsHistory.pop();
+    OnTransition(prevTransition);
+    myTransitionsHistory.pop();
 }
 
 void MainWindow::OnLogout()

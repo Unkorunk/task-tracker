@@ -6,7 +6,7 @@
 #include <QStringListModel>
 #include <memory>
 #include <QListWidgetItem>
-
+#include "CreateProjectDialog.h"
 #include "Backend.h"
 
 namespace Ui {
@@ -33,13 +33,15 @@ signals:
 private slots:
     void OnAddProjectBtnClicked();
 
+    void OnProjectCreated(QString& projectName);
+
     void OnItemClicked(QListWidgetItem*);
 private:
     Ui::ProjectsList *ui;
 
     QList<ProjectInfo> myProjects;
 
-    std::unique_ptr<QDialog> myDialog;
+    CreateProjectDialog* dialog;
 };
 
 #endif // PROJECTSLIST_H
