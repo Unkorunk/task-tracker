@@ -74,7 +74,6 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
         auto widget = new TaskItemWidget(this);
         widget->SetTask(task);
         item->setSizeHint(QSize(450, 60));
-
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item, widget);
 

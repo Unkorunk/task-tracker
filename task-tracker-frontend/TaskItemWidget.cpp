@@ -14,6 +14,7 @@ TaskItemWidget::TaskItemWidget(QWidget *parent) :
     QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect();
     effect->setColor(QColor("#C0C0C0"));
     ui->widget->setGraphicsEffect(effect);
+    ui->endDate->setSpecialValueText("No deadline");
 }
 
 TaskItemWidget::~TaskItemWidget()
