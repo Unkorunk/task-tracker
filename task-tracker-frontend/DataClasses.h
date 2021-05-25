@@ -28,27 +28,6 @@ private:
     QString myIcon;
 };
 
-// TODO: add properties
-//class PropertyValue {
-//public:
-//    PropertyValue();
-
-//    PropertyValue(int valueId, int propId, QString title);
-
-//    int propertyValueId;
-//    int propertyId;
-//    QString valueTitle;
-//};
-
-//class PropertyInfo {
-//public:
-//    QString caption;
-//    int propertyId;
-
-//    QList<PropertyValue> values;
-//    int selectedId;
-//};
-
 class UserInfo {
 public:
     static UserInfo ParseFromJson(const QJsonObject& object);
@@ -140,5 +119,35 @@ inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
         return proj1.GetId() < proj2.GetId();
     return proj1.GetTitle() < proj2.GetTitle();
 }
+
+class RoleInfo {
+public:
+    const static int MANAGE_OWN_TASK = 1;
+    const static int MANAGE_ALL_TASK = MANAGE_OWN_TASK | 1 << 1;
+    const static int MANAGE_OWN_COMMENT = 1 << 2;
+    const static int MANAGE_ALL_COMMENT = MANAGE_OWN_COMMENT | 1 << 3;
+    const static int MANAGE_TEAM = 1 << 4;
+    const static int MANAGE_ROLES = 1 << 5;
+    const static int MANAGE_PROJECT = 1 << 6;
+    const static int DELETE_PROJECT = 1 << 7;
+
+    static RoleInfo ParseFromJson(const QJsonObject& obj);
+
+    RoleInfo(int id, const QString& caption, QByteArray perms, int projectId);
+
+    int GetId() const;
+    QString GetCaption() const;
+    QByteArray GetPermission() const;
+
+    int GetProjectId() const;
+
+
+private:
+    int myId;
+    QString myCaption;
+    QByteArray myPermissions;
+
+    int myProjectId;
+};
 
 #endif // DATACLASSES_H

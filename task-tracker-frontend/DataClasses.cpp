@@ -194,6 +194,31 @@ void TaskInfo::SetDeadline(const std::optional<QDateTime> &deadline) {
     myDeadline = deadline;
 }
 
+// END TASK INFO
 
+// ROLE INFO
+RoleInfo RoleInfo::ParseFromJson(const QJsonObject &obj) {
+    QByteArray perms = QByteArray::fromStdString(obj["permissions"].toString().toStdString());
+    return RoleInfo(obj["id"].toInt(), obj["value"].toString(), perms, obj["project"].toObject()["id"].toInt());
+}
 
+RoleInfo::RoleInfo(int id, const QString &caption, QByteArray perms, int projectId) : myId(id), myCaption(caption),
+    myPermissions(perms), myProjectId(projectId) {}
 
+int RoleInfo::GetId() const {
+    return myId;
+}
+
+QString RoleInfo::GetCaption() const {
+    return myCaption;
+}
+
+QByteArray RoleInfo::GetPermission() const {
+    return myPermissions;
+}
+
+int RoleInfo::GetProjectId() const {
+    return myProjectId;
+}
+
+// END ROLE INFO

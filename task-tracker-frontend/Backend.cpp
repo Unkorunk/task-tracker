@@ -67,6 +67,22 @@ QString Backend::DeleteTaskUrl() {
     return BaseUrl + "/task/delete";
 }
 
+QString Backend::GetRolesUrl() {
+    return BaseUrl + "/role/all";
+}
+
+QString Backend::CreateRoleUrl() {
+    return BaseUrl + "/role/create";
+}
+
+QString Backend::EditRoleUrl() {
+    return BaseUrl + "/role/edit";
+}
+
+QString Backend::DeleteRoleUrl() {
+    return BaseUrl + "/role/delete";
+}
+
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {
     QNetworkReply::NetworkError error = reply->error();
 
@@ -204,6 +220,42 @@ void Backend::UpdateProfile()
                });
 }
 
+void Backend::GetRoles(const ProjectInfo &projectInfo)
+{
+    GetRequest(GetRolesUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "project_id", QString("%1").arg(projectInfo.GetId()) }
+               });
+}
+
+void Backend::CreateRole(const RoleInfo &roleInfo)
+{
+    PostRequest(CreateRoleUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "project_id", QString("%1").arg(roleInfo.GetId()) },
+                    { "value", roleInfo.GetCaption() },
+                    { "permissions", roleInfo.GetPermission() }
+                });
+}
+
+void Backend::EditRole(const RoleInfo &roleInfo)
+{
+    PostRequest(EditRoleUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "project_id", QString("%1").arg(roleInfo.GetId()) },
+                    { "value", roleInfo.GetCaption() },
+                    { "permissions", roleInfo.GetPermission() }
+                });
+}
+
+void Backend::DeleteRole(const RoleInfo &roleInfo)
+{
+    GetRequest(DeleteRoleUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "role_id", QString("%1").arg(roleInfo.GetId()) }
+               });
+}
+
 void Backend::OnResponse(QNetworkReply* reply)
 {
     Status status;
@@ -265,9 +317,11 @@ void Backend::OnResponse(QNetworkReply* reply)
     } else if (pattern == GetTasksUrl()) {
         QList<TaskInfo> tasks;
         // TODO: process all information
-        for (QJsonValueRef it : root["tasks"].toArray()) {
-            TaskInfo task = TaskInfo::ParseFromJson(it.toObject());
-            tasks.push_back(task);
+        if (status.isSuccess) {
+            for (QJsonValueRef it : root["tasks"].toArray()) {
+                TaskInfo task = TaskInfo::ParseFromJson(it.toObject());
+                tasks.push_back(task);
+            }
         }
 
         emit TasksLoaded(status, tasks);
@@ -277,5 +331,30 @@ void Backend::OnResponse(QNetworkReply* reply)
         emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));
     } else if (pattern == DeleteTaskUrl()) {
         emit TaskDeleted(status);
+    } else if (pattern == GetRolesUrl()) {
+        QList<RoleInfo> roles;
+        if (status.isSuccess) {
+            for (QJsonValueRef it : root["roles"].toArray()) {
+                roles.push_back(RoleInfo::ParseFromJson(it.toObject()));
+            }
+        }
+
+        emit RolesLoaded(status, roles);
+    } else if (pattern == CreateRoleUrl()) {
+        RoleInfo role(-1, "", QByteArray(), -1);
+        if (status.isSuccess) {
+            role = RoleInfo::ParseFromJson(root["role"].toObject());
+        }
+
+        emit RoleEdited(status, role);
+    } else if (pattern == EditRoleUrl()) {
+        RoleInfo role(-1, "", QByteArray(), -1);
+        if (status.isSuccess) {
+            role = RoleInfo::ParseFromJson(root["role"].toObject());
+        }
+
+        emit RoleEdited(status, role);
+    } else if (pattern == DeleteRoleUrl()) {
+        emit RoleDeleted(status);
     }
 }
