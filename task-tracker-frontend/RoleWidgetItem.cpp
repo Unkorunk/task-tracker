@@ -5,7 +5,7 @@
 
 RoleWidgetItem::RoleWidgetItem(QWidget *parent) :
     QWidget(parent),
-    myRole(-1, "", QByteArray(), -1),
+    myRole(-1, "", 0, -1),
     isEditable(false),
     ui(new Ui::RoleWidgetItem) {
     ui->setupUi(this);
@@ -108,7 +108,7 @@ void RoleWidgetItem::OnEditCancelBtnClicked() {
 }
 
 void RoleWidgetItem::OnSaveBtnClicked() {
-    RoleInfo newRole(myRole.GetId(), myRole.GetCaption(), myRole.GetPermission(), myRole.GetProjectId());
+    RoleInfo newRole(myRole.GetId(), myRole.GetCaption(), 0, myRole.GetProjectId());
 
     newRole.SetCaption(ui->captionText->text());
 

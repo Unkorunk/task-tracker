@@ -133,23 +133,24 @@ public:
 
     static RoleInfo ParseFromJson(const QJsonObject& obj);
 
-    RoleInfo(int id, const QString& caption, QByteArray perms, int projectId);
+    RoleInfo(int id, const QString& caption, uint64_t perms, int projectId);
 
     int GetId() const;
     QString GetCaption() const;
     void SetCaption(const QString& caption);
 
-    QByteArray GetPermission() const;
-    void SetPermissions(int powIdx, char value);
+    uint64_t GetPermission() const;
+    QString GetPermissionStr() const;
+    void SetPermissions(uint64_t perm, bool add = true);
 
     int GetProjectId() const;
 
-    bool HasPermission(int powIdx) const;
+    bool HasPermission(uint64_t perm) const;
 
 private:
     int myId;
     QString myCaption;
-    QByteArray myPermissions;
+    uint64_t myPermissions;
 
     int myProjectId;
 };

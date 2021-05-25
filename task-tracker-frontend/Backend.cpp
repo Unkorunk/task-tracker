@@ -240,23 +240,21 @@ void Backend::GetRoles(const ProjectInfo &projectInfo)
                });
 }
 
-void Backend::CreateRole(const RoleInfo &roleInfo)
-{
+void Backend::CreateRole(const RoleInfo &roleInfo) {
     PostRequest(CreateRoleUrl(), QMap<QString, QString> {
                     { "access_token", myToken },
                     { "project_id", QString("%1").arg(roleInfo.GetProjectId()) },
                     { "value", roleInfo.GetCaption() },
-                    { "permissions", roleInfo.GetPermission() }
+                    { "permissions", roleInfo.GetPermissionStr() }
                 });
 }
 
-void Backend::EditRole(const RoleInfo &roleInfo)
-{
+void Backend::EditRole(const RoleInfo &roleInfo) {
     PostRequest(EditRoleUrl(), QMap<QString, QString> {
                     { "access_token", myToken },
-                    { "project_id", QString("%1").arg(roleInfo.GetId()) },
+                    { "role_id", QString("%1").arg(roleInfo.GetId()) },
                     { "value", roleInfo.GetCaption() },
-                    { "permissions", roleInfo.GetPermission() }
+                    { "permissions", roleInfo.GetPermissionStr() }
                 });
 }
 
@@ -298,7 +296,6 @@ void Backend::OnResponse(QNetworkReply* reply)
 {
     Status status;
     QJsonObject root = GetRootFromReply(reply, status);
-
 
     qInfo() << status.isSuccess << " " << status.response;
 
@@ -379,14 +376,14 @@ void Backend::OnResponse(QNetworkReply* reply)
 
         emit RolesLoaded(status, roles);
     } else if (pattern == CreateRoleUrl()) {
-        RoleInfo role(-1, "", QByteArray(), -1);
+        RoleInfo role(-1, "", 0, -1);
         if (status.isSuccess) {
             role = RoleInfo::ParseFromJson(root["role"].toObject());
         }
 
         emit RoleCreated(status, role);
     } else if (pattern == EditRoleUrl()) {
-        RoleInfo role(-1, "", QByteArray(), -1);
+        RoleInfo role(-1, "", 0, -1);
         if (status.isSuccess) {
             role = RoleInfo::ParseFromJson(root["role"].toObject());
         }

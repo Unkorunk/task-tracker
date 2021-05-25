@@ -22,6 +22,8 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     connect(&Backend::Instance, &Backend::ProjectEdited, this, &ProjectSettingsWidget::OnProjectEdited);
     connect(&Backend::Instance, &Backend::RolesLoaded, this, &ProjectSettingsWidget::OnRolesLoaded);
     connect(&Backend::Instance, &Backend::RoleDeleted, this, &ProjectSettingsWidget::OnRoleDeleted);
+    connect(&Backend::Instance, &Backend::RoleCreated, this, &ProjectSettingsWidget::OnRoleCreated);
+    connect(&Backend::Instance, &Backend::RoleEdited, this, &ProjectSettingsWidget::OnRoleEdited);
 }
 
 void ProjectSettingsWidget::OnSaveClicked() {
@@ -55,12 +57,11 @@ void ProjectSettingsWidget::OnProjectEdited(Status status)
     } else {
         // TODO: Handle errors
     }
-
 }
 
 void ProjectSettingsWidget::OnRoleCreateClicked() {
     MainWindow::Instance->StartLoading();
-    Backend::Instance.CreateRole(RoleInfo(-1, "User role", QByteArray(8, (char)0), myProject.GetId()));
+    Backend::Instance.CreateRole(RoleInfo(-1, "User role", 0, myProject.GetId()));
 }
 
 void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &roles) {

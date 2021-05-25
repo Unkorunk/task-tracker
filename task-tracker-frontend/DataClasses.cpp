@@ -1,6 +1,7 @@
 #include "DataClasses.h"
 
 #include <QJsonObject>
+#include <algorithm>
 
 // PROJECT INFO
 ProjectInfo ProjectInfo::ParseFromJson(const QJsonObject &object) {
@@ -198,11 +199,18 @@ void TaskInfo::SetDeadline(const std::optional<QDateTime> &deadline) {
 
 // ROLE INFO
 RoleInfo RoleInfo::ParseFromJson(const QJsonObject &obj) {
-    QByteArray perms = QByteArray::fromStdString(obj["permissions"].toString().toStdString());
+    QString bitString = obj["permissions"].toString();
+    uint64_t perms = 0;
+    for (uint64_t i = 0; i < std::min(64ll, bitString.length()); i++) {
+        if (bitString[i] == '1') {
+            perms += (1ull << i);
+        }
+    }
+
     return RoleInfo(obj["id"].toInt(), obj["value"].toString(), perms, obj["project"].toObject()["id"].toInt());
 }
 
-RoleInfo::RoleInfo(int id, const QString &caption, QByteArray perms, int projectId) : myId(id), myCaption(caption),
+RoleInfo::RoleInfo(int id, const QString &caption, uint64_t perms, int projectId) : myId(id), myCaption(caption),
     myPermissions(perms), myProjectId(projectId) {}
 
 int RoleInfo::GetId() const {
@@ -217,26 +225,24 @@ void RoleInfo::SetCaption(const QString &caption) {
     myCaption = caption;
 }
 
-QByteArray RoleInfo::GetPermission() const {
+uint64_t RoleInfo::GetPermission() const {
     return myPermissions;
 }
 
-void RoleInfo::SetPermissions(int powIdx, char value) {
-    for (int i = 0; i < 30; i++) {
-        if (powIdx & (1 << i)) {
-            if (value == 0) {
-                if (myPermissions.size() <= i) {
-                    return;
-                }
-            } else {
-                while (myPermissions.size() <= i) {
-                    myPermissions.append((char)0);
-                }
-            }
+QString RoleInfo::GetPermissionStr() const {
+    QString res;
+    uint64_t mask = 0;
+    for (uint64_t i = 0; i < 8; i++) {
+        mask = 255 << (i * 8ull);
+        res.append((char)((myPermissions & mask) >> (i * 8ull)));
+    }
 
+    return res;
+}
 
-            myPermissions[i] = value;
-        }
+void RoleInfo::SetPermissions(uint64_t perm, bool add) {
+    if (add) {
+        myPermissions |= perm;
     }
 }
 
@@ -244,16 +250,8 @@ int RoleInfo::GetProjectId() const {
     return myProjectId;
 }
 
-bool RoleInfo::HasPermission(int powIdx) const {
-    for (int i = 0; i < 30; i++) {
-        if (powIdx & (1 << i)) {
-            if (myPermissions.size() <= i || myPermissions[i] == 0) {
-                return false;
-            }
-        }
-    }
-
-    return true;
+bool RoleInfo::HasPermission(uint64_t perm) const {
+    return ((myPermissions & perm) == perm);
 }
 
 // END ROLE INFO
