@@ -44,6 +44,10 @@ public:
     void EditRole(const RoleInfo& roleInfo);
     void DeleteRole(const RoleInfo& roleInfo);
 
+    void InviteByEmail(const ProjectInfo& project, const RoleInfo& role, const QString& email);
+    void Kick(const ProjectInfo& project, const UserInfo& user);
+    void ChangeRole(const UserInfo& user, const RoleInfo& role);
+
 signals:
     void SignedIn(Status status);
     void SignedUp(Status status);
@@ -62,6 +66,10 @@ signals:
     void RoleCreated(Status statsu, const RoleInfo& role);
     void RoleEdited(Status statsu, const RoleInfo& role);
     void RoleDeleted(Status status);
+
+    void MemberInvited(Status status);
+    void MemberKicked(Status status);
+    void RoleChanged(Status status);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -88,6 +96,10 @@ private:
     QString CreateRoleUrl();
     QString EditRoleUrl();
     QString DeleteRoleUrl();
+
+    QString InviteByEmailUrl();
+    QString KickUrl();
+    QString ChangeRoleUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 

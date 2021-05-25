@@ -83,6 +83,18 @@ QString Backend::DeleteRoleUrl() {
     return BaseUrl + "/role/delete";
 }
 
+QString Backend::InviteByEmailUrl() {
+    return BaseUrl + "/projectUserRole/createByEmail";
+}
+
+QString Backend::KickUrl() {
+    return BaseUrl + "/projectUserRole/deleteById";
+}
+
+QString Backend::ChangeRoleUrl() {
+    return BaseUrl + "/projectUserRole/edit";
+}
+
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {
     QNetworkReply::NetworkError error = reply->error();
 
@@ -256,6 +268,32 @@ void Backend::DeleteRole(const RoleInfo &roleInfo)
                });
 }
 
+void Backend::InviteByEmail(const ProjectInfo &project, const RoleInfo &role, const QString &email) {
+    PostRequest(InviteByEmailUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "email", email },
+                    { "project_id", QString("%1").arg(project.GetId()) },
+                    { "role_id", QString("%1").arg(role.GetId()) }
+                });
+}
+
+void Backend::Kick(const ProjectInfo &project, const UserInfo &user) {
+    GetRequest(KickUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "user_id", QString("%1").arg(user.GetId()) },
+                   { "project_id", QString("%1").arg(project.GetId()) }
+               });
+}
+
+void Backend::ChangeRole(const UserInfo &user, const RoleInfo &role) {
+    PostRequest(ChangeRoleUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "user_id", QString("%1").arg(user.GetId()) },
+                    { "role_id", QString("%1").arg(role.GetId()) }
+                });
+
+}
+
 void Backend::OnResponse(QNetworkReply* reply)
 {
     Status status;
@@ -356,5 +394,11 @@ void Backend::OnResponse(QNetworkReply* reply)
         emit RoleEdited(status, role);
     } else if (pattern == DeleteRoleUrl()) {
         emit RoleDeleted(status);
+    } else if (pattern == InviteByEmailUrl()) {
+        emit MemberInvited(status);
+    } else if (pattern == KickUrl()) {
+        emit MemberKicked(status);
+    } else if (pattern == ChangeRoleUrl()) {
+        emit RoleChanged(status);
     }
 }
