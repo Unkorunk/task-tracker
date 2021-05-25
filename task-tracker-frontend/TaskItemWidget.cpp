@@ -6,6 +6,7 @@ TaskItemWidget::TaskItemWidget(QWidget *parent) :
     ui(new Ui::TaskItemWidget)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_StyledBackground);
 }
 
 TaskItemWidget::~TaskItemWidget()

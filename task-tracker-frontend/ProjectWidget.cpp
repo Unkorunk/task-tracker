@@ -73,7 +73,8 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
         auto item = new QListWidgetItem();
         auto widget = new TaskItemWidget(this);
         widget->setTask(task.taskName);
-        item->setSizeHint(QSize(200, 100));
+        widget->setStyleSheet("QWidget {background-color: white}");
+        item->setSizeHint(QSize(700, 70));
 
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item, widget);
