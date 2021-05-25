@@ -158,6 +158,9 @@ border-radius: 3px;</string>
         <string notr="true">background-color: rgb(255, 255, 255);
 border: 1px solid black;</string>
        </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
        <property name="html">
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -201,8 +204,14 @@ border-radius: 3px;</string>
      </item>
      <item>
       <widget class="QListWidget" name="listWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="styleSheet">
-        <string notr="true">border-radius: 0px;</string>
+        <string notr="true"/>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>

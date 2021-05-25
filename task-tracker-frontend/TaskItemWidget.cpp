@@ -9,11 +9,6 @@ TaskItemWidget::TaskItemWidget(QWidget *parent) :
     ui->setupUi(this);
     setAttribute(Qt::WA_StyledBackground);
     ui->endDate->setSpecialValueText("No deadline");
-
-    setAttribute(Qt::WA_TranslucentBackground);
-    QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect();
-    effect->setColor(QColor("#C0C0C0"));
-    ui->widget->setGraphicsEffect(effect);
     ui->endDate->setSpecialValueText("No deadline");
 }
 
