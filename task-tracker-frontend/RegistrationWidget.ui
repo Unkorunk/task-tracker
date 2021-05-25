@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>857</width>
+    <width>694</width>
     <height>718</height>
    </rect>
   </property>
@@ -16,6 +16,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QWidget" name="widget" native="true">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <spacer name="horizontalSpacer">
@@ -56,9 +59,12 @@
           <height>0</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <property name="spacing">
-          <number>10</number>
+          <number>7</number>
          </property>
          <property name="sizeConstraint">
           <enum>QLayout::SetFixedSize</enum>
@@ -96,6 +102,13 @@
              <height>30</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
             <string>Full name</string>
            </property>
@@ -111,14 +124,14 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>0</width>
-             <height>0</height>
+             <width>278</width>
+             <height>30</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>16777215</width>
-             <height>16777215</height>
+             <width>278</width>
+             <height>30</height>
             </size>
            </property>
            <property name="echoMode">
@@ -146,6 +159,13 @@
              <height>30</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
             <string>Login</string>
            </property>
@@ -161,8 +181,8 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>0</width>
-             <height>0</height>
+             <width>278</width>
+             <height>30</height>
             </size>
            </property>
            <property name="maximumSize">
@@ -196,6 +216,13 @@
              <height>30</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
             <string>Email</string>
            </property>
@@ -211,8 +238,8 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>0</width>
-             <height>0</height>
+             <width>278</width>
+             <height>30</height>
             </size>
            </property>
            <property name="maximumSize">
@@ -246,6 +273,13 @@
              <height>30</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
             <string>Password</string>
            </property>
@@ -261,8 +295,8 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>0</width>
-             <height>0</height>
+             <width>278</width>
+             <height>30</height>
             </size>
            </property>
            <property name="maximumSize">
@@ -296,6 +330,13 @@
              <height>30</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
             <string>Repeat password</string>
            </property>
@@ -311,8 +352,8 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>0</width>
-             <height>0</height>
+             <width>278</width>
+             <height>30</height>
             </size>
            </property>
            <property name="maximumSize">
@@ -348,8 +389,17 @@
              <property name="minimumSize">
               <size>
                <width>100</width>
-               <height>50</height>
+               <height>40</height>
               </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(226, 128, 128);
+border: none;</string>
              </property>
              <property name="text">
               <string>Sign up</string>
@@ -370,17 +420,22 @@
              <property name="minimumSize">
               <size>
                <width>100</width>
-               <height>50</height>
+               <height>40</height>
               </size>
              </property>
              <property name="font">
               <font>
+               <pointsize>10</pointsize>
                <strikeout>false</strikeout>
                <kerning>true</kerning>
               </font>
              </property>
              <property name="acceptDrops">
               <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(226, 128, 128);
+border: none;</string>
              </property>
              <property name="text">
               <string>Already have 

@@ -223,7 +223,7 @@ border-radius: 3px;</string>
         <number>0</number>
        </property>
        <property name="selectionMode">
-        <enum>QAbstractItemView::NoSelection</enum>
+        <enum>QAbstractItemView::SingleSelection</enum>
        </property>
        <property name="selectionBehavior">
         <enum>QAbstractItemView::SelectRows</enum>
@@ -256,7 +256,7 @@ border-radius: 3px;</string>
         <bool>true</bool>
        </property>
        <property name="itemAlignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop|Qt::AlignVCenter</set>
+        <set>Qt::AlignCenter|Qt::AlignHCenter|Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop|Qt::AlignVCenter</set>
        </property>
        <property name="sortingEnabled">
         <bool>true</bool>
