@@ -43,53 +43,125 @@
   <property name="styleSheet">
    <string notr="true">border: none;</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>50</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>50</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="../icons.qrc">:/icons/assets/logo.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="backButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="sizeIncrement">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../icons.qrc">
+       <normaloff>:/icons/assets/back.ico</normaloff>:/icons/assets/back.ico</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="projectsBtn">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border:none;</string>
+     </property>
+     <property name="text">
+      <string>Projects</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="NavBarSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>184</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="LeftNavBar">
      <property name="spacing">
-      <number>17</number>
-     </property>
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMaximumSize</enum>
+      <number>12</number>
      </property>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QPushButton" name="notificationBtn">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>40</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>50</width>
-         <height>50</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../icons.qrc">:/icons/assets/logo.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="backButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -100,29 +172,32 @@
          <height>30</height>
         </size>
        </property>
-       <property name="sizeIncrement">
+       <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>50</height>
+         <width>30</width>
+         <height>30</height>
         </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border:none;</string>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="icon">
         <iconset resource="../icons.qrc">
-         <normaloff>:/icons/assets/back.ico</normaloff>:/icons/assets/back.ico</iconset>
+         <normaloff>:/icons/assets/notification.png</normaloff>:/icons/assets/notification.png</iconset>
        </property>
        <property name="iconSize">
         <size>
-         <width>50</width>
-         <height>50</height>
+         <width>30</width>
+         <height>30</height>
         </size>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="projectsBtn">
+      <widget class="QPushButton" name="profileBtn">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -138,109 +213,30 @@
         <string notr="true">border:none;</string>
        </property>
        <property name="text">
-        <string>Projects</string>
+        <string>Profile</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="NavBarSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QPushButton" name="logOutBtn">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+       <property name="font">
+        <font>
+         <pointsize>13</pointsize>
+        </font>
        </property>
-      </spacer>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="LeftNavBar">
-       <property name="spacing">
-        <number>12</number>
+       <property name="styleSheet">
+        <string notr="true">border:none;</string>
        </property>
-       <item>
-        <widget class="QPushButton" name="notificationBtn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>30</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>30</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border:none;</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../icons.qrc">
-           <normaloff>:/icons/assets/notification.png</normaloff>:/icons/assets/notification.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>30</width>
-           <height>30</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="profileBtn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>13</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border:none;</string>
-         </property>
-         <property name="text">
-          <string>Profile</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="logOutBtn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>13</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border:none;</string>
-         </property>
-         <property name="text">
-          <string>Log out</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+       <property name="text">
+        <string>Log out</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

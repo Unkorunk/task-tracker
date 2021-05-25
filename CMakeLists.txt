@@ -74,6 +74,9 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/ProjectsList.h
   task-tracker-frontend/ProjectsList.ui
 
+  task-tracker-frontend/DataClasses.cpp
+  task-tracker-frontend/DataClasses.h
+
   task-tracker-frontend/Backend.cpp
   task-tracker-frontend/Backend.h
 
@@ -94,6 +97,22 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/LoadingBar.ui
 
   icons.qrc
+
+  task-tracker-frontend/LabelPropertyWidget.cpp
+  task-tracker-frontend/LabelPropertyWidget.h
+  task-tracker-frontend/LabelPropertyWidget.ui
+
+  task-tracker-frontend/DateTimePropertyWidget.cpp
+  task-tracker-frontend/DateTimePropertyWidget.h
+  task-tracker-frontend/DateTimePropertyWidget.ui
+
+  task-tracker-frontend/UserSelectorWidget.cpp
+  task-tracker-frontend/UserSelectorWidget.h
+  task-tracker-frontend/UserSelectorWidget.ui
+
+  task-tracker-frontend/IntegerSelectorWidget.cpp
+  task-tracker-frontend/IntegerSelectorWidget.h
+  task-tracker-frontend/IntegerSelectorWidget.ui
 
   ${TS_FILES_FRONTEND}
 )

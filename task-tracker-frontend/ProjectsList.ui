@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>408</width>
     <height>300</height>
    </rect>
   </property>
@@ -27,6 +27,11 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Project list</string>
        </property>
@@ -34,6 +39,22 @@
      </item>
      <item>
       <widget class="QPushButton" name="addProjectBtn">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(226, 128, 128);
+border: none;</string>
+       </property>
        <property name="text">
         <string>Create project</string>
        </property>
@@ -52,13 +73,13 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>50</height>
+       <height>25</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>50</height>
+       <height>25</height>
       </size>
      </property>
      <property name="baseSize">
@@ -68,9 +89,23 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-radius: 0px;
-border: 1px solid black;
+      <string notr="true">border: 1px solid black;
 background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhNone</set>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="tabChangesFocus">
+      <bool>true</bool>
+     </property>
+     <property name="lineWrapMode">
+      <enum>QTextEdit::NoWrap</enum>
      </property>
      <property name="placeholderText">
       <string>Search project...</string>
@@ -79,6 +114,9 @@ background-color: rgb(255, 255, 255);</string>
    </item>
    <item>
     <widget class="QListWidget" name="listWidget">
+     <property name="styleSheet">
+      <string notr="true">QWidget#ProjectList {margin-top: 100px;}</string>
+     </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>

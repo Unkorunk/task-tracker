@@ -13,7 +13,7 @@ import java.util.*
 class TaskController {
     data class CreateResult(val status: Boolean, val task: Task? = null)
     data class DeleteResult(val status: Boolean)
-    data class EditResult(val status: Boolean)
+    data class EditResult(val status: Boolean, val task: Task? = null)
     data class AllResult(val status: Boolean, val tasks: Set<Task> = emptySet())
 
     private val logger = LoggerFactory.getLogger(ProjectUserRoleController::class.java)
@@ -166,7 +166,7 @@ class TaskController {
         if (taskOptional.isEmpty) {
             return EditResult(false)
         }
-        val task = taskOptional.get()
+        var task = taskOptional.get()
 
         val role = user.projects.find { it.project.id == task.project.id }?.role ?: return EditResult(false)
 
@@ -206,7 +206,7 @@ class TaskController {
         }
 
         if (deadline != null) {
-            val formatter = SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.ENGLISH)
+            val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS", Locale.ENGLISH)
             task.deadline = formatter.parse(deadline)
             if (task.assignedTo != null) {
                 notify(
@@ -217,12 +217,12 @@ class TaskController {
         }
 
         try {
-            taskRepository.save(task)
+            task = taskRepository.save(task)
         } catch (ex: Exception) {
             return EditResult(false)
         }
 
-        return EditResult(true)
+        return EditResult(true, task)
     }
 
     @GetMapping(path = ["/allAssignedTasks"])

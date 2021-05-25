@@ -46,8 +46,7 @@
        </sizepolicy>
       </property>
       <property name="styleSheet">
-       <string notr="true">
-</string>
+       <string notr="true"/>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -62,7 +61,8 @@
           </sizepolicy>
          </property>
          <property name="styleSheet">
-          <string notr="true"/>
+          <string notr="true">
+background-color: rgb(232, 227, 227);</string>
          </property>
          <property name="currentIndex">
           <number>0</number>

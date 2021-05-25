@@ -40,7 +40,7 @@ ProjectWidget::~ProjectWidget()
 
 void ProjectWidget::OnCreateTaskBtnClicked()
 {
-    Backend::Instance.CreateTask(TaskInfo(0, myProject.projectId, QString("NewTask"), "Default task description"));
+    Backend::Instance.CreateTask(TaskInfo(0, myProject, "New task", "Default task description", Backend::Instance.GetProfile(), QDateTime::currentDateTime(), 0));
     MainWindow::Instance->StartLoading();
 }
 
@@ -58,8 +58,6 @@ void ProjectWidget::OnProjectStatisticsBtnClicked()
 void ProjectWidget::OnItemClicked(QListWidgetItem* item)
 {
     auto index = ui->listWidget->indexFromItem(item);
-    qInfo() << index.row();
-    qInfo() << taskList[taskList.count() - index.row() - 1].taskName;
     emit TaskSelected(myProject, taskList[taskList.count() - index.row() - 1]);
 }
 
@@ -72,10 +70,8 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
         taskList.append(task);
         auto item = new QListWidgetItem();
         auto widget = new TaskItemWidget(this);
-        widget->setTask(task.taskName);
-        widget->setStyleSheet("QWidget {background-color: white}");
-        item->setSizeHint(QSize(700, 70));
-
+        widget->SetTask(task);
+        item->setSizeHint(QSize(200, 100));
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item, widget);
         update();
@@ -97,7 +93,7 @@ void ProjectWidget::SetupProject(const ProjectInfo &project)
 {
     myProject = project;
 
-    ui->ProjectNameLabel->setText(myProject.projectName);
+    ui->ProjectNameLabel->setText(myProject.GetTitle());
 
     MainWindow::Instance->StartLoading();
     Backend::Instance.GetTasks(myProject);

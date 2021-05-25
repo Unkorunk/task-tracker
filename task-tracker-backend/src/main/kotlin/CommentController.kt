@@ -1,10 +1,8 @@
 package timelimit.main
 
-import org.hibernate.sql.Delete
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import java.lang.Exception
 import java.util.*
 
 @Controller
@@ -12,7 +10,7 @@ import java.util.*
 class CommentController {
     data class CreateResult(val status: Boolean, val comment: Comment? = null)
     data class DeleteResult(val status: Boolean)
-    data class EditResult(val status: Boolean)
+    data class EditResult(val status: Boolean, val comment: Comment? = null)
 
     @Autowired
     private lateinit var commentRepository: CommentRepository
@@ -110,7 +108,7 @@ class CommentController {
         if (commentOptional.isEmpty) {
             return EditResult(false)
         }
-        val comment = commentOptional.get()
+        var comment = commentOptional.get()
 
         val role = user.projects.find { it.project.id == comment.task.project.id }?.role ?: return EditResult(false)
 
@@ -124,11 +122,11 @@ class CommentController {
         }
 
         try {
-            commentRepository.save(comment)
+            comment = commentRepository.save(comment)
         } catch (ex: Exception) {
             return EditResult(false)
         }
 
-        return EditResult(true)
+        return EditResult(true, comment)
     }
 }

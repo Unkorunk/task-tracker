@@ -1,6 +1,8 @@
 #ifndef TASKITEMWIDGET_H
 #define TASKITEMWIDGET_H
 
+#include "DataClasses.h"
+
 #include <QWidget>
 
 namespace Ui {
@@ -14,8 +16,7 @@ class TaskItemWidget : public QWidget
 public:
     explicit TaskItemWidget(QWidget *parent = nullptr);
     ~TaskItemWidget();
-    void setTask(const QString &text);
-    QString getTask();
+    void SetTask(const TaskInfo &task);
 
 private:
     Ui::TaskItemWidget *ui;
