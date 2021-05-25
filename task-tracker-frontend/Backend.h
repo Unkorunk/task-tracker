@@ -25,45 +25,53 @@ public:
     static Backend Instance;
 
     void SignIn(const QString& username, const QString& password);
-
     void SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password);
 
     void GetProjects();
-
     void CreateProject(const QString& projectName);
-
     void EditProject(const ProjectInfo& projectInfo);
+    void GetProjectUsers(const ProjectInfo& projectInfo);
 
     void GetTasks(const ProjectInfo& projectInfo);
-
     void CreateTask(const TaskInfo& taskInfo);
-
     void DeleteTask(const TaskInfo& taskInfo);
-
     void EditTask(const TaskInfo& taskInfo);
 
     UserInfo GetProfile();
-
     void UpdateProfile();
+
+    void GetRoles(const ProjectInfo& projectInfo);
+    void CreateRole(const RoleInfo& roleInfo);
+    void EditRole(const RoleInfo& roleInfo);
+    void DeleteRole(const RoleInfo& roleInfo);
+
+    void InviteByEmail(const ProjectInfo& project, const RoleInfo& role, const QString& email);
+    void Kick(const ProjectInfo& project, const UserInfo& user);
+    void ChangeRole(const UserInfo& user, const RoleInfo& role);
 
 signals:
     void SignedIn(Status status);
-
     void SignedUp(Status status);
 
     void ProjectsLoaded(Status status, const QList<ProjectInfo>& projects);
-
     void ProjectCreated(Status status);   
-
     void ProjectEdited(Status status);
+    void ProjectUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>>& users);
 
     void ProfileUpdated(Status status);
 
     void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
-
     void TaskEdited(Status status, const TaskInfo& task);
-
     void TaskDeleted(Status status);
+
+    void RolesLoaded(Status status, const QList<RoleInfo>& roles);
+    void RoleCreated(Status statsu, const RoleInfo& role);
+    void RoleEdited(Status statsu, const RoleInfo& role);
+    void RoleDeleted(Status status);
+
+    void MemberInvited(Status status);
+    void MemberKicked(Status status);
+    void RoleChanged(Status status);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -76,6 +84,7 @@ private:
     QString GetProjectsUrl();
     QString CreateProjectUrl();
     QString EditProjectUrl();
+    QString GetProjectUsersUrl();
 
     QString SignInAccountUrl();
     QString SignUpAccountUrl();
@@ -85,6 +94,15 @@ private:
     QString CreateTaskUrl();
     QString EditTaskUrl();
     QString DeleteTaskUrl();
+
+    QString GetRolesUrl();
+    QString CreateRoleUrl();
+    QString EditRoleUrl();
+    QString DeleteRoleUrl();
+
+    QString InviteByEmailUrl();
+    QString KickUrl();
+    QString ChangeRoleUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 

@@ -13,6 +13,8 @@ class ProjectController {
     data class EditProjectResult(val status: Boolean, val project: Project? = null)
     data class ProjectRolePair(val project: Project, val role: Role)
     data class AllProjectResult(val status: Boolean, val projects: Set<ProjectRolePair> = emptySet())
+    data class UserRolePair(val user: User, val role: Role)
+    data class AllUsersResult(val status: Boolean, val users: Set<UserRolePair> = emptySet())
 
     @Autowired
     private lateinit var projectRepository: ProjectRepository
@@ -156,5 +158,28 @@ class ProjectController {
         }
 
         return AllProjectResult(true, user.projects.map { ProjectRolePair(it.project, it.role) }.toSet())
+    }
+
+    @GetMapping(path = ["/allUsers"])
+    @ResponseBody
+    fun allUsers(
+        @RequestParam(value = "access_token") accessToken: String,
+        @RequestParam(value = "project_id") projectId: Int
+    ): AllUsersResult {
+        val user = userRepository.findByAccessToken(accessToken) ?: return AllUsersResult(false)
+
+        if (user.validUntil < Date()) {
+            return AllUsersResult(false)
+        }
+
+        val projectOptional = projectRepository.findById(projectId)
+
+        if (projectOptional.isEmpty) {
+            return AllUsersResult(false)
+        }
+
+        val project = projectOptional.get()
+
+        return AllUsersResult(true, project.users.map { UserRolePair(it.user, it.role) }.toSet())
     }
 }
