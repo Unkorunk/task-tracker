@@ -42,6 +42,12 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="midLineWidth">
+       <number>1</number>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>

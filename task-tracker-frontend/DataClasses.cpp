@@ -1,6 +1,7 @@
 #include "DataClasses.h"
 
 #include <QJsonObject>
+#include <algorithm>
 
 // PROJECT INFO
 ProjectInfo ProjectInfo::ParseFromJson(const QJsonObject &object) {
@@ -194,6 +195,63 @@ void TaskInfo::SetDeadline(const std::optional<QDateTime> &deadline) {
     myDeadline = deadline;
 }
 
+// END TASK INFO
 
+// ROLE INFO
+RoleInfo RoleInfo::ParseFromJson(const QJsonObject &obj) {
+    QString bitString = obj["permissions"].toString();
+    uint64_t perms = 0;
+    for (uint64_t i = 0; i < std::min(64ll, bitString.length()); i++) {
+        if (bitString[i] == '1') {
+            perms += (1ull << i);
+        }
+    }
 
+    return RoleInfo(obj["id"].toInt(), obj["value"].toString(), perms, obj["project"].toObject()["id"].toInt());
+}
 
+RoleInfo::RoleInfo(int id, const QString &caption, uint64_t perms, int projectId) : myId(id), myCaption(caption),
+    myPermissions(perms), myProjectId(projectId) {}
+
+int RoleInfo::GetId() const {
+    return myId;
+}
+
+QString RoleInfo::GetCaption() const {
+    return myCaption;
+}
+
+void RoleInfo::SetCaption(const QString &caption) {
+    myCaption = caption;
+}
+
+uint64_t RoleInfo::GetPermission() const {
+    return myPermissions;
+}
+
+QString RoleInfo::GetPermissionStr() const {
+    QString res;
+    uint64_t mask = 0;
+    for (uint64_t i = 0; i < 8; i++) {
+        mask = 255 << (i * 8ull);
+        res.append((char)((myPermissions & mask) >> (i * 8ull)));
+    }
+
+    return res;
+}
+
+void RoleInfo::SetPermissions(uint64_t perm, bool add) {
+    if (add) {
+        myPermissions |= perm;
+    }
+}
+
+int RoleInfo::GetProjectId() const {
+    return myProjectId;
+}
+
+bool RoleInfo::HasPermission(uint64_t perm) const {
+    return ((myPermissions & perm) == perm);
+}
+
+// END ROLE INFO

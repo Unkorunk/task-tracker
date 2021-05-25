@@ -36,11 +36,9 @@ class Role {
         val currentBitSet = BitSet.valueOf(permissions)
         val otherBitSet = BitSet.valueOf(role.permissions)
 
-        val bitSet = currentBitSet.clone()
-
         currentBitSet.or(otherBitSet)
 
-        return currentBitSet == bitSet
+        return currentBitSet == otherBitSet
     }
 
     companion object {
