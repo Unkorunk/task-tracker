@@ -16,8 +16,6 @@ ProjectsList::ProjectsList(QWidget *parent) :
 
     dialog->setModal(true);
 
-    ui->listWidget->setStyleSheet("QWidget#ProjectList {margin-top: 100px;}");
-
     dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
 
     connect(ui->addProjectBtn, &QAbstractButton::clicked, this, &ProjectsList::OnAddProjectBtnClicked);
@@ -44,7 +42,7 @@ void ProjectsList::SetProjects(const QList<ProjectInfo>& list)
     for (auto& project : myProjects) {
        auto item = new QListWidgetItem();
        auto widget = new ProjectItemWidget(this);
-       item->setSizeHint(QSize(widget->sizeHint().width(), 70));
+       item->setSizeHint(QSize(100, 70));
        widget->setProject(project.GetTitle());
        ui->listWidget->addItem(item);
        ui->listWidget->setItemWidget(item, widget);

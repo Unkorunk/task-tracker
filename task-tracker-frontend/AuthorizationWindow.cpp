@@ -9,6 +9,8 @@ AuthorizationWindow::AuthorizationWindow(QWidget *parent) :
     ui(new Ui::AuthorizationWindow)
 {
     ui->setupUi(this);
+    ui->stackedWidget->setStyleSheet("QStackedWidget#stackedWidget {background-color: rgb(232, 227, 227); border-radius: 20px;}");
+    ui->centralwidget->setStyleSheet("QWidget#centralwidget {background-color: rgb(255, 255, 255);}");
     connect(ui->Authorization, &AuthorizationWidget::AuthClicked, this, &AuthorizationWindow::OnTransition);
     connect(ui->Registration, &RegistrationWidget::SignupBtnClicked, this, &AuthorizationWindow::OnTransition);
     connect(ui->Authorization, &AuthorizationWidget::LoggedIn, this, &AuthorizationWindow::OnSwitchingWindow);
