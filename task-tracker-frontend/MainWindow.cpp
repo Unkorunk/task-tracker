@@ -68,9 +68,6 @@ void MainWindow::OnTransition(MainWindow::Transition transition)
         Backend::Instance.GetProjects();
         StartLoading();
         break;
-    case Transition::Notifications:
-    case Transition::Profile:
-        break;
     }
 
     myTransitionsHistory.push((Transition)ui->stackedWidget->currentIndex());

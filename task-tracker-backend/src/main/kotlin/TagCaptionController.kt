@@ -11,7 +11,7 @@ import java.util.*
 class TagCaptionController {
     data class CreateResult(val status: Boolean, val tagCaption: TagCaption? = null)
     data class DeleteResult(val status: Boolean)
-    data class EditResult(val status: Boolean)
+    data class EditResult(val status: Boolean, val tagCaption: TagCaption? = null)
     data class AllResult(val status: Boolean, val tagCaptions: Set<TagCaption> = emptySet())
 
     @Autowired
@@ -107,7 +107,7 @@ class TagCaptionController {
         if (tagCaptionOptional.isEmpty) {
             return EditResult(false)
         }
-        val tagCaption = tagCaptionOptional.get()
+        var tagCaption = tagCaptionOptional.get()
 
         val senderRole = sender.projects.find {
             it.project.id == tagCaption.project.id
@@ -121,12 +121,12 @@ class TagCaptionController {
         }
 
         try {
-            tagCaptionRepository.save(tagCaption)
+            tagCaption = tagCaptionRepository.save(tagCaption)
         } catch (ex: Exception) {
             return EditResult(false)
         }
 
-        return EditResult(true)
+        return EditResult(true, tagCaption)
     }
 
     @GetMapping(path = ["/all"])
