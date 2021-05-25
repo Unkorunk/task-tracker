@@ -309,12 +309,12 @@ an account?</source>
     </message>
     <message>
         <location filename="ProjectSettingsWidget.ui" line="207"/>
-        <source>Invite</source>
+        <source>Email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="254"/>
-        <source>Enter recipient&apos;s email</source>
+        <location filename="ProjectSettingsWidget.ui" line="235"/>
+        <source>Invite</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -524,6 +524,24 @@ an account?</source>
     <message>
         <location filename="TaskItemWidget.ui" line="121"/>
         <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserItemWidget</name>
+    <message>
+        <location filename="UserItemWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="UserItemWidget.ui" line="25"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="UserItemWidget.ui" line="41"/>
+        <source>Kick</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -116,6 +116,10 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/RoleWidgetItem.h
   task-tracker-frontend/RoleWidgetItem.ui
 
+  task-tracker-frontend/UserItemWidget.cpp
+  task-tracker-frontend/UserItemWidget.h
+  task-tracker-frontend/UserItemWidget.ui
+
   ${TS_FILES_FRONTEND}
 )
 

@@ -39,6 +39,10 @@ QString Backend::EditProjectUrl() {
     return BaseUrl + "/project/edit";
 }
 
+QString Backend::GetProjectUsersUrl() {
+    return BaseUrl + "/project/allUsers";
+}
+
 QString Backend::SignInAccountUrl() {
     return BaseUrl + "/user/enter";
 }
@@ -173,6 +177,13 @@ void Backend::EditProject(const ProjectInfo& projectInfo) {
                     { "project_id", QString("%1").arg(projectInfo.GetId()) },
                     { "full_name", projectInfo.GetTitle() }
                 });
+}
+
+void Backend::GetProjectUsers(const ProjectInfo &projectInfo) {
+    GetRequest(GetProjectUsersUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "project_id", QString("%1").arg(projectInfo.GetId()) }
+               });
 };
 
 void Backend::GetTasks(const ProjectInfo &projectInfo)
@@ -329,6 +340,18 @@ void Backend::OnResponse(QNetworkReply* reply)
         }
 
         emit ProjectEdited(status);
+    } else if (pattern == GetProjectUsersUrl()) {
+        QList<QPair<UserInfo, RoleInfo>> users;
+        if (status.isSuccess) {
+            for (QJsonValueRef it : root["users"].toArray()) {
+                QJsonObject obj = it.toObject();
+                UserInfo user = UserInfo::ParseFromJson(obj["user"].toObject());
+                RoleInfo role = RoleInfo::ParseFromJson(obj["role"].toObject());
+                users.push_back(QPair<UserInfo, RoleInfo>(user, role));
+            }
+        }
+
+        emit ProjectUsersLoaded(status, users);
     } else if (pattern == SignInAccountUrl()) {
         if (status.isSuccess) {
             myToken = root["accessToken"].toString();

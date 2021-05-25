@@ -3,6 +3,7 @@
 #include "Backend.h"
 #include "MainWindow.h"
 #include "RoleWidgetItem.h"
+#include "UserItemWidget.h"
 
 
 ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
@@ -24,6 +25,11 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     connect(&Backend::Instance, &Backend::RoleDeleted, this, &ProjectSettingsWidget::OnRoleDeleted);
     connect(&Backend::Instance, &Backend::RoleCreated, this, &ProjectSettingsWidget::OnRoleCreated);
     connect(&Backend::Instance, &Backend::RoleEdited, this, &ProjectSettingsWidget::OnRoleEdited);
+
+    connect(ui->inviteButton, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnInviteClicked);
+    connect(&Backend::Instance, &Backend::MemberInvited, this, &ProjectSettingsWidget::OnMemberInvited);
+    connect(&Backend::Instance, &Backend::MemberKicked, this, &ProjectSettingsWidget::OnMemberKicked);
+    connect(&Backend::Instance, &Backend::ProjectUsersLoaded, this, &ProjectSettingsWidget::OnUsersLoaded);
 }
 
 void ProjectSettingsWidget::OnSaveClicked() {
@@ -72,7 +78,10 @@ void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &
         return;
     }
 
+    myRoles = roles;
     ui->rolesList->clear();
+    ui->roleSelector->clear();
+
     for (auto& role : roles) {
        auto item = new QListWidgetItem();
        auto widget = new RoleWidgetItem(this);
@@ -81,7 +90,11 @@ void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &
 
        ui->rolesList->addItem(item);
        ui->rolesList->setItemWidget(item, widget);
+
+       ui->roleSelector->addItem(role.GetCaption());
     }
+
+    Backend::Instance.GetProjectUsers(myProject);
 }
 
 void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
@@ -99,23 +112,28 @@ void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
 
     ui->rolesList->addItem(item);
     ui->rolesList->setItemWidget(item, widget);
+    ui->roleSelector->addItem(role.GetCaption());
+    myRoles.append(role);
+    Backend::Instance.GetProjectUsers(myProject);
 }
 
 void ProjectSettingsWidget::OnRoleEdited(Status status, const RoleInfo &role) {
-     MainWindow::Instance->StopLoading();
+    MainWindow::Instance->StopLoading();
 
-     if (!status.isSuccess) {
-         // TODO: Handle errors
-         return;
-     }
+    if (!status.isSuccess) {
+        // TODO: Handle errors
+        return;
+    }
 
-     for (int i = 0; i < ui->rolesList->count(); i++) {
-         RoleWidgetItem* item = (RoleWidgetItem*)ui->rolesList->itemWidget(ui->rolesList->item(i));
-         if (item->GetRole().GetId() == role.GetId()) {
-             item->SetRole(role);
-             return;
-         }
-     }
+    for (int i = 0; i < ui->rolesList->count(); i++) {
+        RoleWidgetItem* item = (RoleWidgetItem*)ui->rolesList->itemWidget(ui->rolesList->item(i));
+        if (item->GetRole().GetId() == role.GetId()) {
+            item->SetRole(role);
+            return;
+        }
+    }
+
+    Backend::Instance.GetProjectUsers(myProject);
 }
 
 void ProjectSettingsWidget::OnRoleDeleted(Status status) {
@@ -130,6 +148,43 @@ void ProjectSettingsWidget::OnRoleDeleted(Status status) {
     Backend::Instance.GetRoles(myProject);
 }
 
+void ProjectSettingsWidget::OnInviteClicked() {
+    MainWindow::Instance->StartLoading();
+    Backend::Instance.InviteByEmail(myProject, myRoles[ui->roleSelector->currentIndex()], ui->EmailOfInvitedUser->text());
+}
+
+void ProjectSettingsWidget::OnMemberInvited(Status status){
+    MainWindow::Instance->StopLoading();
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    Backend::Instance.GetProjectUsers(myProject);
+}
+
+void ProjectSettingsWidget::OnMemberKicked(Status status) {
+    Backend::Instance.GetProjectUsers(myProject);
+}
+
+void ProjectSettingsWidget::OnUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo> > &users) {
+    if (!status.isSuccess) {
+        // TODO: Handle errors;
+        return;
+    }
+
+    ui->teamList->clear();
+    for (auto& entry : users) {
+        auto item = new QListWidgetItem();
+        auto widget = new UserItemWidget(this);
+        widget->SetRoles(entry.first, myRoles, myProject, entry.second.GetId());
+        item->setSizeHint(QSize(800, 50));
+
+        ui->teamList->addItem(item);
+        ui->teamList->setItemWidget(item, widget);
+    }
+}
+
 ProjectSettingsWidget::~ProjectSettingsWidget() {
     delete ui;
 }
@@ -138,6 +193,7 @@ void ProjectSettingsWidget::SetupProject(const ProjectInfo &project) {
     myProject = project;
     ui->editProjectName->setText(project.GetTitle());
     ui->rolesList->clear();
+    ui->teamList->clear();
 
     Backend::Instance.GetRoles(project);
     MainWindow::Instance->StartLoading();

@@ -25,6 +25,12 @@ private slots:
     void OnRoleEdited(Status status, const RoleInfo& role);
     void OnRoleDeleted(Status status);
 
+    void OnInviteClicked();
+    void OnMemberInvited(Status status);
+
+    void OnMemberKicked(Status status);
+
+    void OnUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>>& users);
 public:
     explicit ProjectSettingsWidget(QWidget *parent = nullptr);
     ~ProjectSettingsWidget();
@@ -43,6 +49,7 @@ private:
     Ui::ProjectSettingsWidget *ui;
 
     ProjectInfo myProject;
+    QList<RoleInfo> myRoles;
 };
 
 #endif // PROJECTSETTINGSWIDGET_H

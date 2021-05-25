@@ -8,26 +8,6 @@
 
 const QString DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.zzz'+00:00'";
 
-class ProjectInfo {
-public:
-    static ProjectInfo ParseFromJson(const QJsonObject& object);
-
-    ProjectInfo(int id, const QString& title);
-
-    int GetId() const;
-
-    QString GetTitle() const;
-    void SetTitle(const QString& title);
-
-    QString GetIcon() const;
-    void SetIcon(const QString& icon);
-
-private:
-    int myId;
-    QString myTitle;
-    QString myIcon;
-};
-
 class UserInfo {
 public:
     static UserInfo ParseFromJson(const QJsonObject& object);
@@ -54,6 +34,61 @@ private:
     QString myUsername;
     QString myEmail;
     QString myPhoto;
+};
+
+class RoleInfo {
+public:
+    const static int MANAGE_OWN_TASK = 1;
+    const static int MANAGE_ALL_TASK = MANAGE_OWN_TASK | 1 << 1;
+    const static int MANAGE_OWN_COMMENT = 1 << 2;
+    const static int MANAGE_ALL_COMMENT = MANAGE_OWN_COMMENT | 1 << 3;
+    const static int MANAGE_TEAM = 1 << 4;
+    const static int MANAGE_ROLES = 1 << 5;
+    const static int MANAGE_PROJECT = 1 << 6;
+    const static int DELETE_PROJECT = 1 << 7;
+
+    static RoleInfo ParseFromJson(const QJsonObject& obj);
+
+    RoleInfo(int id, const QString& caption, uint64_t perms, int projectId);
+
+    int GetId() const;
+    QString GetCaption() const;
+    void SetCaption(const QString& caption);
+
+    uint64_t GetPermission() const;
+    QString GetPermissionStr() const;
+    void SetPermissions(uint64_t perm, bool add = true);
+
+    int GetProjectId() const;
+
+    bool HasPermission(uint64_t perm) const;
+
+private:
+    int myId;
+    QString myCaption;
+    uint64_t myPermissions;
+
+    int myProjectId;
+};
+
+class ProjectInfo {
+public:
+    static ProjectInfo ParseFromJson(const QJsonObject& object);
+
+    ProjectInfo(int id, const QString& title);
+
+    int GetId() const;
+
+    QString GetTitle() const;
+    void SetTitle(const QString& title);
+
+    QString GetIcon() const;
+    void SetIcon(const QString& icon);
+
+private:
+    int myId;
+    QString myTitle;
+    QString myIcon;
 };
 
 class TaskInfo {
@@ -120,39 +155,5 @@ inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
     return proj1.GetTitle() < proj2.GetTitle();
 }
 
-class RoleInfo {
-public:
-    const static int MANAGE_OWN_TASK = 1;
-    const static int MANAGE_ALL_TASK = MANAGE_OWN_TASK | 1 << 1;
-    const static int MANAGE_OWN_COMMENT = 1 << 2;
-    const static int MANAGE_ALL_COMMENT = MANAGE_OWN_COMMENT | 1 << 3;
-    const static int MANAGE_TEAM = 1 << 4;
-    const static int MANAGE_ROLES = 1 << 5;
-    const static int MANAGE_PROJECT = 1 << 6;
-    const static int DELETE_PROJECT = 1 << 7;
-
-    static RoleInfo ParseFromJson(const QJsonObject& obj);
-
-    RoleInfo(int id, const QString& caption, uint64_t perms, int projectId);
-
-    int GetId() const;
-    QString GetCaption() const;
-    void SetCaption(const QString& caption);
-
-    uint64_t GetPermission() const;
-    QString GetPermissionStr() const;
-    void SetPermissions(uint64_t perm, bool add = true);
-
-    int GetProjectId() const;
-
-    bool HasPermission(uint64_t perm) const;
-
-private:
-    int myId;
-    QString myCaption;
-    uint64_t myPermissions;
-
-    int myProjectId;
-};
 
 #endif // DATACLASSES_H
