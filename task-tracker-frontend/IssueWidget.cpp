@@ -137,6 +137,11 @@ void IssueWidget::InternalSetupTask(const TaskInfo &task)
 {
     task_info = task;
 
+    ui->statusComboBox->clear();
+    ui->statusComboBox->addItem("Not started");
+    ui->statusComboBox->addItem("TODO");
+    ui->statusComboBox->addItem("Completed");
+
     this->ui->taskNameEdit->setText(task.GetTitle());
     this->ui->descriptionEdit->setText(task.GetDescription());
 
