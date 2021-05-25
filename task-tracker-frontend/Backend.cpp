@@ -39,6 +39,10 @@ QString Backend::EditProjectUrl() {
     return BaseUrl + "/project/edit";
 }
 
+QString Backend::GetProjectUsersUrl() {
+    return BaseUrl + "/project/allUsers";
+}
+
 QString Backend::SignInAccountUrl() {
     return BaseUrl + "/user/enter";
 }
@@ -65,6 +69,34 @@ QString Backend::EditTaskUrl() {
 
 QString Backend::DeleteTaskUrl() {
     return BaseUrl + "/task/delete";
+}
+
+QString Backend::GetRolesUrl() {
+    return BaseUrl + "/role/all";
+}
+
+QString Backend::CreateRoleUrl() {
+    return BaseUrl + "/role/create";
+}
+
+QString Backend::EditRoleUrl() {
+    return BaseUrl + "/role/edit";
+}
+
+QString Backend::DeleteRoleUrl() {
+    return BaseUrl + "/role/delete";
+}
+
+QString Backend::InviteByEmailUrl() {
+    return BaseUrl + "/projectUserRole/createByEmail";
+}
+
+QString Backend::KickUrl() {
+    return BaseUrl + "/projectUserRole/deleteById";
+}
+
+QString Backend::ChangeRoleUrl() {
+    return BaseUrl + "/projectUserRole/edit";
 }
 
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {
@@ -145,6 +177,13 @@ void Backend::EditProject(const ProjectInfo& projectInfo) {
                     { "project_id", QString("%1").arg(projectInfo.GetId()) },
                     { "full_name", projectInfo.GetTitle() }
                 });
+}
+
+void Backend::GetProjectUsers(const ProjectInfo &projectInfo) {
+    GetRequest(GetProjectUsersUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "project_id", QString("%1").arg(projectInfo.GetId()) }
+               });
 };
 
 void Backend::GetTasks(const ProjectInfo &projectInfo)
@@ -204,11 +243,70 @@ void Backend::UpdateProfile()
                });
 }
 
+void Backend::GetRoles(const ProjectInfo &projectInfo)
+{
+    GetRequest(GetRolesUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "project_id", QString("%1").arg(projectInfo.GetId()) }
+               });
+}
+
+void Backend::CreateRole(const RoleInfo &roleInfo) {
+    PostRequest(CreateRoleUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "project_id", QString("%1").arg(roleInfo.GetProjectId()) },
+                    { "value", roleInfo.GetCaption() },
+                    { "permissions", roleInfo.GetPermissionStr() }
+                });
+}
+
+void Backend::EditRole(const RoleInfo &roleInfo) {
+    PostRequest(EditRoleUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "role_id", QString("%1").arg(roleInfo.GetId()) },
+                    { "value", roleInfo.GetCaption() },
+                    { "permissions", roleInfo.GetPermissionStr() }
+                });
+}
+
+void Backend::DeleteRole(const RoleInfo &roleInfo)
+{
+    GetRequest(DeleteRoleUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "role_id", QString("%1").arg(roleInfo.GetId()) }
+               });
+}
+
+void Backend::InviteByEmail(const ProjectInfo &project, const RoleInfo &role, const QString &email) {
+    PostRequest(InviteByEmailUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "email", email },
+                    { "project_id", QString("%1").arg(project.GetId()) },
+                    { "role_id", QString("%1").arg(role.GetId()) }
+                });
+}
+
+void Backend::Kick(const ProjectInfo &project, const UserInfo &user) {
+    GetRequest(KickUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "user_id", QString("%1").arg(user.GetId()) },
+                   { "project_id", QString("%1").arg(project.GetId()) }
+               });
+}
+
+void Backend::ChangeRole(const UserInfo &user, const RoleInfo &role) {
+    PostRequest(ChangeRoleUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "user_id", QString("%1").arg(user.GetId()) },
+                    { "role_id", QString("%1").arg(role.GetId()) }
+                });
+
+}
+
 void Backend::OnResponse(QNetworkReply* reply)
 {
     Status status;
     QJsonObject root = GetRootFromReply(reply, status);
-
 
     qInfo() << status.isSuccess << " " << status.response;
 
@@ -242,6 +340,18 @@ void Backend::OnResponse(QNetworkReply* reply)
         }
 
         emit ProjectEdited(status);
+    } else if (pattern == GetProjectUsersUrl()) {
+        QList<QPair<UserInfo, RoleInfo>> users;
+        if (status.isSuccess) {
+            for (QJsonValueRef it : root["users"].toArray()) {
+                QJsonObject obj = it.toObject();
+                UserInfo user = UserInfo::ParseFromJson(obj["user"].toObject());
+                RoleInfo role = RoleInfo::ParseFromJson(obj["role"].toObject());
+                users.push_back(QPair<UserInfo, RoleInfo>(user, role));
+            }
+        }
+
+        emit ProjectUsersLoaded(status, users);
     } else if (pattern == SignInAccountUrl()) {
         if (status.isSuccess) {
             myToken = root["accessToken"].toString();
@@ -265,9 +375,11 @@ void Backend::OnResponse(QNetworkReply* reply)
     } else if (pattern == GetTasksUrl()) {
         QList<TaskInfo> tasks;
         // TODO: process all information
-        for (QJsonValueRef it : root["tasks"].toArray()) {
-            TaskInfo task = TaskInfo::ParseFromJson(it.toObject());
-            tasks.push_back(task);
+        if (status.isSuccess) {
+            for (QJsonValueRef it : root["tasks"].toArray()) {
+                TaskInfo task = TaskInfo::ParseFromJson(it.toObject());
+                tasks.push_back(task);
+            }
         }
 
         emit TasksLoaded(status, tasks);
@@ -277,5 +389,36 @@ void Backend::OnResponse(QNetworkReply* reply)
         emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));
     } else if (pattern == DeleteTaskUrl()) {
         emit TaskDeleted(status);
+    } else if (pattern == GetRolesUrl()) {
+        QList<RoleInfo> roles;
+        if (status.isSuccess) {
+            for (QJsonValueRef it : root["roles"].toArray()) {
+                roles.push_back(RoleInfo::ParseFromJson(it.toObject()));
+            }
+        }
+
+        emit RolesLoaded(status, roles);
+    } else if (pattern == CreateRoleUrl()) {
+        RoleInfo role(-1, "", 0, -1);
+        if (status.isSuccess) {
+            role = RoleInfo::ParseFromJson(root["role"].toObject());
+        }
+
+        emit RoleCreated(status, role);
+    } else if (pattern == EditRoleUrl()) {
+        RoleInfo role(-1, "", 0, -1);
+        if (status.isSuccess) {
+            role = RoleInfo::ParseFromJson(root["role"].toObject());
+        }
+
+        emit RoleEdited(status, role);
+    } else if (pattern == DeleteRoleUrl()) {
+        emit RoleDeleted(status);
+    } else if (pattern == InviteByEmailUrl()) {
+        emit MemberInvited(status);
+    } else if (pattern == KickUrl()) {
+        emit MemberKicked(status);
+    } else if (pattern == ChangeRoleUrl()) {
+        emit RoleChanged(status);
     }
 }
