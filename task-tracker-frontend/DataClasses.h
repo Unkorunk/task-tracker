@@ -137,10 +137,14 @@ public:
 
     int GetId() const;
     QString GetCaption() const;
+    void SetCaption(const QString& caption);
+
     QByteArray GetPermission() const;
+    void SetPermissions(int powIdx, char value);
 
     int GetProjectId() const;
 
+    bool HasPermission(int powIdx) const;
 
 private:
     int myId;

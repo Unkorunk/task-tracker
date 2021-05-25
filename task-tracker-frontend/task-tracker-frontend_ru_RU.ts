@@ -272,44 +272,49 @@ an account?</source>
 <context>
     <name>ProjectSettingsWidget</name>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="29"/>
+        <location filename="ProjectSettingsWidget.ui" line="15"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="93"/>
-        <source>Settings: TODO</source>
+        <location filename="ProjectSettingsWidget.ui" line="39"/>
+        <location filename="ProjectSettingsWidget.ui" line="48"/>
+        <source>Project name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="151"/>
+        <location filename="ProjectSettingsWidget.ui" line="61"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="164"/>
+        <location filename="ProjectSettingsWidget.ui" line="74"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="221"/>
+        <location filename="ProjectSettingsWidget.ui" line="85"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Roles&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectSettingsWidget.ui" line="98"/>
+        <source>Create role</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectSettingsWidget.ui" line="155"/>
         <source>Team:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="289"/>
+        <location filename="ProjectSettingsWidget.ui" line="207"/>
         <source>Invite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="374"/>
+        <location filename="ProjectSettingsWidget.ui" line="254"/>
         <source>Enter recipient&apos;s email</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ProjectSettingsWidget.ui" line="488"/>
-        <location filename="ProjectSettingsWidget.ui" line="497"/>
-        <source>Project name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -410,6 +415,79 @@ an account?</source>
         <location filename="RegistrationWidget.ui" line="386"/>
         <source>Already have 
 an account?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RoleWidgetItem</name>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="20"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="37"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Role name:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="55"/>
+        <source>Role name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="68"/>
+        <source>Manage own tasks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="75"/>
+        <source>Manage own comments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="82"/>
+        <source>Manage team</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="89"/>
+        <source>Edit project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="100"/>
+        <source>Manage all tasks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="107"/>
+        <source>Manage all comments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="114"/>
+        <source>Manage roles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="121"/>
+        <source>Delete project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="140"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="153"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="RoleWidgetItem.ui" line="166"/>
+        <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

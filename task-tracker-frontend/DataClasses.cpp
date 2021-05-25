@@ -213,12 +213,47 @@ QString RoleInfo::GetCaption() const {
     return myCaption;
 }
 
+void RoleInfo::SetCaption(const QString &caption) {
+    myCaption = caption;
+}
+
 QByteArray RoleInfo::GetPermission() const {
     return myPermissions;
 }
 
+void RoleInfo::SetPermissions(int powIdx, char value) {
+    for (int i = 0; i < 30; i++) {
+        if (powIdx & (1 << i)) {
+            if (value == 0) {
+                if (myPermissions.size() <= i) {
+                    return;
+                }
+            } else {
+                while (myPermissions.size() <= i) {
+                    myPermissions.append((char)0);
+                }
+            }
+
+
+            myPermissions[i] = value;
+        }
+    }
+}
+
 int RoleInfo::GetProjectId() const {
     return myProjectId;
+}
+
+bool RoleInfo::HasPermission(int powIdx) const {
+    for (int i = 0; i < 30; i++) {
+        if (powIdx & (1 << i)) {
+            if (myPermissions.size() <= i || myPermissions[i] == 0) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 // END ROLE INFO

@@ -59,6 +59,7 @@ signals:
     void TaskDeleted(Status status);
 
     void RolesLoaded(Status status, const QList<RoleInfo>& roles);
+    void RoleCreated(Status statsu, const RoleInfo& role);
     void RoleEdited(Status statsu, const RoleInfo& role);
     void RoleDeleted(Status status);
 

@@ -14,10 +14,16 @@ class ProjectSettingsWidget : public QWidget
 
 private slots:
     void OnSaveClicked();
-
     void OnCancelClicked();
 
     void OnProjectEdited(Status status);
+
+    void OnRoleCreateClicked();
+
+    void OnRolesLoaded(Status status, const QList<RoleInfo>& roles);
+    void OnRoleCreated(Status status, const RoleInfo& role);
+    void OnRoleEdited(Status status, const RoleInfo& role);
+    void OnRoleDeleted(Status status);
 
 public:
     explicit ProjectSettingsWidget(QWidget *parent = nullptr);

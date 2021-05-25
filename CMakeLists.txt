@@ -112,6 +112,10 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/IntegerSelectorWidget.h
   task-tracker-frontend/IntegerSelectorWidget.ui
 
+  task-tracker-frontend/RoleWidgetItem.cpp
+  task-tracker-frontend/RoleWidgetItem.h
+  task-tracker-frontend/RoleWidgetItem.ui
+
   ${TS_FILES_FRONTEND}
 )
 

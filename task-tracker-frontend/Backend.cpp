@@ -232,7 +232,7 @@ void Backend::CreateRole(const RoleInfo &roleInfo)
 {
     PostRequest(CreateRoleUrl(), QMap<QString, QString> {
                     { "access_token", myToken },
-                    { "project_id", QString("%1").arg(roleInfo.GetId()) },
+                    { "project_id", QString("%1").arg(roleInfo.GetProjectId()) },
                     { "value", roleInfo.GetCaption() },
                     { "permissions", roleInfo.GetPermission() }
                 });
@@ -346,7 +346,7 @@ void Backend::OnResponse(QNetworkReply* reply)
             role = RoleInfo::ParseFromJson(root["role"].toObject());
         }
 
-        emit RoleEdited(status, role);
+        emit RoleCreated(status, role);
     } else if (pattern == EditRoleUrl()) {
         RoleInfo role(-1, "", QByteArray(), -1);
         if (status.isSuccess) {
