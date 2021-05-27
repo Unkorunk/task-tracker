@@ -21,6 +21,9 @@ set(PROJECT_SOURCES_FRONTEND
   QtWaitingSpinner/waitingspinnerwidget.cpp
   QtWaitingSpinner/waitingspinnerwidget.h
 
+  task-tracker-frontend/AbstractPage.h
+  task-tracker-frontend/AbstractPage.cpp
+
   task-tracker-frontend/main.cpp
   task-tracker-frontend/MainWindow.cpp
   task-tracker-frontend/MainWindow.h
@@ -119,6 +122,9 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/UserItemWidget.cpp
   task-tracker-frontend/UserItemWidget.h
   task-tracker-frontend/UserItemWidget.ui
+
+  task-tracker-frontend/Context.cpp
+  task-tracker-frontend/Context.h
 
   ${TS_FILES_FRONTEND}
 )

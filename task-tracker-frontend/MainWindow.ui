@@ -51,7 +51,7 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="GreetingsWidget" name="page">
+      <widget class="GreetingsWidget" name="greetingsPage">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -59,12 +59,12 @@
         </sizepolicy>
        </property>
       </widget>
-      <widget class="ProfileWidget" name="page_2"/>
-      <widget class="NotificationsWidget" name="page_3"/>
-      <widget class="ProjectWidget" name="page_4"/>
-      <widget class="ProjectSettingsWidget" name="page_5"/>
-      <widget class="StatisticsWidget" name="page_6"/>
-      <widget class="IssueWidget" name="page_7"/>
+      <widget class="ProfileWidget" name="profilePage"/>
+      <widget class="NotificationsWidget" name="notificationPage"/>
+      <widget class="ProjectWidget" name="projectPage"/>
+      <widget class="ProjectSettingsWidget" name="settingsPage"/>
+      <widget class="StatisticsWidget" name="statisticsPage"/>
+      <widget class="IssueWidget" name="issuePage"/>
      </widget>
     </item>
     <item>

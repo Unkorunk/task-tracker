@@ -1,6 +1,7 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
+#include "Context.h"
 #include "DataClasses.h"
 
 #include <QtCore/QObject>
@@ -37,7 +38,6 @@ public:
     void DeleteTask(const TaskInfo& taskInfo);
     void EditTask(const TaskInfo& taskInfo);
 
-    UserInfo GetProfile();
     void UpdateProfile();
 
     void GetRoles(const ProjectInfo& projectInfo);
@@ -50,15 +50,17 @@ public:
     void ChangeRole(const UserInfo& user, const RoleInfo& role);
 
 signals:
-    void SignedIn(Status status);
-    void SignedUp(Status status);
+    void LoadingChanged(bool isLoading);
 
-    void ProjectsLoaded(Status status, const QList<ProjectInfo>& projects);
+    void SignedIn(Status status, const UserInfo& user);
+    void SignedUp(Status status, const UserInfo& user);
+
+    void ProjectsLoaded(Status status, const QList<QPair<ProjectInfo, RoleInfo>>& projects);
     void ProjectCreated(Status status);   
     void ProjectEdited(Status status);
     void ProjectUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>>& users);
 
-    void ProfileUpdated(Status status);
+    void ProfileUpdated(Status status, const UserInfo& user);
 
     void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
     void TaskEdited(Status status, const TaskInfo& task);
@@ -78,6 +80,8 @@ private slots:
 
 private:
     static const QString BaseUrl;
+
+    QString myToken;
 
     Backend();
 
@@ -107,15 +111,13 @@ private:
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 
     void PostRequest(const QString& urlString, const QMap<QString, QString>& args);
-
     void GetRequest(const QString& urlString, const QMap<QString, QString>& args);
 
 //    QMap<int, PropertyValue> valIdToVal;
 //    QMap<int, QList<PropertyValue>> propIdToVals;
 //    QMap<int, QString> propIdToCaption;
 
-    QString myToken;
-    UserInfo myUserInfo;
+    int myRequestCounting = 0;
 
     std::unique_ptr<QNetworkAccessManager> myNetworkManager;
 };

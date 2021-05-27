@@ -22,8 +22,7 @@ Backend Backend::Instance = Backend();
 
 const QString Backend::BaseUrl = "http://139.59.144.121:8080";
 
-Backend::Backend() : myUserInfo(-1, "", "", ""), myNetworkManager(std::make_unique<QNetworkAccessManager>()) {
-    myToken = "";
+Backend::Backend() : myNetworkManager(std::make_unique<QNetworkAccessManager>()) {
     connect(myNetworkManager.get(), &QNetworkAccessManager::finished, this, &Backend::OnResponse);
 }
 
@@ -126,6 +125,9 @@ void Backend::PostRequest(const QString &urlString, const QMap<QString, QString>
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
     myNetworkManager->post(request, "");
+
+    myRequestCounting++;
+    emit LoadingChanged(true);
     qInfo() << request.url();
 }
 
@@ -137,6 +139,9 @@ void Backend::GetRequest(const QString &urlString, const QMap<QString, QString> 
     fullUrl.chop(1);
     QUrl url = QUrl(fullUrl);
     myNetworkManager->get(QNetworkRequest(url));
+
+    myRequestCounting++;
+    emit LoadingChanged(true);
     qInfo() << url;
 }
 
@@ -231,11 +236,6 @@ void Backend::EditTask(const TaskInfo &taskInfo)
     PostRequest(EditTaskUrl(), query);
 }
 
-UserInfo Backend::GetProfile()
-{
-    return myUserInfo;
-}
-
 void Backend::UpdateProfile()
 {
     GetRequest(GetAccountUrl(), QMap<QString, QString> {
@@ -306,6 +306,7 @@ void Backend::ChangeRole(const UserInfo &user, const RoleInfo &role) {
 void Backend::OnResponse(QNetworkReply* reply)
 {
     Status status;
+    myRequestCounting--;
     QJsonObject root = GetRootFromReply(reply, status);
 
     qInfo() << status.isSuccess << " " << status.response;
@@ -318,14 +319,13 @@ void Backend::OnResponse(QNetworkReply* reply)
     QString pattern = request.sliced(0, request.indexOf('?'));
 
     if (pattern == GetProjectsUrl()) {
-        QList<ProjectInfo> projects;
+        QList<QPair<ProjectInfo, RoleInfo>> projects;
 
         if (status.isSuccess) {
             for (QJsonValueRef it : root["projects"].toArray()) {
                 ProjectInfo project = ProjectInfo::ParseFromJson(it.toObject()["project"].toObject());
-                projects.push_back(project);
-
-                // TODO: process role description
+                RoleInfo role = RoleInfo::ParseFromJson(it.toObject()["role"].toObject());
+                projects.push_back(QPair<ProjectInfo, RoleInfo>(project, role));
             }
         }
 
@@ -353,25 +353,28 @@ void Backend::OnResponse(QNetworkReply* reply)
 
         emit ProjectUsersLoaded(status, users);
     } else if (pattern == SignInAccountUrl()) {
+        UserInfo user = Context::DEFAULT_USER;
         if (status.isSuccess) {
             myToken = root["accessToken"].toString();
-            myUserInfo = UserInfo::ParseFromJson(root["user"].toObject());
+            user = UserInfo::ParseFromJson(root["user"].toObject());
         }
 
-        emit SignedIn(status);
+        emit SignedIn(status, user);
     } else if (pattern == SignUpAccountUrl()) {
+        UserInfo user = Context::DEFAULT_USER;
         if (status.isSuccess) {
             myToken = root["accessToken"].toString();
-            myUserInfo = UserInfo::ParseFromJson(root["user"].toObject());
+            user = UserInfo::ParseFromJson(root["user"].toObject());
         }
 
-        emit SignedUp(status);
+        emit SignedUp(status, user);
     } else if (pattern == GetAccountUrl()) {
+        UserInfo user = Context::DEFAULT_USER;
         if (status.isSuccess) {
-            myUserInfo = UserInfo::ParseFromJson(root["user"].toObject());
+            user = UserInfo::ParseFromJson(root["user"].toObject());
         }
 
-        emit ProfileUpdated(status);
+        emit ProfileUpdated(status, user);
     } else if (pattern == GetTasksUrl()) {
         QList<TaskInfo> tasks;
         // TODO: process all information
@@ -420,5 +423,9 @@ void Backend::OnResponse(QNetworkReply* reply)
         emit MemberKicked(status);
     } else if (pattern == ChangeRoleUrl()) {
         emit RoleChanged(status);
+    }
+
+    if (myRequestCounting == 0) {
+        emit LoadingChanged(false);
     }
 }

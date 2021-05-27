@@ -6,8 +6,7 @@
 
 ProjectsList::ProjectsList(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProjectsList)
-{
+    ui(new Ui::ProjectsList) {
     ui->setupUi(this);
 
     dialog = new CreateProjectDialog(this);
@@ -21,25 +20,22 @@ ProjectsList::ProjectsList(QWidget *parent) :
     connect(dialog, SIGNAL(createProject(QString&)), this, SLOT(OnProjectCreated(QString&)));
 }
 
-ProjectsList::~ProjectsList()
-{
+ProjectsList::~ProjectsList() {
     delete ui;
 }
 
 
-void ProjectsList::ChangeHeader(const QString& header)
-{
+void ProjectsList::ChangeHeader(const QString& header) {
     ui->projectListHeader->setText(header);
 }
 
-void ProjectsList::SetProjects(const QList<ProjectInfo>& list)
-{
+void ProjectsList::SetProjects(const QList<QPair<ProjectInfo, RoleInfo>>& list) {
     myProjects = list;
     ui->listWidget->clear();
     for (auto& project : myProjects) {
        auto item = new QListWidgetItem();
        auto widget = new ProjectItemWidget(this);
-       widget->setProject(project.GetTitle());
+       widget->setProject(project.first.GetTitle());
        item->setSizeHint(QSize(200, 50));
 
        ui->listWidget->addItem(item);
@@ -48,19 +44,16 @@ void ProjectsList::SetProjects(const QList<ProjectInfo>& list)
     }
 }
 
-void  ProjectsList::OnProjectCreated(QString& projectName)
-{
+void ProjectsList::OnProjectCreated(QString& projectName) {
     emit AddProjectClicked(projectName);
 }
 
-void ProjectsList::OnAddProjectBtnClicked()
-{
+void ProjectsList::OnAddProjectBtnClicked() {
     dialog->clear();
     dialog->show();
 }
 
-void ProjectsList::OnItemClicked(QListWidgetItem* item)
-{
+void ProjectsList::OnItemClicked(QListWidgetItem* item) {
     auto index = ui->listWidget->indexFromItem(item);
-    emit ProjectSelected(myProjects[index.row()]);
+    emit ProjectSelected(myProjects[index.row()].first, myProjects[index.row()].second);
 }

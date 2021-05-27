@@ -23,10 +23,10 @@ public:
 
     void ChangeHeader(const QString& header);
 
-    void SetProjects(const QList<ProjectInfo>& list);
+    void SetProjects(const QList<QPair<ProjectInfo, RoleInfo>>& list);
 
 signals:
-    void ProjectSelected(const ProjectInfo& projectInfo);
+    void ProjectSelected(const ProjectInfo& projectInfo, const RoleInfo& role);
 
     void AddProjectClicked(const QString& name);
 
@@ -39,7 +39,7 @@ private slots:
 private:
     Ui::ProjectsList *ui;
 
-    QList<ProjectInfo> myProjects;
+    QList<QPair<ProjectInfo, RoleInfo>> myProjects;
 
     CreateProjectDialog* dialog;
 };

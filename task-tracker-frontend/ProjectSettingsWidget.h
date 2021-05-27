@@ -2,13 +2,14 @@
 #define PROJECTSETTINGSWIDGET_H
 
 #include <QWidget>
+#include "AbstractPage.h"
 #include "Backend.h"
 
 namespace Ui {
 class ProjectSettingsWidget;
 }
 
-class ProjectSettingsWidget : public QWidget
+class ProjectSettingsWidget : public AbstractPage
 {
     Q_OBJECT
 
@@ -35,7 +36,8 @@ public:
     explicit ProjectSettingsWidget(QWidget *parent = nullptr);
     ~ProjectSettingsWidget();
 
-    void SetupProject(const ProjectInfo& project);
+protected:
+    void SetupPage() override;
 
 private:
     void ToEditMode();

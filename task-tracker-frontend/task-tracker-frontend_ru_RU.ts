@@ -118,33 +118,33 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="45"/>
-        <source>Created by *author* *time*</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="IssueWidget.ui" line="95"/>
+        <location filename="IssueWidget.ui" line="31"/>
         <source>Task Title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="118"/>
+        <location filename="IssueWidget.ui" line="54"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="125"/>
+        <location filename="IssueWidget.ui" line="61"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="132"/>
+        <location filename="IssueWidget.ui" line="68"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="188"/>
+        <location filename="IssueWidget.ui" line="92"/>
         <source>Status:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="IssueWidget.ui" line="147"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Comments&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

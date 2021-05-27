@@ -7,26 +7,21 @@
 
 
 ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ProjectSettingsWidget),
-    myProject(-1, "Default project")
-{
+        AbstractPage(parent), ui(new Ui::ProjectSettingsWidget), myProject(-1, "Default project") {
     ui->setupUi(this);
 
     ToReadonlyMode();
 
     connect(ui->saveNameButton, SIGNAL(clicked()), this, SLOT(OnSaveClicked()));
     connect(ui->cancelButton, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnCancelClicked);
-
     connect(ui->createRole, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnRoleCreateClicked);
+    connect(ui->inviteButton, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnInviteClicked);
 
     connect(&Backend::Instance, &Backend::ProjectEdited, this, &ProjectSettingsWidget::OnProjectEdited);
     connect(&Backend::Instance, &Backend::RolesLoaded, this, &ProjectSettingsWidget::OnRolesLoaded);
     connect(&Backend::Instance, &Backend::RoleDeleted, this, &ProjectSettingsWidget::OnRoleDeleted);
     connect(&Backend::Instance, &Backend::RoleCreated, this, &ProjectSettingsWidget::OnRoleCreated);
     connect(&Backend::Instance, &Backend::RoleEdited, this, &ProjectSettingsWidget::OnRoleEdited);
-
-    connect(ui->inviteButton, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnInviteClicked);
     connect(&Backend::Instance, &Backend::MemberInvited, this, &ProjectSettingsWidget::OnMemberInvited);
     connect(&Backend::Instance, &Backend::MemberKicked, this, &ProjectSettingsWidget::OnMemberKicked);
     connect(&Backend::Instance, &Backend::ProjectUsersLoaded, this, &ProjectSettingsWidget::OnUsersLoaded);
@@ -39,7 +34,6 @@ void ProjectSettingsWidget::OnSaveClicked() {
             return;
         }
 
-        MainWindow::Instance->StartLoading();
         ProjectInfo newProjectInfo(myProject.GetId(), ui->editProjectName->text());
         Backend::Instance.EditProject(newProjectInfo);
         LockUi();
@@ -53,10 +47,8 @@ void ProjectSettingsWidget::OnCancelClicked() {
     ToReadonlyMode();
 }
 
-void ProjectSettingsWidget::OnProjectEdited(Status status)
-{
+void ProjectSettingsWidget::OnProjectEdited(Status status) {
     UnlockUi();
-    MainWindow::Instance->StopLoading();
     if (status.isSuccess) {
        myProject.SetTitle(ui->editProjectName->text());
        ToReadonlyMode();
@@ -66,13 +58,10 @@ void ProjectSettingsWidget::OnProjectEdited(Status status)
 }
 
 void ProjectSettingsWidget::OnRoleCreateClicked() {
-    MainWindow::Instance->StartLoading();
     Backend::Instance.CreateRole(RoleInfo(-1, "User role", 0, myProject.GetId()));
 }
 
 void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &roles) {
-    MainWindow::Instance->StopLoading();
-
     if (!status.isSuccess) {
         // TODO: Handle errors;
         return;
@@ -98,8 +87,6 @@ void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &
 }
 
 void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
-    MainWindow::Instance->StopLoading();
-
     if (!status.isSuccess) {
         // TODO: Handle errors
         return;
@@ -118,8 +105,6 @@ void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
 }
 
 void ProjectSettingsWidget::OnRoleEdited(Status status, const RoleInfo &role) {
-    MainWindow::Instance->StopLoading();
-
     if (!status.isSuccess) {
         // TODO: Handle errors
         return;
@@ -137,24 +122,19 @@ void ProjectSettingsWidget::OnRoleEdited(Status status, const RoleInfo &role) {
 }
 
 void ProjectSettingsWidget::OnRoleDeleted(Status status) {
-    MainWindow::Instance->StopLoading();
-
     if (!status.isSuccess) {
         // TODO: Handle errors;
         return;
     }
 
-    MainWindow::Instance->StartLoading();
     Backend::Instance.GetRoles(myProject);
 }
 
 void ProjectSettingsWidget::OnInviteClicked() {
-    MainWindow::Instance->StartLoading();
     Backend::Instance.InviteByEmail(myProject, myRoles[ui->roleSelector->currentIndex()], ui->EmailOfInvitedUser->text());
 }
 
 void ProjectSettingsWidget::OnMemberInvited(Status status){
-    MainWindow::Instance->StopLoading();
     if (!status.isSuccess) {
         // TODO: handle errors
         return;
@@ -189,21 +169,19 @@ ProjectSettingsWidget::~ProjectSettingsWidget() {
     delete ui;
 }
 
-void ProjectSettingsWidget::SetupProject(const ProjectInfo &project) {
-    myProject = project;
-    ui->editProjectName->setText(project.GetTitle());
+void ProjectSettingsWidget::SetupPage() {
+    myProject = myContext.GetCurrentProject();
+    ui->editProjectName->setText(myContext.GetCurrentProject().GetTitle());
     ui->rolesList->clear();
     ui->teamList->clear();
 
-    Backend::Instance.GetRoles(project);
-    MainWindow::Instance->StartLoading();
+    Backend::Instance.GetRoles(myContext.GetCurrentProject());
 
     UnlockUi();
     ToReadonlyMode();
 }
 
-void ProjectSettingsWidget::ToEditMode()
-{
+void ProjectSettingsWidget::ToEditMode() {
     ui->editProjectName->setStyleSheet("* { background-color: rgba(255, 255, 255, 255); }");
     ui->editProjectName->setReadOnly(false);
 
@@ -211,8 +189,7 @@ void ProjectSettingsWidget::ToEditMode()
     ui->saveNameButton->setText("Save");
 }
 
-void ProjectSettingsWidget::ToReadonlyMode()
-{
+void ProjectSettingsWidget::ToReadonlyMode() {
     ui->editProjectName->setStyleSheet("* { background-color: rgba(0, 0, 0, 0); }");
     ui->editProjectName->setReadOnly(true);
 
@@ -220,15 +197,13 @@ void ProjectSettingsWidget::ToReadonlyMode()
     ui->saveNameButton->setText("Edit");
 }
 
-void ProjectSettingsWidget::LockUi()
-{
+void ProjectSettingsWidget::LockUi() {
     ui->editProjectName->setReadOnly(true);
     ui->saveNameButton->setEnabled(false);
     ui->cancelButton->setEnabled(false);
 }
 
-void ProjectSettingsWidget::UnlockUi()
-{
+void ProjectSettingsWidget::UnlockUi() {
     ui->editProjectName->setReadOnly(false);
     ui->saveNameButton->setEnabled(true);
     ui->cancelButton->setEnabled(true);
