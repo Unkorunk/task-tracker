@@ -98,6 +98,23 @@ QString Backend::ChangeRoleUrl() {
     return BaseUrl + "/projectUserRole/edit";
 }
 
+QString Backend::CreateCommentUrl() {
+    return BaseUrl + "/comment/create";
+}
+
+QString Backend::DeleteCommentUrl() {
+    return BaseUrl + "/comment/delete";
+}
+
+QString Backend::EditCommentUrl() {
+    return BaseUrl + "/comment/edit";
+}
+
+QString Backend::GetCommentsUrl() {
+    // TODO: change to actual
+    return BaseUrl + "/comment/all";
+}
+
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {
     QNetworkReply::NetworkError error = reply->error();
 
@@ -191,16 +208,14 @@ void Backend::GetProjectUsers(const ProjectInfo &projectInfo) {
                });
 };
 
-void Backend::GetTasks(const ProjectInfo &projectInfo)
-{
+void Backend::GetTasks(const ProjectInfo &projectInfo) {
     GetRequest(GetTasksUrl(), QMap<QString, QString> {
                    { "access_token", myToken },
                    { "project_id", QString("%1").arg(projectInfo.GetId()) }
                });
 }
 
-void Backend::CreateTask(const TaskInfo &taskInfo)
-{
+void Backend::CreateTask(const TaskInfo &taskInfo) {
     PostRequest(CreateTaskUrl(), QMap<QString, QString> {
                     { "access_token", myToken },
                     { "project_id", QString("%1").arg(taskInfo.GetProjectId()) },
@@ -209,16 +224,14 @@ void Backend::CreateTask(const TaskInfo &taskInfo)
                 });
 }
 
-void Backend::DeleteTask(const TaskInfo &taskInfo)
-{
+void Backend::DeleteTask(const TaskInfo &taskInfo) {
     GetRequest(DeleteTaskUrl(), QMap<QString, QString> {
                    { "access_token", myToken },
                    { "task_id", QString("%1").arg(taskInfo.GetId()) }
                });
 }
 
-void Backend::EditTask(const TaskInfo &taskInfo)
-{
+void Backend::EditTask(const TaskInfo &taskInfo) {
     QMap<QString, QString> query {
         { "access_token", myToken },
         { "task_id", QString("%1").arg(taskInfo.GetId()) },
@@ -236,15 +249,13 @@ void Backend::EditTask(const TaskInfo &taskInfo)
     PostRequest(EditTaskUrl(), query);
 }
 
-void Backend::UpdateProfile()
-{
+void Backend::UpdateProfile() {
     GetRequest(GetAccountUrl(), QMap<QString, QString> {
                    { "access_token", myToken }
                });
 }
 
-void Backend::GetRoles(const ProjectInfo &projectInfo)
-{
+void Backend::GetRoles(const ProjectInfo &projectInfo) {
     GetRequest(GetRolesUrl(), QMap<QString, QString> {
                    { "access_token", myToken },
                    { "project_id", QString("%1").arg(projectInfo.GetId()) }
@@ -269,8 +280,7 @@ void Backend::EditRole(const RoleInfo &roleInfo) {
                 });
 }
 
-void Backend::DeleteRole(const RoleInfo &roleInfo)
-{
+void Backend::DeleteRole(const RoleInfo &roleInfo) {
     GetRequest(DeleteRoleUrl(), QMap<QString, QString> {
                    { "access_token", myToken },
                    { "role_id", QString("%1").arg(roleInfo.GetId()) }
@@ -303,8 +313,37 @@ void Backend::ChangeRole(const UserInfo &user, const RoleInfo &role) {
 
 }
 
-void Backend::OnResponse(QNetworkReply* reply)
-{
+void Backend::CreateComment(const TaskInfo& task, const CommentInfo &comment) {
+    PostRequest(CreateCommentUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "task_id", QString("%1").arg(task.GetId()) },
+                    { "text", comment.GetText() }
+                });
+}
+
+void Backend::DeleteComment(const CommentInfo &comment) {
+    GetRequest(DeleteCommentUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "comment_id", QString("%1").arg(comment.GetId()) }
+               });
+}
+
+void Backend::EditComment(const CommentInfo &comment) {
+    PostRequest(EditCommentUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "comment_id", QString("%1").arg(comment.GetId()) },
+                    { "text", comment.GetText() }
+                });
+}
+
+void Backend::GetComments(const TaskInfo &task) {
+    GetRequest(GetCommentsUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "task_id", QString("%1").arg(task.GetId())}
+               });
+}
+
+void Backend::OnResponse(QNetworkReply* reply) {
     Status status;
     myRequestCounting--;
     QJsonObject root = GetRootFromReply(reply, status);
@@ -423,6 +462,32 @@ void Backend::OnResponse(QNetworkReply* reply)
         emit MemberKicked(status);
     } else if (pattern == ChangeRoleUrl()) {
         emit RoleChanged(status);
+    } else if (pattern == CreateCommentUrl()) {
+        CommentInfo comment(-1, std::optional<UserInfo>(), QDateTime(), "");
+        if (status.isSuccess) {
+            comment = CommentInfo::ParseFromJson(root["comment"].toObject());
+        }
+
+        emit CommentCreated(status, comment);
+    } else if (pattern == DeleteCommentUrl()) {
+        emit CommentDeleted(status);
+    } else if (pattern == EditCommentUrl()) {
+        CommentInfo comment(-1, std::optional<UserInfo>(), QDateTime(), "");
+        if (status.isSuccess) {
+            comment = CommentInfo::ParseFromJson(root["comment"].toObject());
+        }
+
+        emit CommentEdited(status, comment);
+    } else if (pattern == GetCommentsUrl()) {
+        QList<CommentInfo> comments;
+
+        if (status.isSuccess) {
+            for (QJsonValueRef obj : root["comments"].toArray()) {
+                comments.push_back(CommentInfo::ParseFromJson(obj.toObject()));
+            }
+        }
+
+        emit CommentsLoaded(status, comments);
     }
 
     if (myRequestCounting == 0) {

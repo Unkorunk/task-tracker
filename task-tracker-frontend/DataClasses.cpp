@@ -1,6 +1,7 @@
 #include "DataClasses.h"
 
 #include <QJsonObject>
+#include <QJsonArray>
 #include <algorithm>
 
 // PROJECT INFO
@@ -89,6 +90,48 @@ void UserInfo::SetPhoto(const QString &photo) {
 
 // END USER INFO
 
+// COMMENT INFO
+CommentInfo CommentInfo::ParseFromJson(const QJsonObject &object) {
+    std::optional<UserInfo> user;
+    if (object.contains("author") && !object["author"].isNull()) {
+        user.emplace(UserInfo::ParseFromJson(object["author"].toObject()));
+    }
+
+    CommentInfo comment(object["id"].toInt(), user, QDateTime::fromString(object["createdAt"].toString(), DATE_FORMAT),
+            object["text"].toString());
+    return comment;
+}
+
+CommentInfo::CommentInfo(int id, const std::optional<UserInfo> &user, const QDateTime& date, const QString &text)
+    : myId(id), myUser(user), myDate(date), myText(text) { }
+
+int CommentInfo::GetId() const {
+    return myId;
+}
+
+std::optional<UserInfo> CommentInfo::GetCommentator() const {
+    return myUser;
+}
+
+void CommentInfo::SetCommentator(const std::optional<UserInfo> &user, const QDateTime& creationDate) {
+    myUser = user;
+    myDate = creationDate;
+}
+
+QDateTime CommentInfo::GetDate() const {
+    return myDate;
+}
+
+QString CommentInfo::GetText() const {
+    return myText;
+}
+
+void CommentInfo::SetText(const QString &text) {
+    myText = text;
+}
+
+// END COMMENT INFO
+
 // TASK INFO
 TaskInfo TaskInfo::ParseFromJson(const QJsonObject &object) {
     std::optional<UserInfo> creator;
@@ -114,6 +157,12 @@ TaskInfo TaskInfo::ParseFromJson(const QJsonObject &object) {
         task.SetDeadline(QDateTime::fromString(object["deadline"].toString(), DATE_FORMAT));
     }
 
+    QList<CommentInfo> comments;
+    for (QJsonValueRef comment : object["comments"].toArray()) {
+        comments.push_back(CommentInfo::ParseFromJson(comment.toObject()));
+    }
+
+    task.SetComments(comments);
     return task;
 }
 
@@ -193,6 +242,14 @@ std::optional<QDateTime> TaskInfo::GetDeadline() const {
 
 void TaskInfo::SetDeadline(const std::optional<QDateTime> &deadline) {
     myDeadline = deadline;
+}
+
+QList<CommentInfo> TaskInfo::GetComments() const {
+    return myComments;
+}
+
+void TaskInfo::SetComments(const QList<CommentInfo> &comments) {
+    myComments = comments;
 }
 
 // END TASK INFO

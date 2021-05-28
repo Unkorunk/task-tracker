@@ -123,6 +123,10 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/UserItemWidget.h
   task-tracker-frontend/UserItemWidget.ui
 
+  task-tracker-frontend/CommentWidgetItem.cpp
+  task-tracker-frontend/CommentWidgetItem.h
+  task-tracker-frontend/CommentWidgetItem.ui
+
   task-tracker-frontend/Context.cpp
   task-tracker-frontend/Context.h
 

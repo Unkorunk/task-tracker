@@ -49,6 +49,12 @@ public:
     void Kick(const ProjectInfo& project, const UserInfo& user);
     void ChangeRole(const UserInfo& user, const RoleInfo& role);
 
+    void CreateComment(const TaskInfo& task, const CommentInfo& comment);
+    void DeleteComment(const CommentInfo& comment);
+    void EditComment(const CommentInfo& comment);
+
+    void GetComments(const TaskInfo& task);
+
 signals:
     void LoadingChanged(bool isLoading);
 
@@ -74,6 +80,12 @@ signals:
     void MemberInvited(Status status);
     void MemberKicked(Status status);
     void RoleChanged(Status status);
+
+    void CommentCreated(Status status, const CommentInfo& comment);
+    void CommentDeleted(Status status);
+    void CommentEdited(Status status, const CommentInfo& comment);
+
+    void CommentsLoaded(Status status, const QList<CommentInfo>& comments);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -107,6 +119,12 @@ private:
     QString InviteByEmailUrl();
     QString KickUrl();
     QString ChangeRoleUrl();
+
+    QString CreateCommentUrl();
+    QString DeleteCommentUrl();
+    QString EditCommentUrl();
+
+    QString GetCommentsUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 

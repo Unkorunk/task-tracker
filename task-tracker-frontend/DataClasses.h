@@ -91,6 +91,29 @@ private:
     QString myIcon;
 };
 
+class CommentInfo {
+public:
+    static CommentInfo ParseFromJson(const QJsonObject& object);
+
+    CommentInfo(int id, const std::optional<UserInfo>& user, const QDateTime& date, const QString& text);
+
+    int GetId() const;
+
+    std::optional<UserInfo> GetCommentator() const;
+    void SetCommentator(const std::optional<UserInfo>& user, const QDateTime& creationDate);
+
+    QDateTime GetDate() const;
+
+    QString GetText() const;
+    void SetText(const QString& text);
+
+private:
+    int myId;
+    std::optional<UserInfo> myUser;
+    QDateTime myDate;
+    QString myText;
+};
+
 class TaskInfo {
 public:
     static TaskInfo ParseFromJson(const QJsonObject& object);
@@ -125,6 +148,9 @@ public:
     std::optional<QDateTime> GetDeadline() const;
     void SetDeadline(const std::optional<QDateTime>& deadline);
 
+    QList<CommentInfo> GetComments() const;
+    void SetComments(const QList<CommentInfo>& comments);
+
 private:
     int myId;
     ProjectInfo myProject;
@@ -146,6 +172,7 @@ private:
 
     std::optional<QDateTime> myDeadline;
 
+    QList<CommentInfo> myComments;
 };
 
 inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
@@ -154,6 +181,5 @@ inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
         return proj1.GetId() < proj2.GetId();
     return proj1.GetTitle() < proj2.GetTitle();
 }
-
 
 #endif // DATACLASSES_H

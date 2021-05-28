@@ -5,6 +5,7 @@
 #include "DateTimePropertyWidget.h"
 #include "UserSelectorWidget.h"
 #include "IntegerSelectorWidget.h"
+#include "CommentWidgetItem.h"
 
 // TODO: refactor task_info
 IssueWidget::IssueWidget(QWidget *parent) : AbstractPage(parent),
@@ -19,6 +20,10 @@ IssueWidget::IssueWidget(QWidget *parent) : AbstractPage(parent),
 
     connect(&Backend::Instance, &Backend::TaskEdited, this, &IssueWidget::OnTaskUpdated);
     connect(&Backend::Instance, &Backend::TaskDeleted, this, &IssueWidget::OnTaskDeleted);
+
+    connect(&Backend::Instance, &Backend::CommentCreated, this, &IssueWidget::OnCommentCreated);
+    connect(&Backend::Instance, &Backend::CommentDeleted, this, &IssueWidget::OnCommentDeleted);
+    connect(&Backend::Instance, &Backend::CommentsLoaded, this, &IssueWidget::OnCommentsLoaded);
 }
 
 IssueWidget::~IssueWidget() {
@@ -72,6 +77,8 @@ void IssueWidget::SetupPage() {
 
     UnlockUi();
     ToReadOnlyMode();
+
+    UpdateComments();
 }
 
 void IssueWidget::OnEditClicked() {
@@ -141,6 +148,50 @@ void IssueWidget::OnTaskDeleted(Status status) {
     UnlockUi();
     if (status.isSuccess) {
         emit TaskDeleted(MainWindow::Transition::Project, myContext);
+    }
+}
+
+void IssueWidget::OnCommentCreated(Status status, const CommentInfo &comment) {
+    if (status.isSuccess) {
+         Backend::Instance.GetComments(myContext.GetTask());
+    }
+}
+
+void IssueWidget::OnCommentDeleted(Status status) {
+    if (status.isSuccess) {
+         Backend::Instance.GetComments(myContext.GetTask());
+    }
+}
+
+void IssueWidget::OnCommentsLoaded(Status status, const QList<CommentInfo> &comments) {
+    if (status.isSuccess) {
+        TaskInfo task = myContext.GetTask();
+        task.SetComments(comments);
+        myContext.SetTask(task);
+        UpdateComments();
+    }
+}
+
+void IssueWidget::UpdateComments() {
+    TaskInfo task = myContext.GetTask();
+    ui->commentsList->clear();
+
+    auto item = new QListWidgetItem();
+    auto widget = new CommentWidgetItem(this);
+    widget->SetupNewCommentMode(task);
+    item->setSizeHint(QSize(200, 150));
+
+    ui->commentsList->addItem(item);
+    ui->commentsList->setItemWidget(item, widget);
+
+    for (const CommentInfo& comment : task.GetComments()) {
+        auto item = new QListWidgetItem();
+        auto widget = new CommentWidgetItem(this);
+        widget->SetupComment(comment);
+        item->setSizeHint(QSize(200, 150));
+
+        ui->commentsList->addItem(item);
+        ui->commentsList->setItemWidget(item, widget);
     }
 }
 
