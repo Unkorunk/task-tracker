@@ -85,7 +85,7 @@ class CommentController {
         }
 
         try {
-            userRepository.deleteById(commentId)
+            commentRepository.deleteById(commentId)
         } catch (ex: Exception) {
             return DeleteResult(false)
         }
