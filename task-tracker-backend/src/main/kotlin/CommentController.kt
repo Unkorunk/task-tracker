@@ -11,6 +11,7 @@ class CommentController {
     data class CreateResult(val status: Boolean, val comment: Comment? = null)
     data class DeleteResult(val status: Boolean)
     data class EditResult(val status: Boolean, val comment: Comment? = null)
+    data class AllResult(val status: Boolean, val comments: Set<Comment> = emptySet())
 
     @Autowired
     private lateinit var commentRepository: CommentRepository
@@ -84,7 +85,7 @@ class CommentController {
         }
 
         try {
-            userRepository.deleteById(commentId)
+            commentRepository.deleteById(commentId)
         } catch (ex: Exception) {
             return DeleteResult(false)
         }
@@ -128,5 +129,29 @@ class CommentController {
         }
 
         return EditResult(true, comment)
+    }
+
+    @GetMapping(path = ["/all"])
+    @ResponseBody
+    fun all(
+        @RequestParam(value = "access_token") accessToken: String,
+        @RequestParam(value = "task_id") taskId: Int
+    ): AllResult {
+        val user = userRepository.findByAccessToken(accessToken) ?: return AllResult(false)
+        if (user.validUntil < Date()) {
+            return AllResult(false)
+        }
+
+        val taskOptional = taskRepository.findById(taskId)
+        if (taskOptional.isEmpty) {
+            return AllResult(false)
+        }
+        val task = taskOptional.get()
+
+        if (user.projects.all { projectUserRole -> !projectUserRole.project.tasks.any { task -> task.id == taskId } }) {
+            return AllResult(false)
+        }
+
+        return AllResult(true, task.comments)
     }
 }
