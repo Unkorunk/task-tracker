@@ -35,7 +35,13 @@ private slots:
     void OnTaskUpdated(Status status, const TaskInfo& task);
     void OnTaskDeleted(Status status);
 
+    void OnCommentCreated(Status status, const CommentInfo& comment);
+    void OnCommentDeleted(Status status);
+    void OnCommentsLoaded(Status status, const QList<CommentInfo>& comments);
+
 private:
+    void UpdateComments();
+
     void ToEditMode();
     void ToReadOnlyMode();
 

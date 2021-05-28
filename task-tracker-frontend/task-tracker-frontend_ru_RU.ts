@@ -39,6 +39,39 @@ an account?</source>
     </message>
 </context>
 <context>
+    <name>CommentWidgetItem</name>
+    <message>
+        <location filename="CommentWidgetItem.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CommentWidgetItem.ui" line="33"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CommentWidgetItem.ui" line="40"/>
+        <source>Post</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CommentWidgetItem.ui" line="47"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CommentWidgetItem.ui" line="54"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="CommentWidgetItem.ui" line="68"/>
+        <source>Author : Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CreateProjectDialog</name>
     <message>
         <location filename="CreateProjectDialog.ui" line="20"/>
@@ -143,7 +176,7 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="147"/>
+        <location filename="IssueWidget.ui" line="142"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Comments&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
