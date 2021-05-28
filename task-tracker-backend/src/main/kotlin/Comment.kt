@@ -1,5 +1,6 @@
 package timelimit.main
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.*
 import javax.persistence.*
 
@@ -22,6 +23,7 @@ class Comment {
     @Column(nullable = false)
     var text: String = ""
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
     var task: Task = Task()
