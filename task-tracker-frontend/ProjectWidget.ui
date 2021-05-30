@@ -35,6 +35,9 @@
          <bold>true</bold>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(232, 227, 227);</string>
+       </property>
        <property name="text">
         <string>ProjectName</string>
        </property>
@@ -50,11 +53,12 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>12</pointsize>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">border: none;</string>
+        <string notr="true">border: none;
+background-color: rgb(232, 227, 227);</string>
        </property>
        <property name="text">
         <string>Project Settings</string>
@@ -71,11 +75,12 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>12</pointsize>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">border: none;</string>
+        <string notr="true">border: none;
+background-color: rgb(232, 227, 227);</string>
        </property>
        <property name="text">
         <string>Project Statistics</string>
@@ -211,7 +216,9 @@ border-radius: 3px;</string>
         </sizepolicy>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">QListWidget  {
+background-color: rgb(232, 227, 227);
+}</string>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>

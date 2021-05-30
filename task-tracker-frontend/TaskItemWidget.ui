@@ -124,7 +124,8 @@ border-radius: 0px;</string>
          <bool>false</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(81, 255, 0);
+         <string notr="true">
+background-color: rgb(0, 170, 0);
 </string>
         </property>
         <property name="frameShadow">
@@ -175,7 +176,7 @@ border-radius: 0px;</string>
         </property>
         <property name="font">
          <font>
-          <pointsize>11</pointsize>
+          <pointsize>12</pointsize>
           <strikeout>false</strikeout>
          </font>
         </property>
@@ -188,90 +189,38 @@ border-radius: 0px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QDateEdit" name="startDate">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QLabel" name="startDate">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="font">
          <font>
-          <pointsize>11</pointsize>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
+          <pointsize>12</pointsize>
          </font>
         </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background: transparent;</string>
-        </property>
-        <property name="wrapping">
-         <bool>false</bool>
-        </property>
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="buttonSymbols">
-         <enum>QAbstractSpinBox::NoButtons</enum>
-        </property>
-        <property name="keyboardTracking">
-         <bool>true</bool>
+        <property name="text">
+         <string>TextLabel</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QDateEdit" name="endDate">
+       <widget class="QLabel" name="endDate">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
         <property name="font">
          <font>
-          <pointsize>11</pointsize>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
+          <pointsize>12</pointsize>
          </font>
         </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background: transparent;</string>
-        </property>
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="buttonSymbols">
-         <enum>QAbstractSpinBox::NoButtons</enum>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
+        <property name="text">
+         <string>TextLabel</string>
         </property>
        </widget>
       </item>

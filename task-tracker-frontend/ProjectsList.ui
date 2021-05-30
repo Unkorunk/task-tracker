@@ -53,7 +53,8 @@
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgb(226, 128, 128);
-border: none;</string>
+border: none;
+</string>
        </property>
        <property name="text">
         <string>Create project</string>
