@@ -22,6 +22,7 @@ ProjectsList::ProjectsList(QWidget *parent) :
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 
     connect(dialog, SIGNAL(createProject(QString&)), this, SLOT(OnProjectCreated(QString&)));
+
 }
 
 ProjectsList::~ProjectsList()

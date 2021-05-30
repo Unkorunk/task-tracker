@@ -61,11 +61,15 @@
           </sizepolicy>
          </property>
          <property name="styleSheet">
-          <string notr="true">
-background-color: rgb(232, 227, 227);</string>
+          <string notr="true">QStackedWidget {
+background-color: rgb(232, 227, 227);
+margin-top: 20px; 
+margin-right: 15px;
+ margin-left: 15px;;
+}</string>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>6</number>
          </property>
          <widget class="GreetingsWidget" name="page_15">
           <property name="sizePolicy">
@@ -80,14 +84,22 @@ background-color: rgb(232, 227, 227);</string>
          <widget class="ProjectWidget" name="page_18"/>
          <widget class="ProjectSettingsWidget" name="page_19"/>
          <widget class="StatisticsWidget" name="page_20"/>
-         <widget class="IssueWidget" name="page_21"/>
+         <widget class="IssueWidget" name="page_21">
+          <widget class="LoadingBar" name="loadingBar" native="true">
+           <property name="geometry">
+            <rect>
+             <x>-30</x>
+             <y>450</y>
+             <width>778</width>
+             <height>10</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
         </widget>
        </item>
       </layout>
      </widget>
-    </item>
-    <item>
-     <widget class="LoadingBar" name="loadingBar" native="true"/>
     </item>
    </layout>
   </widget>

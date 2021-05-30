@@ -12,9 +12,8 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
     Instance = this;
     ui->setupUi(this);
 
-    ui->background->setStyleSheet("QWidget {background-color: rgb(232, 227, 227);border-radius: 20px;}");
-    ui->stackedWidget->setStyleSheet("QWidget#stackedWidget {background-color: rgb(232, 227, 227); margin-top: 20px; margin-right: 15px; margin-left: 15px;}");
-    ui->stackedWidget->setStyleSheet("background-color: rgb(232, 227, 227)");
+    ui->background->setStyleSheet("QWidget#background {background-color: rgb(232, 227, 227);border-radius: 20px;}");
+
     connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnTransition);
     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);
 

@@ -115,7 +115,7 @@ background-color: rgb(255, 255, 255);</string>
    <item>
     <widget class="QListWidget" name="listWidget">
      <property name="styleSheet">
-      <string notr="true">QWidget#ProjectList {margin-top: 100px;}</string>
+      <string notr="true"/>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>

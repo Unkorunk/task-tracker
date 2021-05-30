@@ -10,7 +10,9 @@ GreetingsWidget::GreetingsWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->personalProjectsList->ChangeHeader("Personal projects");
 
-    ui->personalProjectsList->setStyleSheet("QWidget {background-color: white; border-radius: 20px;}");
+    ui->personalProjectsList->setStyleSheet("ProjectsList {background-color: white; border-radius: 20px;}");
+    ui->projectList->setStyleSheet("background-color: rgb(232, 227, 227);");
+
 
     connect(ui->projectList, &ProjectsList::AddProjectClicked, this, &GreetingsWidget::OnProjectAdd);
     connect(ui->projectList, &ProjectsList::ProjectSelected, MainWindow::Instance, &MainWindow::OnProjectTransition);
