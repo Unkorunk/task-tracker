@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#CommentWidgetItem {
+background-color: rgb(232, 227, 227);
+}
+</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -28,6 +34,9 @@
         <font>
          <pointsize>12</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(232, 227, 227);</string>
        </property>
        <property name="text">
         <string>Comment</string>
@@ -64,6 +73,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="infoLabel">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(232, 227, 227);</string>
+       </property>
        <property name="text">
         <string>Author : Date</string>
        </property>

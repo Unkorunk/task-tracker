@@ -6,6 +6,7 @@
 #include "UserSelectorWidget.h"
 #include "IntegerSelectorWidget.h"
 #include "CommentWidgetItem.h"
+#include <QScrollBar>
 
 // TODO: refactor task_info
 IssueWidget::IssueWidget(QWidget *parent) : AbstractPage(parent),
@@ -24,6 +25,8 @@ IssueWidget::IssueWidget(QWidget *parent) : AbstractPage(parent),
     connect(&Backend::Instance, &Backend::CommentCreated, this, &IssueWidget::OnCommentCreated);
     connect(&Backend::Instance, &Backend::CommentDeleted, this, &IssueWidget::OnCommentDeleted);
     connect(&Backend::Instance, &Backend::CommentsLoaded, this, &IssueWidget::OnCommentsLoaded);
+
+    ui->commentsList->verticalScrollBar()->setSingleStep(4);
 }
 
 IssueWidget::~IssueWidget() {
@@ -90,6 +93,7 @@ void IssueWidget::OnEditClicked() {
 
         this->ui->taskNameEdit->setText(task.GetTitle());
         this->ui->descriptionEdit->setText(task.GetDescription());
+
         myAssigneeSelector->ChangeData(task.GetAssignee());
         myDeadlineSelector->ChangeData(task.GetDeadline());
         myStorypointSelector->ChangeData(task.GetStoryPoints());
@@ -207,6 +211,10 @@ void IssueWidget::ToEditMode() {
     myDeadlineSelector->SetEditable(true);
     myAssigneeSelector->SetEditable(true);
     myStorypointSelector->SetEditable(true);
+
+//    this->ui->descriptionEdit->setStyleSheet("background-color: white;");
+    this->ui->descriptionEdit->setStyleSheet("background-color: white;");
+
 }
 
 void IssueWidget::ToReadOnlyMode() {
@@ -217,6 +225,8 @@ void IssueWidget::ToReadOnlyMode() {
     this->ui->taskNameEdit->setEnabled(false);
     this->ui->taskNameEdit->setReadOnly(true);
     this->ui->descriptionEdit->setReadOnly(true);
+
+    this->ui->descriptionEdit->setStyleSheet("background-color: rgb(232, 227, 227);");
 
     myDeadlineSelector->SetEditable(false);
     myAssigneeSelector->SetEditable(false);
