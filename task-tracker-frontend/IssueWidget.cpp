@@ -214,6 +214,7 @@ void IssueWidget::ToEditMode() {
 
 //    this->ui->descriptionEdit->setStyleSheet("background-color: white;");
     this->ui->descriptionEdit->setStyleSheet("background-color: white;");
+    this->ui->taskNameEdit->setStyleSheet("background-color: white; border: 1px solid black");
 
 }
 
@@ -227,6 +228,7 @@ void IssueWidget::ToReadOnlyMode() {
     this->ui->descriptionEdit->setReadOnly(true);
 
     this->ui->descriptionEdit->setStyleSheet("background-color: rgb(232, 227, 227);");
+    this->ui->taskNameEdit->setStyleSheet("background-color: rgb(232, 227, 227); border: none");
 
     myDeadlineSelector->SetEditable(false);
     myAssigneeSelector->SetEditable(false);

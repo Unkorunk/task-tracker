@@ -32,7 +32,7 @@
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(232, 227, 227);
-berder: none;</string>
+border: none;</string>
          </property>
          <property name="placeholderText">
           <string>Task Title</string>
