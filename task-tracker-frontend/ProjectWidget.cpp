@@ -7,10 +7,9 @@
 #include <QScrollBar>
 
 ProjectWidget::ProjectWidget(QWidget *parent) :
-    QWidget(parent),
+    AbstractPage(parent),
     ui(new Ui::ProjectWidget),
-    myProject(-1, "")
-{
+    myProject(-1, "") {
     ui->setupUi(this);
 
     ui->listWidget->verticalScrollBar()->setSingleStep(2);
@@ -20,52 +19,36 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
 
     connect(&Backend::Instance, &Backend::TasksLoaded, this, &ProjectWidget::OnTasksLoaded);
 
-    connect(this, &ProjectWidget::TaskSelected, MainWindow::Instance, &MainWindow::OnIssueTransition);
-
     connect(ui->ProjectSettingsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectSettingsBtnClicked);
-    connect(this, &ProjectWidget::ProjectSettingsClicked, MainWindow::Instance, &MainWindow::OnProjectSettingsTransition);
-
     connect(ui->ProjectStatisticsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectStatisticsBtnClicked);
-    connect(this, &ProjectWidget::ProjectStatisticsClicked, MainWindow::Instance, &MainWindow::OnProjectStatisticsTransition);
 
     connect(&Backend::Instance, &Backend::TaskEdited, this, &ProjectWidget::OnTaskUpdate);
 }
 
-void ProjectWidget::RemoveItem(const QString &text)
-{
-}
-
-ProjectWidget::~ProjectWidget()
-{
+ProjectWidget::~ProjectWidget() {
     delete ui;
 }
 
-void ProjectWidget::OnCreateTaskBtnClicked()
-{
-    Backend::Instance.CreateTask(TaskInfo(0, myProject, "New task", "Default task description", Backend::Instance.GetProfile(), QDateTime::currentDateTime(), 0));
-    MainWindow::Instance->StartLoading();
+void ProjectWidget::OnCreateTaskBtnClicked() {
+    Backend::Instance.CreateTask(TaskInfo(0, myProject, "New task", "Default task description",
+                                          myContext.GetUser(), QDateTime::currentDateTime(), 0));
 }
 
-void ProjectWidget::OnProjectSettingsBtnClicked()
-{
-    emit ProjectSettingsClicked(myProject);
+void ProjectWidget::OnProjectSettingsBtnClicked() {
+    emit TransitionRequested(MainWindow::Transition::ProjectSettings, myContext);
 }
 
-void ProjectWidget::OnProjectStatisticsBtnClicked()
-{
-
-    emit ProjectSettingsClicked(myProject);
+void ProjectWidget::OnProjectStatisticsBtnClicked() {
+    emit TransitionRequested(MainWindow::Transition::ProjectStatistics, myContext);
 }
 
-void ProjectWidget::OnItemClicked(QListWidgetItem* item)
-{
+void ProjectWidget::OnItemClicked(QListWidgetItem* item) {
     auto index = ui->listWidget->indexFromItem(item);
-    emit TaskSelected(myProject, taskList[taskList.count() - index.row() - 1]);
+    myContext.SetTask(taskList[taskList.count() - index.row() - 1]);
+    emit TransitionRequested(MainWindow::Transition::Issue, myContext);
 }
 
-void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
-{
-    MainWindow::Instance->StopLoading();
+void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
     ui->listWidget->clear();
     for (auto& task : tasks) {
         //TODO: change
@@ -81,9 +64,7 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks)
     }
 }
 
-void ProjectWidget::OnTaskUpdate(Status status)
-{
-    MainWindow::Instance->StopLoading();
+void ProjectWidget::OnTaskUpdate(Status status) {
     if (status.isSuccess) {
         Backend::Instance.GetTasks(myProject);
     }
@@ -91,13 +72,9 @@ void ProjectWidget::OnTaskUpdate(Status status)
     // TODO: handle errors
 }
 
-
-void ProjectWidget::SetupProject(const ProjectInfo &project)
-{
-    myProject = project;
+void ProjectWidget::SetupPage() {
+    myProject = myContext.GetCurrentProject();
 
     ui->ProjectNameLabel->setText(myProject.GetTitle());
-
-    MainWindow::Instance->StartLoading();
     Backend::Instance.GetTasks(myProject);
 }

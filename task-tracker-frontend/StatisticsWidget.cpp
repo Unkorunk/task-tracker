@@ -3,18 +3,15 @@
 #include "Backend.h"
 
 StatisticsWidget::StatisticsWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::StatisticsWidget)
-{
+    AbstractPage(parent),
+    ui(new Ui::StatisticsWidget) {
     ui->setupUi(this);
 }
 
-StatisticsWidget::~StatisticsWidget()
-{
+StatisticsWidget::~StatisticsWidget() {
     delete ui;
 }
 
-void StatisticsWidget::SetupProject(const ProjectInfo &project)
-{
-    ui->label->setText(project.GetTitle());
+void StatisticsWidget::SetupPage() {
+    ui->label->setText(myContext.GetCurrentProject().GetTitle());
 }

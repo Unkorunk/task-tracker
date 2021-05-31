@@ -38,13 +38,10 @@ void UserItemWidget::SetRoles(const UserInfo &user, const QList<RoleInfo> &roles
 }
 
 void UserItemWidget::OnRoleChangeRequested() {
-    MainWindow::Instance->StartLoading();
     Backend::Instance.ChangeRole(myUser, myRoles[ui->roleSelector->currentIndex()]);
 }
 
-void UserItemWidget::OnRoleChanged(Status status) {
-    MainWindow::Instance->StopLoading();
-}
+void UserItemWidget::OnRoleChanged(Status status) {}
 
 void UserItemWidget::OnKickClicked() {
     Backend::Instance.Kick(myProject, myUser);

@@ -404,6 +404,9 @@ border: none;</string>
              <property name="text">
               <string>Sign up</string>
              </property>
+             <property name="default">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
@@ -455,6 +458,9 @@ an account?</string>
              </property>
              <property name="autoExclusive">
               <bool>false</bool>
+             </property>
+             <property name="default">
+              <bool>true</bool>
              </property>
             </widget>
            </item>

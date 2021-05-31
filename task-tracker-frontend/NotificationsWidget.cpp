@@ -2,13 +2,13 @@
 #include "ui_NotificationsWidget.h"
 
 NotificationsWidget::NotificationsWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::NotificationsWidget)
-{
+    AbstractPage(parent),
+    ui(new Ui::NotificationsWidget) {
     ui->setupUi(this);
 }
 
-NotificationsWidget::~NotificationsWidget()
-{
+NotificationsWidget::~NotificationsWidget() {
     delete ui;
 }
+
+void NotificationsWidget::SetupPage() { }

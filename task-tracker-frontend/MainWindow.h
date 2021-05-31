@@ -14,14 +14,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    static MainWindow* Instance;
-
     MainWindow(QMainWindow& authWindow, QWidget *parent = nullptr);
     ~MainWindow();
-
-    void StartLoading();
-
-    void StopLoading();
 
     enum class Transition {
         Greetings = 0,
@@ -33,27 +27,24 @@ public:
         Issue = 6,
     };
 
-public slots:
-    void OnProjectTransition(const ProjectInfo& projectInfo);
-
-    void OnIssueTransition(const ProjectInfo& project, const TaskInfo& taskInfo);
-
-    void OnProjectSettingsTransition(const ProjectInfo& projectInfo);
-
-    void OnProjectStatisticsTransition(const ProjectInfo& projectInfo);
-
 private slots:
     void OnLogout();
 
-    void OnTransition(MainWindow::Transition transition);
+    void OnNavBarTransition(MainWindow::Transition transition);
+
+    void OnTransition(MainWindow::Transition transition, const Context& context);
 
     void OnBackButtonClicked();
+
+    void OnLoadingChanged(bool isLoading);
 
 private:
     Ui::MainWindow *ui;
 
     QMainWindow& myAuthWindow;
 
-    QStack<MainWindow::Transition> myTransitionsHistory;
+    Context myContext;
+
+    QStack<QPair<MainWindow::Transition, Context>> myTransitionsHistory;
 };
 #endif // MAINWINDOW_H

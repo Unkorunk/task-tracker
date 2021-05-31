@@ -121,7 +121,6 @@ void RoleWidgetItem::OnSaveBtnClicked() {
     newRole.SetPermissions(RoleInfo::MANAGE_PROJECT, ui->editProjectBox->isChecked());
     newRole.SetPermissions(RoleInfo::DELETE_PROJECT, ui->deleteProjectBox->isChecked());
 
-    MainWindow::Instance->StartLoading();
     Backend::Instance.EditRole(newRole);
 }
 

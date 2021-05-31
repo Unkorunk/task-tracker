@@ -7,8 +7,7 @@
 
 ProjectsList::ProjectsList(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProjectsList)
-{
+    ui(new Ui::ProjectsList) {
     ui->setupUi(this);
     setAttribute(Qt::WA_StyledBackground);
     ui->listWidget->verticalScrollBar()->setSingleStep(2);
@@ -25,45 +24,39 @@ ProjectsList::ProjectsList(QWidget *parent) :
 
 }
 
-ProjectsList::~ProjectsList()
-{
+ProjectsList::~ProjectsList() {
     delete ui;
 }
 
 
-void ProjectsList::ChangeHeader(const QString& header)
-{
+void ProjectsList::ChangeHeader(const QString& header) {
     ui->projectListHeader->setText(header);
 }
 
-void ProjectsList::SetProjects(const QList<ProjectInfo>& list)
-{
+void ProjectsList::SetProjects(const QList<QPair<ProjectInfo, RoleInfo>>& list) {
     myProjects = list;
     ui->listWidget->clear();
     for (auto& project : myProjects) {
        auto item = new QListWidgetItem();
        auto widget = new ProjectItemWidget(this);
-       item->setSizeHint(QSize(100, 70));
-       widget->setProject(project.GetTitle());
+       widget->setProject(project.first.GetTitle());
+       item->setSizeHint(QSize(200, 70));
        ui->listWidget->addItem(item);
        ui->listWidget->setItemWidget(item, widget);
        update();
     }
 }
 
-void  ProjectsList::OnProjectCreated(QString& projectName)
-{
+void ProjectsList::OnProjectCreated(QString& projectName) {
     emit AddProjectClicked(projectName);
 }
 
-void ProjectsList::OnAddProjectBtnClicked()
-{
+void ProjectsList::OnAddProjectBtnClicked() {
     dialog->clear();
     dialog->show();
 }
 
-void ProjectsList::OnItemClicked(QListWidgetItem* item)
-{
+void ProjectsList::OnItemClicked(QListWidgetItem* item) {
     auto index = ui->listWidget->indexFromItem(item);
-    emit ProjectSelected(myProjects[index.row()]);
+    emit ProjectSelected(myProjects[index.row()].first, myProjects[index.row()].second);
 }
