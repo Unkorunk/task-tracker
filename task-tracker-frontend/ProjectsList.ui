@@ -52,7 +52,8 @@
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(226, 128, 128);
+        <string notr="true">background-color: rgb(1, 141, 253);
+color: rgb(255, 255, 255);
 border: none;
 </string>
        </property>
