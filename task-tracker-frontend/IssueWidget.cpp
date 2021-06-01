@@ -212,10 +212,8 @@ void IssueWidget::ToEditMode() {
     myAssigneeSelector->SetEditable(true);
     myStorypointSelector->SetEditable(true);
 
-//    this->ui->descriptionEdit->setStyleSheet("background-color: white;");
     this->ui->descriptionEdit->setStyleSheet("background-color: white;");
     this->ui->taskNameEdit->setStyleSheet("background-color: white; border: 1px solid black");
-
 }
 
 void IssueWidget::ToReadOnlyMode() {

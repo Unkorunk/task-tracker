@@ -40,22 +40,6 @@ border: none;</string>
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_7">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>150</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
         <widget class="QPushButton" name="saveButton">
          <property name="font">
           <font>
@@ -112,19 +96,6 @@ background-color: rgb(232, 227, 227);</string>
           </size>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </item>
@@ -276,6 +247,9 @@ border: none;
      <property name="styleSheet">
       <string notr="true">QListWidget {border: none; background-color: rgb(232, 227, 227);}
 </string>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::NoSelection</enum>
      </property>
     </widget>
    </item>
