@@ -4,6 +4,7 @@
 #include "MainWindow.h"
 #include "RoleWidgetItem.h"
 #include "UserItemWidget.h"
+#include "PropertyItemWidget.h"
 
 
 ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
@@ -16,6 +17,7 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     connect(ui->cancelButton, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnCancelClicked);
     connect(ui->createRole, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnRoleCreateClicked);
     connect(ui->inviteButton, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnInviteClicked);
+    connect(ui->newTagBtn, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnTagCreateClicked);
 
     connect(&Backend::Instance, &Backend::ProjectEdited, this, &ProjectSettingsWidget::OnProjectEdited);
     connect(&Backend::Instance, &Backend::RolesLoaded, this, &ProjectSettingsWidget::OnRolesLoaded);
@@ -25,6 +27,11 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     connect(&Backend::Instance, &Backend::MemberInvited, this, &ProjectSettingsWidget::OnMemberInvited);
     connect(&Backend::Instance, &Backend::MemberKicked, this, &ProjectSettingsWidget::OnMemberKicked);
     connect(&Backend::Instance, &Backend::ProjectUsersLoaded, this, &ProjectSettingsWidget::OnUsersLoaded);
+
+    connect(&Backend::Instance, &Backend::TagCaptionsLoaded, this, &ProjectSettingsWidget::OnTagsLoaded);
+    connect(&Backend::Instance, &Backend::TagCaptionDeleted, this, &ProjectSettingsWidget::OnTagDeleted);
+    connect(&Backend::Instance, &Backend::TagCaptionCreated, this, &ProjectSettingsWidget::OnTagCreated);
+    connect(&Backend::Instance, &Backend::TagCaptionEdited, this, &ProjectSettingsWidget::OnTagEdited);
 }
 
 void ProjectSettingsWidget::OnSaveClicked() {
@@ -144,6 +151,11 @@ void ProjectSettingsWidget::OnMemberInvited(Status status){
 }
 
 void ProjectSettingsWidget::OnMemberKicked(Status status) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
     Backend::Instance.GetProjectUsers(myProject);
 }
 
@@ -158,10 +170,69 @@ void ProjectSettingsWidget::OnUsersLoaded(Status status, const QList<QPair<UserI
         auto item = new QListWidgetItem();
         auto widget = new UserItemWidget(this);
         widget->SetRoles(entry.first, myRoles, myProject, entry.second.GetId());
-        item->setSizeHint(QSize(800, 50));
+        item->setSizeHint(QSize(800, 500));
 
         ui->teamList->addItem(item);
         ui->teamList->setItemWidget(item, widget);
+    }
+}
+
+void ProjectSettingsWidget::OnTagCreateClicked() {
+    Backend::Instance.CreateTagCaption(myContext.GetCurrentProject(), ui->propertyNameEdit->text());
+}
+
+void ProjectSettingsWidget::OnTagsLoaded(Status status, const QList<TagInfo> &tags) {
+    if (!status.isSuccess) {
+        // TODO: Handle errors
+        return;
+    }
+
+    ui->tagsList->clear();
+
+    for (auto& tag : tags) {
+        auto item = new QListWidgetItem();
+        auto widget = new PropertyItemWidget(this);
+        widget->SetupTag(tag);
+        item->setSizeHint(QSize(200, 200));
+        ui->tagsList->addItem(item);
+        ui->tagsList->setItemWidget(item, widget);
+    }
+}
+
+void ProjectSettingsWidget::OnTagDeleted(Status status) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+    Backend::Instance.GetTagCaptions(myContext.GetCurrentProject());
+}
+
+void ProjectSettingsWidget::OnTagCreated(Status status, const TagInfo &tag){
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    auto item = new QListWidgetItem();
+    auto widget = new PropertyItemWidget(this);
+    widget->SetupTag(tag);
+    item->setSizeHint(QSize(200, 200));
+    ui->tagsList->addItem(item);
+    ui->tagsList->setItemWidget(item, widget);
+}
+
+void ProjectSettingsWidget::OnTagEdited(Status status, const TagInfo &tag) {
+    if (!status.isSuccess) {
+        // TODO: Handle errors;
+        return;
+    }
+
+    for (int i = 0; i < ui->tagsList->count(); i++) {
+        PropertyItemWidget* it = (PropertyItemWidget*)ui->tagsList->itemWidget(ui->tagsList->item(i));
+        if (it->GetTag().GetId() == tag.GetId()) {
+            it->SetupTag(tag);
+            return;
+        }
     }
 }
 
@@ -174,8 +245,11 @@ void ProjectSettingsWidget::SetupPage() {
     ui->editProjectName->setText(myContext.GetCurrentProject().GetTitle());
     ui->rolesList->clear();
     ui->teamList->clear();
+    ui->tagsList->clear();
+    ui->tabWidget->setCurrentIndex(0);
 
     Backend::Instance.GetRoles(myContext.GetCurrentProject());
+    Backend::Instance.GetTagCaptions(myContext.GetCurrentProject());
 
     UnlockUi();
     ToReadonlyMode();

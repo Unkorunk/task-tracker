@@ -32,6 +32,13 @@ private slots:
     void OnMemberKicked(Status status);
 
     void OnUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>>& users);
+
+    void OnTagCreateClicked();
+
+    void OnTagsLoaded(Status status, const QList<TagInfo>& tags);
+    void OnTagDeleted(Status status);
+    void OnTagCreated(Status status, const TagInfo& tag);
+    void OnTagEdited(Status status, const TagInfo& tag);
 public:
     explicit ProjectSettingsWidget(QWidget *parent = nullptr);
     ~ProjectSettingsWidget();

@@ -39,8 +39,15 @@ private slots:
     void OnCommentDeleted(Status status);
     void OnCommentsLoaded(Status status, const QList<CommentInfo>& comments);
 
+    void OnTagsLoaded(Status status, const QList<TagInfo>& tags);
+    void OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>>& team);
+
+    void OnTagAdded(Status status, const TaskTag& taskTag);
+    void OnTagRemoved(Status status);
+
 private:
     void UpdateComments();
+    void UpdateTags();
 
     void ToEditMode();
     void ToReadOnlyMode();
@@ -58,7 +65,6 @@ private:
     DateTimePropertyWidget* myDeadlineSelector;
     IntegerSelectorWidget* myStorypointSelector;
     UserSelectorWidget* myAssigneeSelector;
-    //QString text;
 };
 
 #endif // ISSUEWIDGET_H
