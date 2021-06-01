@@ -11,7 +11,7 @@ import java.util.*
 class TagValueController {
     data class CreateResult(val status: Boolean, val tagValue: TagValue? = null, val tagCaption: TagCaption? = null)
     data class DeleteResult(val status: Boolean, val tagCaption: TagCaption? = null)
-    data class EditResult(val status: Boolean, val tagValue: TagValue? = null)
+    data class EditResult(val status: Boolean, val tagValue: TagValue? = null, val tagCaption: TagCaption? = null)
 
     @Autowired
     private lateinit var tagValueRepository: TagValueRepository
@@ -128,6 +128,6 @@ class TagValueController {
             return EditResult(false)
         }
 
-        return EditResult(true, tagValue)
+        return EditResult(true, tagValue, tagValue.tagCaption)
     }
 }
