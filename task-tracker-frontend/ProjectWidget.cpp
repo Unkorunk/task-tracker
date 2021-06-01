@@ -4,6 +4,7 @@
 #include <QListWidget>
 #include <QDebug>
 #include "MainWindow.h"
+#include <QScrollBar>
 
 ProjectWidget::ProjectWidget(QWidget *parent) :
     AbstractPage(parent),
@@ -11,6 +12,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     myProject(-1, "") {
     ui->setupUi(this);
 
+    ui->listWidget->verticalScrollBar()->setSingleStep(2);
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 
     connect(ui->CreateTaskBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnCreateTaskBtnClicked);
@@ -54,10 +56,10 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
         auto item = new QListWidgetItem();
         auto widget = new TaskItemWidget(this);
         widget->SetTask(task);
-        item->setSizeHint(QSize(200, 100));
-
+        item->setSizeHint(QSize(450, 60));
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item, widget);
+
         update();
     }
 }

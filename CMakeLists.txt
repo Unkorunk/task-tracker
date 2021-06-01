@@ -99,6 +99,8 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/LoadingBar.h
   task-tracker-frontend/LoadingBar.ui
 
+  icons.qrc
+
   task-tracker-frontend/LabelPropertyWidget.cpp
   task-tracker-frontend/LabelPropertyWidget.h
   task-tracker-frontend/LabelPropertyWidget.ui

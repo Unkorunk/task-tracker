@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 255, 255);</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -26,7 +29,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>90</height>
+        <height>60</height>
        </size>
       </property>
       <property name="title">
@@ -35,40 +38,68 @@
      </widget>
     </item>
     <item>
-     <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QWidget" name="background" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
-      <property name="midLineWidth">
-       <number>1</number>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="GreetingsWidget" name="greetingsPage">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-      <widget class="ProfileWidget" name="profilePage"/>
-      <widget class="NotificationsWidget" name="notificationPage"/>
-      <widget class="ProjectWidget" name="projectPage"/>
-      <widget class="ProjectSettingsWidget" name="settingsPage"/>
-      <widget class="StatisticsWidget" name="statisticsPage"/>
-      <widget class="IssueWidget" name="issuePage"/>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QStackedWidget" name="stackedWidget">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QStackedWidget {
+background-color: rgb(232, 227, 227);
+margin-top: 20px; 
+margin-right: 15px;
+ margin-left: 15px;;
+}</string>
+         </property>
+         <property name="currentIndex">
+          <number>4</number>
+         </property>
+         <widget class="GreetingsWidget" name="greetingsPage">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+         <widget class="ProfileWidget" name="page_16"/>
+         <widget class="NotificationsWidget" name="page_17"/>
+         <widget class="ProjectWidget" name="projectPage"/>
+         <widget class="ProjectSettingsWidget" name="page_19"/>
+         <widget class="StatisticsWidget" name="page_20"/>
+         <widget class="IssueWidget" name="issuePage">
+          <widget class="LoadingBar" name="loadingBar" native="true">
+           <property name="geometry">
+            <rect>
+             <x>-30</x>
+             <y>450</y>
+             <width>778</width>
+             <height>10</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </widget>
+       </item>
+      </layout>
      </widget>
-    </item>
-    <item>
-     <widget class="LoadingBar" name="loadingBar" native="true"/>
     </item>
    </layout>
   </widget>

@@ -5,7 +5,11 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), myAuthWindow(authWindow) {
     ui->setupUi(this);
 
+
+    ui->background->setStyleSheet("QWidget#background {background-color: rgb(232, 227, 227);border-radius: 20px;}");
+
     connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnNavBarTransition);
+
     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);
     connect(ui->navBar, &NavBar::BackButtonClicked, this, &MainWindow::OnBackButtonClicked);
 

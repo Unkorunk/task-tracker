@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QLabell#greetingsLabel  {background-color: rgb(232, 227, 227);}</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="greetingsLabel">
@@ -34,21 +37,43 @@
        <height>50</height>
       </size>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(232, 227, 227);</string>
+     </property>
      <property name="text">
-      <string>Greetings, &lt;username&gt;</string>
+      <string>Welcome, &lt;username&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="ProjectsList" name="personalProjectsList" native="true"/>
+      <widget class="ProjectsList" name="personalProjectsList" native="true">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="ProjectsList" name="projectList" native="true"/>
+      <widget class="ProjectsList" name="projectList" native="true">
+       <property name="styleSheet">
+        <string notr="true">ProjectList#projectList {background-color: rgb(196, 196, 196);}
+</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

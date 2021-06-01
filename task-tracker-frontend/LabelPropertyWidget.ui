@@ -23,6 +23,9 @@
        <bold>true</bold>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(232, 227, 227);</string>
+     </property>
      <property name="text">
       <string>Caption</string>
      </property>
