@@ -135,6 +135,10 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/PropertyValueItemWidget.h
   task-tracker-frontend/PropertyValueItemWidget.ui
 
+  task-tracker-frontend/ValueSelectorWidget.cpp
+  task-tracker-frontend/ValueSelectorWidget.h
+  task-tracker-frontend/ValueSelectorWidget.ui
+
   task-tracker-frontend/Context.cpp
   task-tracker-frontend/Context.h
 

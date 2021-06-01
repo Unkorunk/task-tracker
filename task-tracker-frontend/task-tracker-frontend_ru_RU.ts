@@ -171,12 +171,7 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="IssueWidget.ui" line="92"/>
-        <source>Status:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="IssueWidget.ui" line="142"/>
+        <location filename="IssueWidget.ui" line="108"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Comments&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -649,6 +644,19 @@ an account?</source>
     <message>
         <location filename="UserSelectorWidget.ui" line="20"/>
         <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ValueSelectorWidget</name>
+    <message>
+        <location filename="ValueSelectorWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ValueSelectorWidget.ui" line="53"/>
+        <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

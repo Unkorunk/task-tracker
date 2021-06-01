@@ -143,6 +143,14 @@ QString Backend::EditTagValueUrl() {
     return BaseUrl + "/tagValue/edit";
 }
 
+QString Backend::AddTagUrl() {
+    return BaseUrl + "/taskTag/create";
+}
+
+QString Backend::RemoveTagUrl() {
+    return BaseUrl + "/taskTag/delete";
+}
+
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {
     QNetworkReply::NetworkError error = reply->error();
 
@@ -424,6 +432,22 @@ void Backend::EditTagValue(const TagValue &tagValue) {
                 });
 }
 
+void Backend::AddTag(const TaskInfo &task, const TagValue &tag) {
+    PostRequest(AddTagUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "task_id", QString("%1").arg(task.GetId()) },
+                    { "tag_value_id", QString("%1").arg(tag.GetId()) }
+                });
+}
+
+void Backend::RemoveTag(const TaskTag &taskTag) {
+    GetRequest(RemoveTagUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "task_tag_id", QString("%1").arg(taskTag.GetId()) }
+               });
+
+}
+
 void Backend::OnResponse(QNetworkReply* reply) {
     Status status;
     myRequestCounting--;
@@ -616,6 +640,14 @@ void Backend::OnResponse(QNetworkReply* reply) {
         }
 
         emit TagCaptionEdited(status, tag);
+    } else if (pattern == AddTagUrl()) {
+        TaskTag taskTag(-1, TagValue(-1, ""));
+        if (status.isSuccess) {
+            taskTag = TaskTag::ParseFromJson(root["taskTag"].toObject());
+        }
+        emit TagAdded(status, taskTag);
+    } else if (pattern == RemoveTagUrl()) {
+        emit TagRemoved(status);
     }
 
     if (myRequestCounting == 0) {

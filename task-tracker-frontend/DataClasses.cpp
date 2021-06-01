@@ -161,8 +161,14 @@ TaskInfo TaskInfo::ParseFromJson(const QJsonObject &object) {
     for (QJsonValueRef comment : object["comments"].toArray()) {
         comments.push_back(CommentInfo::ParseFromJson(comment.toObject()));
     }
-
     task.SetComments(comments);
+
+    QList<TaskTag> tags;
+    for (QJsonValueRef tag : object["tags"].toArray()) {
+        tags.push_back(TaskTag::ParseFromJson(tag.toObject()));
+    }
+    task.SetTags(tags);
+
     return task;
 }
 
@@ -252,6 +258,14 @@ void TaskInfo::SetComments(const QList<CommentInfo> &comments) {
     myComments = comments;
 }
 
+QList<TaskTag> TaskInfo::GetTags() const {
+    return myTags;
+}
+
+void TaskInfo::SetTags(const QList<TaskTag> &tags) {
+    myTags = tags;
+}
+
 // END TASK INFO
 
 // ROLE INFO
@@ -333,6 +347,19 @@ void TagValue::SetValue(const QString &value) {
     myValue = value;
 }
 
+TagInfo TagValue::FindProperty(const QList<TagInfo> &properties) {
+    for (int i = 0; i < properties.count(); i++) {
+        QList<TagValue> values = properties[i].GetValues();
+        for (int j = 0; j < values.count(); j++) {
+            if (values[j].GetId() == myId) {
+                return properties[i];
+            }
+        }
+    }
+
+    return TagInfo(-1, -1, "", QList<TagValue>());
+}
+
 // END TAG VALUE
 
 // TAG INFO
@@ -373,3 +400,26 @@ void TagInfo::SetValues(const QList<TagValue> &values) {
 }
 
 // END TAG INFO
+
+// TASK TAG
+TaskTag TaskTag::ParseFromJson(const QJsonObject &obj) {
+    TagValue val = TagValue::ParseFromJson(obj["tagValue"].toObject());
+    return TaskTag(obj["id"].toInt(), val);
+}
+
+TaskTag::TaskTag(int id, const TagValue &tagValue) : myId(id), myValue(tagValue) {}
+
+int TaskTag::GetId() const {
+    return myId;
+}
+
+
+TagValue TaskTag::GetValue() const {
+    return myValue;
+}
+
+void TaskTag::SetValue(const TagValue &tag) {
+    myValue = tag;
+}
+
+// END TASK TAG

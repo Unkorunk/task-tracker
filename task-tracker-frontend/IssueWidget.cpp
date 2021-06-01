@@ -6,6 +6,7 @@
 #include "UserSelectorWidget.h"
 #include "IntegerSelectorWidget.h"
 #include "CommentWidgetItem.h"
+#include "ValueSelectorWidget.h"
 
 // TODO: refactor task_info
 IssueWidget::IssueWidget(QWidget *parent) : AbstractPage(parent),
@@ -24,6 +25,12 @@ IssueWidget::IssueWidget(QWidget *parent) : AbstractPage(parent),
     connect(&Backend::Instance, &Backend::CommentCreated, this, &IssueWidget::OnCommentCreated);
     connect(&Backend::Instance, &Backend::CommentDeleted, this, &IssueWidget::OnCommentDeleted);
     connect(&Backend::Instance, &Backend::CommentsLoaded, this, &IssueWidget::OnCommentsLoaded);
+
+    connect(&Backend::Instance, &Backend::TagCaptionsLoaded, this, &IssueWidget::OnTagsLoaded);
+    connect(&Backend::Instance, &Backend::ProjectUsersLoaded, this, &IssueWidget::OnTeamLoaded);
+
+    connect(&Backend::Instance, &Backend::TagAdded, this, &IssueWidget::OnTagAdded);
+    connect(&Backend::Instance, &Backend::TagRemoved, this, &IssueWidget::OnTagRemoved);
 }
 
 IssueWidget::~IssueWidget() {
@@ -33,10 +40,10 @@ IssueWidget::~IssueWidget() {
 void IssueWidget::SetupPage() {
     TaskInfo task = myContext.GetTask();
 
-    ui->statusComboBox->clear();
-    ui->statusComboBox->addItem("Not started");
-    ui->statusComboBox->addItem("TODO");
-    ui->statusComboBox->addItem("Completed");
+    if (task.GetId() != -1) {
+        Backend::Instance.GetTagCaptions(myContext.GetCurrentProject());
+        Backend::Instance.GetProjectUsers(myContext.GetCurrentProject());
+    }
 
     this->ui->taskNameEdit->setText(task.GetTitle());
     this->ui->descriptionEdit->setText(task.GetDescription());
@@ -125,17 +132,18 @@ void IssueWidget::OnDeleteClicked() {
 void IssueWidget::OnTaskUpdated(Status status, const TaskInfo& task) {
     UnlockUi();
     if (status.isSuccess) {
-        TaskInfo task = myContext.GetTask();
+//        TaskInfo task = myContext.GetTask();
 
-        //save
-        task.SetDescription(this->ui->descriptionEdit->toPlainText());
-        task.SetTitle(this->ui->taskNameEdit->text());
-        task.SetDeadline(myDeadlineSelector->GetData());
-        task.SetStoryPoints(myStorypointSelector->GetData());
-        task.SetAssignee(myAssigneeSelector->GetData());
-        task.SetUpdater(myContext.GetUser(), QDateTime::currentDateTimeUtc());
+//        //save
+//        task.SetDescription(this->ui->descriptionEdit->toPlainText());
+//        task.SetTitle(this->ui->taskNameEdit->text());
+//        task.SetDeadline(myDeadlineSelector->GetData());
+//        task.SetStoryPoints(myStorypointSelector->GetData());
+//        task.SetAssignee(myAssigneeSelector->GetData());
+//        task.SetUpdater(myContext.GetUser(), QDateTime::currentDateTimeUtc());
 
         myContext.SetTask(task);
+        SetupPage();
 
         //and lock
         ToReadOnlyMode();
@@ -172,6 +180,43 @@ void IssueWidget::OnCommentsLoaded(Status status, const QList<CommentInfo> &comm
     }
 }
 
+void IssueWidget::OnTagsLoaded(Status status, const QList<TagInfo> &tags) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    myContext.SetTags(tags);
+    UpdateTags();
+}
+
+void IssueWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    myContext.SetProjectTeam(team);
+}
+
+void IssueWidget::OnTagAdded(Status status, const TaskTag &taskTag) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    Backend::Instance.EditTask(myContext.GetTask());
+}
+
+void IssueWidget::OnTagRemoved(Status status) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    Backend::Instance.EditTask(myContext.GetTask());
+}
+
 void IssueWidget::UpdateComments() {
     TaskInfo task = myContext.GetTask();
     ui->commentsList->clear();
@@ -193,6 +238,22 @@ void IssueWidget::UpdateComments() {
         ui->commentsList->addItem(item);
         ui->commentsList->setItemWidget(item, widget);
     }
+}
+
+void IssueWidget::UpdateTags() {
+    TaskInfo task = myContext.GetTask();
+    QList<TagInfo> tags = myContext.GetTags();
+
+    for (auto& taskTag : task.GetTags()) {
+        ValueSelectorWidget* valueSelector = new ValueSelectorWidget(this);
+        valueSelector->SetupTags(tags, task);
+        valueSelector->SetupTag(taskTag);
+        AddPropertyItem(valueSelector);
+    }
+
+    ValueSelectorWidget* valueSelector = new ValueSelectorWidget(this);
+    valueSelector->SetupTags(tags, task);
+    AddPropertyItem(valueSelector);
 }
 
 void IssueWidget::ToEditMode() {

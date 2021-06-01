@@ -32,6 +32,22 @@ void Context::SetProject(const ProjectInfo &project) {
     myProject = project;
 }
 
+QList<QPair<UserInfo, RoleInfo> > Context::GetProjectTeam() const {
+    return myProjectTeam;
+}
+
+void Context::SetProjectTeam(const QList<QPair<UserInfo, RoleInfo>>& team) {
+    myProjectTeam = team;
+}
+
+QList<TagInfo> Context::GetTags() const {
+    return myProjectTags;
+}
+
+void Context::SetTags(const QList<TagInfo> &tags) {
+    myProjectTags = tags;
+}
+
 TaskInfo Context::GetTask() const {
     return myTask;
 }

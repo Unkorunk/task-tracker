@@ -63,6 +63,9 @@ public:
     void DeleteTagValue(const TagValue& tagValue);
     void EditTagValue(const TagValue& tagValue);
 
+    void AddTag(const TaskInfo& task, const TagValue& tag);
+    void RemoveTag(const TaskTag& taskTag);
+
 signals:
     void LoadingChanged(bool isLoading);
 
@@ -102,6 +105,9 @@ signals:
     void TagValueCreated(Status status, const TagValue& tagValue, const TagInfo& tagCaption);
     void TagValueDeleted(Status status, const TagInfo& tagCaption);
     void TagValueEdited(Status status, const TagInfo& tagCaption);
+
+    void TagAdded(Status status, const TaskTag& tagTask);
+    void TagRemoved(Status status);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -149,6 +155,9 @@ private:
     QString CreateTagValueUrl();
     QString DeleteTagValueUrl();
     QString EditTagValueUrl();
+
+    QString AddTagUrl();
+    QString RemoveTagUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 

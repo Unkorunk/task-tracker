@@ -114,6 +114,65 @@ private:
     QString myText;
 };
 
+class TagInfo;
+
+class TagValue {
+public:
+    static TagValue ParseFromJson(const QJsonObject& obj);
+
+    TagValue(int id, const QString& value);
+
+    int GetId() const;
+
+    QString GetValue() const;
+    void SetValue(const QString& value);
+
+    TagInfo FindProperty(const QList<TagInfo>& properties);
+
+private:
+    int myId;
+    QString myValue;
+};
+
+class TagInfo {
+public:
+    static TagInfo ParseFromJson(const QJsonObject& obj);
+
+    TagInfo(int id, int projectId, const QString& caption, const QList<TagValue>& values);
+
+    int GetId() const;
+
+    int GetProjectId() const;
+
+    QString GetCaption() const;
+    void SetCaption(const QString& caption);
+
+    QList<TagValue> GetValues() const;
+    void SetValues(const QList<TagValue>& values);
+
+private:
+    int myId;
+    int myProjectId;
+    QString myCaption;
+    QList<TagValue> myValues;
+};
+
+class TaskTag {
+public:
+    static TaskTag ParseFromJson(const QJsonObject& obj);
+
+    TaskTag(int id, const TagValue& tagValue);
+
+    int GetId() const;
+
+    TagValue GetValue() const;
+    void SetValue(const TagValue& tag);
+
+private:
+    int myId;
+    TagValue myValue;
+};
+
 class TaskInfo {
 public:
     static TaskInfo ParseFromJson(const QJsonObject& object);
@@ -151,6 +210,9 @@ public:
     QList<CommentInfo> GetComments() const;
     void SetComments(const QList<CommentInfo>& comments);
 
+    QList<TaskTag> GetTags() const;
+    void SetTags(const QList<TaskTag>& tags);
+
 private:
     int myId;
     ProjectInfo myProject;
@@ -173,6 +235,7 @@ private:
     std::optional<QDateTime> myDeadline;
 
     QList<CommentInfo> myComments;
+    QList<TaskTag> myTags;
 };
 
 inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
@@ -181,44 +244,5 @@ inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
         return proj1.GetId() < proj2.GetId();
     return proj1.GetTitle() < proj2.GetTitle();
 }
-
-class TagValue {
-public:
-    static TagValue ParseFromJson(const QJsonObject& obj);
-
-    TagValue(int id, const QString& value);
-
-    int GetId() const;
-
-    QString GetValue() const;
-    void SetValue(const QString& value);
-
-private:
-    int myId;
-    QString myValue;
-};
-
-class TagInfo {
-public:
-    static TagInfo ParseFromJson(const QJsonObject& obj);
-
-    TagInfo(int id, int projectId, const QString& caption, const QList<TagValue>& values);
-
-    int GetId() const;
-
-    int GetProjectId() const;
-
-    QString GetCaption() const;
-    void SetCaption(const QString& caption);
-
-    QList<TagValue> GetValues() const;
-    void SetValues(const QList<TagValue>& values);
-
-private:
-    int myId;
-    int myProjectId;
-    QString myCaption;
-    QList<TagValue> myValues;
-};
 
 #endif // DATACLASSES_H
