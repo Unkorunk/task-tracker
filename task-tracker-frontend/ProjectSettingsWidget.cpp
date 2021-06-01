@@ -170,7 +170,7 @@ void ProjectSettingsWidget::OnUsersLoaded(Status status, const QList<QPair<UserI
         auto item = new QListWidgetItem();
         auto widget = new UserItemWidget(this);
         widget->SetRoles(entry.first, myRoles, myProject, entry.second.GetId());
-        item->setSizeHint(QSize(800, 500));
+        item->setSizeHint(QSize(800, 50));
 
         ui->teamList->addItem(item);
         ui->teamList->setItemWidget(item, widget);
