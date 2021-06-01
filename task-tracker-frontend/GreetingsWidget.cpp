@@ -25,7 +25,7 @@ GreetingsWidget::~GreetingsWidget() {
     delete ui;
 }
 
-void GreetingsWidget::SetupPage() { }
+void GreetingsWidget::SetupPage() {}
 
 void GreetingsWidget::OnProjectSelected(const ProjectInfo &project, const RoleInfo &role) {
     myContext.SetProject(project);

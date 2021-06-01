@@ -27,9 +27,13 @@ void AuthorizationWindow::OnTransition(AuthorizationWindow::Transition transitio
     ui->stackedWidget->setCurrentIndex((int)transition);
 }
 
-void AuthorizationWindow::OnSwitchingWindow() {
+void AuthorizationWindow::OnSwitchingWindow(const UserInfo& user) {
     mWindow.show();
     this->close();
+
+    Context context;
+    context.SetUser(user);
+    mWindow.OnTransition(MainWindow::Transition::Greetings, context);
 
     Backend::Instance.UpdateProfile();
     Backend::Instance.GetProjects();

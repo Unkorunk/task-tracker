@@ -81,7 +81,7 @@ void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &
     for (auto& role : roles) {
        auto item = new QListWidgetItem();
        auto widget = new RoleWidgetItem(this);
-       widget->SetRole(role);
+       widget->SetRole(role, myContext.GetCurrentRole());
        item->setSizeHint(QSize(800, 100));
 
        ui->rolesList->addItem(item);
@@ -101,7 +101,7 @@ void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
 
     auto item = new QListWidgetItem();
     auto widget = new RoleWidgetItem(this);
-    widget->SetRole(role);
+    widget->SetRole(role, myContext.GetCurrentRole());
     item->setSizeHint(QSize(800, 100));
 
     ui->rolesList->addItem(item);
@@ -120,7 +120,7 @@ void ProjectSettingsWidget::OnRoleEdited(Status status, const RoleInfo &role) {
     for (int i = 0; i < ui->rolesList->count(); i++) {
         RoleWidgetItem* item = (RoleWidgetItem*)ui->rolesList->itemWidget(ui->rolesList->item(i));
         if (item->GetRole().GetId() == role.GetId()) {
-            item->SetRole(role);
+            item->SetRole(role, myContext.GetCurrentRole());
             return;
         }
     }
@@ -169,7 +169,7 @@ void ProjectSettingsWidget::OnUsersLoaded(Status status, const QList<QPair<UserI
     for (auto& entry : users) {
         auto item = new QListWidgetItem();
         auto widget = new UserItemWidget(this);
-        widget->SetRoles(entry.first, myRoles, myProject, entry.second.GetId());
+        widget->SetRoles(entry.first, myRoles, myProject, entry.second.GetId(), myContext.GetCurrentRole().HasPermission(RoleInfo::MANAGE_TEAM));
         item->setSizeHint(QSize(800, 50));
 
         ui->teamList->addItem(item);
@@ -192,7 +192,7 @@ void ProjectSettingsWidget::OnTagsLoaded(Status status, const QList<TagInfo> &ta
     for (auto& tag : tags) {
         auto item = new QListWidgetItem();
         auto widget = new PropertyItemWidget(this);
-        widget->SetupTag(tag);
+        widget->SetupTag(tag, myContext.GetCurrentRole());
         item->setSizeHint(QSize(200, 200));
         ui->tagsList->addItem(item);
         ui->tagsList->setItemWidget(item, widget);
@@ -215,7 +215,7 @@ void ProjectSettingsWidget::OnTagCreated(Status status, const TagInfo &tag){
 
     auto item = new QListWidgetItem();
     auto widget = new PropertyItemWidget(this);
-    widget->SetupTag(tag);
+    widget->SetupTag(tag, myContext.GetCurrentRole());
     item->setSizeHint(QSize(200, 200));
     ui->tagsList->addItem(item);
     ui->tagsList->setItemWidget(item, widget);
@@ -230,7 +230,7 @@ void ProjectSettingsWidget::OnTagEdited(Status status, const TagInfo &tag) {
     for (int i = 0; i < ui->tagsList->count(); i++) {
         PropertyItemWidget* it = (PropertyItemWidget*)ui->tagsList->itemWidget(ui->tagsList->item(i));
         if (it->GetTag().GetId() == tag.GetId()) {
-            it->SetupTag(tag);
+            it->SetupTag(tag, myContext.GetCurrentRole());
             return;
         }
     }
@@ -242,6 +242,12 @@ ProjectSettingsWidget::~ProjectSettingsWidget() {
 
 void ProjectSettingsWidget::SetupPage() {
     myProject = myContext.GetCurrentProject();
+    ui->cancelButton->hide();
+    ui->createRole->hide();
+    ui->inviteButton->hide();
+    ui->newTagBtn->hide();
+    ui->saveNameButton->hide();
+
     ui->editProjectName->setText(myContext.GetCurrentProject().GetTitle());
     ui->rolesList->clear();
     ui->teamList->clear();
@@ -250,6 +256,19 @@ void ProjectSettingsWidget::SetupPage() {
 
     Backend::Instance.GetRoles(myContext.GetCurrentProject());
     Backend::Instance.GetTagCaptions(myContext.GetCurrentProject());
+
+    RoleInfo role = myContext.GetCurrentRole();
+    if (role.HasPermission(RoleInfo::MANAGE_PROJECT)) {
+        ui->cancelButton->show();
+        ui->saveNameButton->show();
+        ui->newTagBtn->show();
+    }
+    if (role.HasPermission(RoleInfo::MANAGE_ROLES)) {
+        ui->createRole->show();
+    }
+    if (role.HasPermission(RoleInfo::MANAGE_TEAM)) {
+        ui->inviteButton->show();
+    }
 
     UnlockUi();
     ToReadonlyMode();

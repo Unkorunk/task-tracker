@@ -18,7 +18,7 @@ public:
     ~ValueSelectorWidget();
 
     void SetupTags(const QList<TagInfo>& tags, const TaskInfo& task);
-    void SetupTag(const TaskTag& tag);
+    void SetupTag(const TaskTag& tag, bool isEditable);
 
 private slots:
     void OnAddDeleteClicked();

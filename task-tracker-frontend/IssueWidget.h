@@ -59,7 +59,9 @@ private:
 
     Ui::IssueWidget *ui;
     bool edited;
+    bool canEdit;
 
+    UserSelectorWidget* myCreatorSelector;
     UserSelectorWidget* myUpdaterSelector;
     DateTimePropertyWidget* myUpdateTimeSelector;
     DateTimePropertyWidget* myDeadlineSelector;

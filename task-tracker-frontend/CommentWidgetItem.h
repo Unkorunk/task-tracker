@@ -18,7 +18,7 @@ public:
     explicit CommentWidgetItem(QWidget *parent = nullptr);
     ~CommentWidgetItem();
 
-    void SetupComment(const CommentInfo& comment);
+    void SetupComment(const CommentInfo& comment, const Context& role);
 
     void SetupNewCommentMode(const TaskInfo& taskId);
     bool IsNewComment() const;
@@ -39,6 +39,7 @@ private:
     Ui::CommentWidgetItem *ui;
     TaskInfo myTask;
     CommentInfo myComment;
+    Context myContext;
 
     bool isNewComment;
     bool isEditable;

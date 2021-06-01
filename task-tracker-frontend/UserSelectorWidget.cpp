@@ -1,9 +1,10 @@
+#include "Context.h"
 #include "UserSelectorWidget.h"
 #include "ui_UserSelectorWidget.h"
 
 UserSelectorWidget::UserSelectorWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::UserSelectorWidget) {
+    ui(new Ui::UserSelectorWidget), mySelectedUser(Context::DEFAULT_USER) {
     ui->setupUi(this);
     SetEditable(false);
 }
@@ -13,6 +14,10 @@ UserSelectorWidget::~UserSelectorWidget() {
 }
 
 void UserSelectorWidget::SetData(const QString &caption, const std::optional<UserInfo>& selectedUser, const QList<UserInfo>& users) {
+    if (selectedUser.has_value()) {
+        mySelectedUser = selectedUser.value();
+    }
+
     ui->captionLabel->setText(caption);
     myUsers = QList<UserInfo>();
     myUsers.append(UserInfo(-1, "None", "None", "None"));
@@ -45,6 +50,21 @@ std::optional<UserInfo> UserSelectorWidget::GetData() const {
     }
 
     return user;
+}
+
+void UserSelectorWidget::SetUsers(const QList<UserInfo> &users) {
+    myUsers = QList<UserInfo>();
+    myUsers.append(UserInfo(-1, "None", "None", "None"));
+    ui->userSelector->clear();
+    ui->userSelector->addItem("None");
+    ui->userSelector->setCurrentIndex(0);
+
+    for (auto& user : users) {
+        myUsers.append(user);
+        ui->userSelector->addItem(user.GetFullName());
+    }
+
+    ChangeData(std::optional<UserInfo>(mySelectedUser));
 }
 
 void UserSelectorWidget::SetEditable(bool editable) {

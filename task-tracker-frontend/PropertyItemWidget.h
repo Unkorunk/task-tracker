@@ -17,7 +17,7 @@ public:
     explicit PropertyItemWidget(QWidget *parent = nullptr);
     ~PropertyItemWidget();
 
-    void SetupTag(const TagInfo& tag);
+    void SetupTag(const TagInfo& tag, const RoleInfo& role);
     TagInfo GetTag() const;
 
 private slots:
@@ -29,6 +29,7 @@ private slots:
 private:
     void SetEditable(bool editable);
 
+    RoleInfo myRole;
     TagInfo myTag;
     bool isEditable;
     Ui::PropertyItemWidget *ui;

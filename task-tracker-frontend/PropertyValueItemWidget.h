@@ -16,7 +16,7 @@ public:
     explicit PropertyValueItemWidget(QWidget *parent = nullptr);
     ~PropertyValueItemWidget();
 
-    void SetupValue(const TagValue& tagValue);
+    void SetupValue(const TagValue& tagValue, bool isDeletable);
 
 private slots:
     void OnDeleteClicked();

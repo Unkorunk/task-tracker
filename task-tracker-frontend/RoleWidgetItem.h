@@ -18,7 +18,7 @@ public:
     ~RoleWidgetItem();
 
     RoleInfo GetRole() const;
-    void SetRole(const RoleInfo& role);
+    void SetRole(const RoleInfo& role, const RoleInfo& userRole);
 
     void Clear();
 
@@ -32,6 +32,7 @@ private slots:
 
 private:
     mutable RoleInfo myRole;
+    RoleInfo myUserRole;
     bool isEditable;
 
     Ui::RoleWidgetItem *ui;

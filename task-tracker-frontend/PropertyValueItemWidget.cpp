@@ -13,9 +13,12 @@ PropertyValueItemWidget::~PropertyValueItemWidget() {
     delete ui;
 }
 
-void PropertyValueItemWidget::SetupValue(const TagValue &tagValue) {
+void PropertyValueItemWidget::SetupValue(const TagValue &tagValue, bool isDeletable) {
     myValue = tagValue;
     ui->label->setText(tagValue.GetValue());
+    if (!isDeletable) {
+        ui->deleteBtn->hide();
+    }
 }
 
 void PropertyValueItemWidget::OnDeleteClicked() {

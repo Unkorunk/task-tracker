@@ -26,13 +26,14 @@ public:
         ProjectStatistics = 5,
         Issue = 6,
     };
+public slots:
+    void OnTransition(MainWindow::Transition transition, const Context& context);
+
 
 private slots:
     void OnLogout();
 
     void OnNavBarTransition(MainWindow::Transition transition);
-
-    void OnTransition(MainWindow::Transition transition, const Context& context);
 
     void OnBackButtonClicked();
 

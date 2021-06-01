@@ -14,6 +14,7 @@ IssueWidget::IssueWidget(QWidget *parent) : AbstractPage(parent),
         ui(new Ui::IssueWidget) {
 
     ui->setupUi(this);
+
     SetupPage();
 
     connect(ui->editButton, &QPushButton::clicked, this, &IssueWidget::OnEditClicked);
@@ -40,6 +41,8 @@ IssueWidget::~IssueWidget() {
 }
 
 void IssueWidget::SetupPage() {
+    ui->editButton->hide();
+    ui->deleteButton->hide();
     TaskInfo task = myContext.GetTask();
 
     if (task.GetId() != -1) {
@@ -49,12 +52,11 @@ void IssueWidget::SetupPage() {
 
     this->ui->taskNameEdit->setText(task.GetTitle());
     this->ui->descriptionEdit->setText(task.GetDescription());
-
     this->ui->propertyList->clear();
 
-    auto creatorWidget = new UserSelectorWidget(this);
-    creatorWidget->SetData("Creator", task.GetCreator(), QList<UserInfo> { myContext.GetUser() });
-    AddPropertyItem(creatorWidget);
+    myCreatorSelector = new UserSelectorWidget(this);
+    myCreatorSelector->SetData("Creator", task.GetCreator(), QList<UserInfo> { myContext.GetUser() });
+    AddPropertyItem(myCreatorSelector);
 
     auto creationTimeWidget = new DateTimePropertyWidget(this);
     creationTimeWidget->SetData("Creation time", task.GetCreationTime());
@@ -88,6 +90,21 @@ void IssueWidget::SetupPage() {
     ToReadOnlyMode();
 
     UpdateComments();
+
+    RoleInfo role = myContext.GetCurrentRole();
+    canEdit = false;
+    if (task.GetCreator().has_value() && task.GetCreator().value().GetId() == myContext.GetUser().GetId()) {
+        if (role.HasPermission(RoleInfo::MANAGE_OWN_TASK)) {
+            canEdit = true;
+        }
+    } else if (role.HasPermission(RoleInfo::MANAGE_ALL_TASK)) {
+        canEdit = true;
+    }
+
+    if (canEdit) {
+        ui->editButton->show();
+        ui->deleteButton->show();
+    }
 }
 
 void IssueWidget::OnEditClicked() {
@@ -200,6 +217,14 @@ void IssueWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleIn
     }
 
     myContext.SetProjectTeam(team);
+    QList<UserInfo> users;
+    for (auto& it : team) {
+        users.push_back(it.first);
+    }
+
+    myCreatorSelector->SetUsers(users);
+    myUpdaterSelector->SetUsers(users);
+    myAssigneeSelector->SetUsers(users);
 }
 
 void IssueWidget::OnTagAdded(Status status, const TaskTag &taskTag) {
@@ -224,18 +249,21 @@ void IssueWidget::UpdateComments() {
     TaskInfo task = myContext.GetTask();
     ui->commentsList->clear();
 
-    auto item = new QListWidgetItem();
-    auto widget = new CommentWidgetItem(this);
-    widget->SetupNewCommentMode(task);
-    item->setSizeHint(QSize(200, 150));
+    RoleInfo role = myContext.GetCurrentRole();
 
-    ui->commentsList->addItem(item);
-    ui->commentsList->setItemWidget(item, widget);
+    if (role.HasPermission(RoleInfo::MANAGE_OWN_COMMENT)) {
+        auto item = new QListWidgetItem();
+        auto widget = new CommentWidgetItem(this);
+        widget->SetupNewCommentMode(task);
+        item->setSizeHint(QSize(200, 150));
+        ui->commentsList->addItem(item);
+        ui->commentsList->setItemWidget(item, widget);
+    }
 
     for (const CommentInfo& comment : task.GetComments()) {
         auto item = new QListWidgetItem();
         auto widget = new CommentWidgetItem(this);
-        widget->SetupComment(comment);
+        widget->SetupComment(comment, myContext);
         item->setSizeHint(QSize(200, 150));
 
         ui->commentsList->addItem(item);
@@ -250,13 +278,15 @@ void IssueWidget::UpdateTags() {
     for (auto& taskTag : task.GetTags()) {
         ValueSelectorWidget* valueSelector = new ValueSelectorWidget(this);
         valueSelector->SetupTags(tags, task);
-        valueSelector->SetupTag(taskTag);
+        valueSelector->SetupTag(taskTag, canEdit);
         AddPropertyItem(valueSelector);
     }
 
-    ValueSelectorWidget* valueSelector = new ValueSelectorWidget(this);
-    valueSelector->SetupTags(tags, task);
-    AddPropertyItem(valueSelector);
+    if (canEdit) {
+        ValueSelectorWidget* valueSelector = new ValueSelectorWidget(this);
+        valueSelector->SetupTags(tags, task);
+        AddPropertyItem(valueSelector);
+    }
 }
 
 void IssueWidget::ToEditMode() {

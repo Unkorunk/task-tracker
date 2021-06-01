@@ -29,10 +29,13 @@ void ValueSelectorWidget::SetupTags(const QList<TagInfo> &tags, const TaskInfo& 
     ui->propertySelector->setCurrentIndex(0);
 }
 
-void ValueSelectorWidget::SetupTag(const TaskTag &taskTag) {
+void ValueSelectorWidget::SetupTag(const TaskTag &taskTag, bool isEditable) {
     isAdded = true;
     myTaskTag = taskTag;
     ui->addDeleteBtn->setText("Remove");
+    if (!isEditable) {
+        ui->addDeleteBtn->hide();
+    }
 
     for (int i = 0; i < myTags.count(); i++) {
         QList<TagValue> values = myTags[i].GetValues();

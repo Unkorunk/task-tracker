@@ -6,7 +6,7 @@
 #include <QListWidget>
 
 PropertyItemWidget::PropertyItemWidget(QWidget *parent) :
-        QWidget(parent), myTag(-1, -1, "", QList<TagValue>()), ui(new Ui::PropertyItemWidget) {
+        QWidget(parent), myRole(Context::DEFAULT_ROLE), myTag(-1, -1, "", QList<TagValue>()), ui(new Ui::PropertyItemWidget) {
     ui->setupUi(this);
     SetEditable(false);
 
@@ -20,8 +20,17 @@ PropertyItemWidget::~PropertyItemWidget() {
     delete ui;
 }
 
-void PropertyItemWidget::SetupTag(const TagInfo &tag) {
+void PropertyItemWidget::SetupTag(const TagInfo &tag, const RoleInfo& role) {
+    myRole = role;
     SetEditable(false);
+    ui->deleteBtn->hide();
+    ui->editCancelBtn->hide();
+    ui->newValueBtn->hide();
+    if (role.HasPermission(RoleInfo::MANAGE_PROJECT)) {
+        ui->deleteBtn->show();
+        ui->editCancelBtn->show();
+        ui->newValueBtn->show();
+    }
 
     myTag = tag;
     ui->captionEdit->setText(tag.GetCaption());
@@ -30,7 +39,7 @@ void PropertyItemWidget::SetupTag(const TagInfo &tag) {
     for (auto& tagValue : myTag.GetValues()) {
         auto item = new QListWidgetItem();
         auto widget = new PropertyValueItemWidget(this);
-        widget->SetupValue(tagValue);
+        widget->SetupValue(tagValue, role.HasPermission(RoleInfo::MANAGE_PROJECT));
         item->setSizeHint(QSize(200, 40));
         ui->valuesList->addItem(item);
         ui->valuesList->setItemWidget(item, widget);
@@ -53,7 +62,7 @@ void PropertyItemWidget::OnSaveBtnClicked() {
 
 void PropertyItemWidget::OnEditCancelBtnClicked() {
     if (isEditable) {
-        SetupTag(myTag);
+        SetupTag(myTag, myRole);
     }
 
     SetEditable(!isEditable);
