@@ -18,7 +18,6 @@ class TagCaption {
     @Column(nullable = false)
     var caption: String = ""
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE], mappedBy = "tagCaption")
     val values: Set<TagValue> = emptySet()
 }
