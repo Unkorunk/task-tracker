@@ -312,3 +312,64 @@ bool RoleInfo::HasPermission(uint64_t perm) const {
 }
 
 // END ROLE INFO
+
+// TAG VALUE
+TagValue TagValue::ParseFromJson(const QJsonObject &obj) {
+    return TagValue(obj["id"].toInt(), obj["value"].toString());
+}
+
+TagValue::TagValue(int id, const QString &value)
+    : myId(id), myValue(value) {}
+
+int TagValue::GetId() const {
+    return myId;
+}
+
+QString TagValue::GetValue() const {
+    return myValue;
+}
+
+void TagValue::SetValue(const QString &value) {
+    myValue = value;
+}
+
+// END TAG VALUE
+
+// TAG INFO
+TagInfo TagInfo::ParseFromJson(const QJsonObject &obj) {
+    QList<TagValue> values;
+    for (QJsonValueRef it : obj["values"].toArray()) {
+        values.push_back(TagValue::ParseFromJson(it.toObject()));
+    }
+
+    return TagInfo(obj["id"].toInt(), obj["project"].toObject()["id"].toInt(), obj["caption"].toString(), values);
+}
+
+TagInfo::TagInfo(int id, int projectId, const QString &caption, const QList<TagValue>& values)
+    : myId(id), myProjectId(projectId), myCaption(caption), myValues(values) {}
+
+int TagInfo::GetId() const {
+    return myId;
+}
+
+int TagInfo::GetProjectId() const {
+    return myProjectId;
+}
+
+QString TagInfo::GetCaption() const {
+    return myCaption;
+}
+
+void TagInfo::SetCaption(const QString &caption) {
+    myCaption = caption;
+}
+
+QList<TagValue> TagInfo::GetValues() const {
+    return myValues;
+}
+
+void TagInfo::SetValues(const QList<TagValue> &values) {
+    myValues = values;
+}
+
+// END TAG INFO

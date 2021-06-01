@@ -115,6 +115,34 @@ QString Backend::GetCommentsUrl() {
     return BaseUrl + "/comment/all";
 }
 
+QString Backend::CreateTagCaptionUrl() {
+    return BaseUrl + "/tagCaption/create";
+}
+
+QString Backend::DeleteTagCaptionUrl() {
+    return BaseUrl + "/tagCaption/delete";
+}
+
+QString Backend::EditTagCaptionUrl() {
+    return BaseUrl + "/tagCaption/edit";
+}
+
+QString Backend::GetTagCaptionUrl() {
+    return BaseUrl + "/tagCaption/all";
+}
+
+QString Backend::CreateTagValueUrl() {
+    return BaseUrl + "/tagValue/create";
+}
+
+QString Backend::DeleteTagValueUrl() {
+    return BaseUrl + "/tagValue/delete";
+}
+
+QString Backend::EditTagValueUrl() {
+    return BaseUrl + "/tagValue/edit";
+}
+
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {
     QNetworkReply::NetworkError error = reply->error();
 
@@ -343,6 +371,59 @@ void Backend::GetComments(const TaskInfo &task) {
                });
 }
 
+void Backend::CreateTagCaption(const ProjectInfo &project, const QString &tagCaption) {
+    PostRequest(CreateTagCaptionUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "project_id", QString("%1").arg(project.GetId()) },
+                    { "caption", tagCaption }
+                });
+}
+
+void Backend::DeleteTagCaption(const TagInfo &tag) {
+    GetRequest(DeleteTagCaptionUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "tag_caption_id", QString("%1").arg(tag.GetId()) }
+               });
+}
+
+void Backend::EditTagCaption(const TagInfo &tag) {
+    PostRequest(EditTagCaptionUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "tag_caption_id", QString("%1").arg(tag.GetId()) },
+                    { "caption", tag.GetCaption() }
+                });
+}
+
+void Backend::GetTagCaptions(const ProjectInfo &project) {
+    GetRequest(GetTagCaptionUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "project_id", QString("%1").arg(project.GetId()) }
+               });
+}
+
+void Backend::CreateTagValue(const TagInfo &tag, const QString &tagValue) {
+    PostRequest(CreateTagValueUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "tag_caption_id", QString("%1").arg(tag.GetId()) },
+                    { "value", tagValue }
+                });
+}
+
+void Backend::DeleteTagValue(const TagValue &tagValue) {
+    GetRequest(DeleteTagValueUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "tag_value_id", QString("%1").arg(tagValue.GetId()) }
+               });
+}
+
+void Backend::EditTagValue(const TagValue &tagValue) {
+    PostRequest(EditTagValueUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "tag_value_id", QString("%1").arg(tagValue.GetId()) },
+                    { "value", tagValue.GetValue() }
+                });
+}
+
 void Backend::OnResponse(QNetworkReply* reply) {
     Status status;
     myRequestCounting--;
@@ -488,6 +569,53 @@ void Backend::OnResponse(QNetworkReply* reply) {
         }
 
         emit CommentsLoaded(status, comments);
+    } else if (pattern == CreateTagCaptionUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+        }
+        emit TagCaptionCreated(status, tag);
+    } else if (pattern == DeleteTagCaptionUrl()) {
+        emit TagCaptionDeleted(status);
+    } else if (pattern == EditTagCaptionUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+        }
+        emit TagCaptionEdited(status, tag);
+    } else if (pattern == GetTagCaptionUrl()) {
+        QList<TagInfo> tags;
+        if (status.isSuccess) {
+            for (QJsonValueRef obj : root["tagCaptions"].toArray()) {
+                tags.push_back(TagInfo::ParseFromJson(obj.toObject()));
+            }
+        }
+        emit TagCaptionsLoaded(status, tags);
+    } else if (pattern == CreateTagValueUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        TagValue tagValue(-1, "");
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+            tagValue = TagValue::ParseFromJson(root["tagValue"].toObject());
+        }
+
+        emit TagCaptionEdited(status, tag);
+    } else if (pattern == DeleteTagValueUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+        }
+
+        emit TagCaptionEdited(status, tag);
+    } else if (pattern == EditTagCaptionUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        TagValue tagValue(-1, "");
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+            tagValue = TagValue::ParseFromJson(root["tagValue"].toObject());
+        }
+
+        emit TagCaptionEdited(status, tag);
     }
 
     if (myRequestCounting == 0) {

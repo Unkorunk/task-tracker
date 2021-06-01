@@ -182,4 +182,43 @@ inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
     return proj1.GetTitle() < proj2.GetTitle();
 }
 
+class TagValue {
+public:
+    static TagValue ParseFromJson(const QJsonObject& obj);
+
+    TagValue(int id, const QString& value);
+
+    int GetId() const;
+
+    QString GetValue() const;
+    void SetValue(const QString& value);
+
+private:
+    int myId;
+    QString myValue;
+};
+
+class TagInfo {
+public:
+    static TagInfo ParseFromJson(const QJsonObject& obj);
+
+    TagInfo(int id, int projectId, const QString& caption, const QList<TagValue>& values);
+
+    int GetId() const;
+
+    int GetProjectId() const;
+
+    QString GetCaption() const;
+    void SetCaption(const QString& caption);
+
+    QList<TagValue> GetValues() const;
+    void SetValues(const QList<TagValue>& values);
+
+private:
+    int myId;
+    int myProjectId;
+    QString myCaption;
+    QList<TagValue> myValues;
+};
+
 #endif // DATACLASSES_H

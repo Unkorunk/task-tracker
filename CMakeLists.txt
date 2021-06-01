@@ -127,6 +127,14 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/CommentWidgetItem.h
   task-tracker-frontend/CommentWidgetItem.ui
 
+  task-tracker-frontend/PropertyItemWidget.cpp
+  task-tracker-frontend/PropertyItemWidget.h
+  task-tracker-frontend/PropertyItemWidget.ui
+
+  task-tracker-frontend/PropertyValueItemWidget.cpp
+  task-tracker-frontend/PropertyValueItemWidget.h
+  task-tracker-frontend/PropertyValueItemWidget.ui
+
   task-tracker-frontend/Context.cpp
   task-tracker-frontend/Context.h
 

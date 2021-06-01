@@ -305,49 +305,64 @@ an account?</source>
 <context>
     <name>ProjectSettingsWidget</name>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="15"/>
+        <location filename="ProjectSettingsWidget.ui" line="23"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="39"/>
-        <location filename="ProjectSettingsWidget.ui" line="48"/>
+        <location filename="ProjectSettingsWidget.ui" line="47"/>
+        <location filename="ProjectSettingsWidget.ui" line="56"/>
         <source>Project name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="61"/>
+        <location filename="ProjectSettingsWidget.ui" line="69"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="74"/>
+        <location filename="ProjectSettingsWidget.ui" line="82"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="85"/>
+        <location filename="ProjectSettingsWidget.ui" line="95"/>
+        <source>Team</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectSettingsWidget.ui" line="103"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Roles&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="98"/>
+        <location filename="ProjectSettingsWidget.ui" line="116"/>
         <source>Create role</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="155"/>
+        <location filename="ProjectSettingsWidget.ui" line="175"/>
         <source>Team:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="207"/>
+        <location filename="ProjectSettingsWidget.ui" line="227"/>
         <source>Email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="235"/>
+        <location filename="ProjectSettingsWidget.ui" line="255"/>
         <source>Invite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectSettingsWidget.ui" line="288"/>
+        <source>Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectSettingsWidget.ui" line="299"/>
+        <source>New Property</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -404,6 +419,52 @@ an account?</source>
     <message>
         <location filename="ProjectsList.ui" line="62"/>
         <source>Search project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PropertyItemWidget</name>
+    <message>
+        <location filename="PropertyItemWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PropertyItemWidget.ui" line="35"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PropertyItemWidget.ui" line="55"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PropertyItemWidget.ui" line="62"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PropertyItemWidget.ui" line="93"/>
+        <source>Add value</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PropertyValueItemWidget</name>
+    <message>
+        <location filename="PropertyValueItemWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PropertyValueItemWidget.ui" line="20"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PropertyValueItemWidget.ui" line="40"/>
+        <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

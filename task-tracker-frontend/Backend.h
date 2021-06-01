@@ -52,8 +52,16 @@ public:
     void CreateComment(const TaskInfo& task, const CommentInfo& comment);
     void DeleteComment(const CommentInfo& comment);
     void EditComment(const CommentInfo& comment);
-
     void GetComments(const TaskInfo& task);
+
+    void CreateTagCaption(const ProjectInfo& project, const QString& tagCaption);
+    void DeleteTagCaption(const TagInfo& tag);
+    void EditTagCaption(const TagInfo& tag);
+    void GetTagCaptions(const ProjectInfo& project);
+
+    void CreateTagValue(const TagInfo& tag, const QString& tagValue);
+    void DeleteTagValue(const TagValue& tagValue);
+    void EditTagValue(const TagValue& tagValue);
 
 signals:
     void LoadingChanged(bool isLoading);
@@ -84,8 +92,16 @@ signals:
     void CommentCreated(Status status, const CommentInfo& comment);
     void CommentDeleted(Status status);
     void CommentEdited(Status status, const CommentInfo& comment);
-
     void CommentsLoaded(Status status, const QList<CommentInfo>& comments);
+
+    void TagCaptionCreated(Status status, const TagInfo& tag);
+    void TagCaptionDeleted(Status status);
+    void TagCaptionEdited(Status status, const TagInfo& tag);
+    void TagCaptionsLoaded(Status status, const QList<TagInfo>& tags);
+
+    void TagValueCreated(Status status, const TagValue& tagValue, const TagInfo& tagCaption);
+    void TagValueDeleted(Status status, const TagInfo& tagCaption);
+    void TagValueEdited(Status status, const TagInfo& tagCaption);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -123,17 +139,21 @@ private:
     QString CreateCommentUrl();
     QString DeleteCommentUrl();
     QString EditCommentUrl();
-
     QString GetCommentsUrl();
+
+    QString CreateTagCaptionUrl();
+    QString DeleteTagCaptionUrl();
+    QString EditTagCaptionUrl();
+    QString GetTagCaptionUrl();
+
+    QString CreateTagValueUrl();
+    QString DeleteTagValueUrl();
+    QString EditTagValueUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 
     void PostRequest(const QString& urlString, const QMap<QString, QString>& args);
     void GetRequest(const QString& urlString, const QMap<QString, QString>& args);
-
-//    QMap<int, PropertyValue> valIdToVal;
-//    QMap<int, QList<PropertyValue>> propIdToVals;
-//    QMap<int, QString> propIdToCaption;
 
     int myRequestCounting = 0;
 
