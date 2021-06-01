@@ -9,8 +9,8 @@ import java.util.*
 @Controller
 @RequestMapping(path = ["/tagValue"])
 class TagValueController {
-    data class CreateResult(val status: Boolean, val tagValue: TagValue? = null)
-    data class DeleteResult(val status: Boolean)
+    data class CreateResult(val status: Boolean, val tagValue: TagValue? = null, val tagCaption: TagCaption? = null)
+    data class DeleteResult(val status: Boolean, val tagCaption: TagCaption? = null)
     data class EditResult(val status: Boolean, val tagValue: TagValue? = null)
 
     @Autowired
@@ -57,7 +57,7 @@ class TagValueController {
             return CreateResult(false)
         }
 
-        return CreateResult(true, tagValue)
+        return CreateResult(true, tagValue, tagCaption)
     }
 
     @GetMapping(path = ["/delete"])
@@ -89,7 +89,8 @@ class TagValueController {
         } catch (ex: Exception) {
             return DeleteResult(false)
         }
-        return DeleteResult(true)
+
+        return DeleteResult(true, tagValue.tagCaption)
     }
 
     @PostMapping(path = ["/edit"])
