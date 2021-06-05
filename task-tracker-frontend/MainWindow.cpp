@@ -13,6 +13,7 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
     ui->setupUi(this);
 
     connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnTransition);
+    connect(ui->navBar, &NavBar::ProfileButtonClicked, this, &MainWindow::OnProfileTransition);
     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);
 
     connect(ui->navBar, &NavBar::BackButtonClicked, this, &MainWindow::OnBackButtonClicked);
@@ -45,6 +46,12 @@ void MainWindow::OnIssueTransition(const ProjectInfo& project, const TaskInfo &t
     IssueWidget* widget = dynamic_cast<IssueWidget*>(ui->stackedWidget->widget(int(Transition::Issue)));
     widget->SetupTask(project, taskInfo);
     OnTransition(Transition::Issue);
+}
+
+void MainWindow::OnProfileTransition(const UserInfo& userInfo){
+    ProfileWidget* widget = dynamic_cast<ProfileWidget*>(ui->stackedWidget->widget(int(Transition::Profile)));
+    widget->SetupProfile(userInfo);
+    OnTransition(Transition::Profile);
 }
 
 void MainWindow::OnProjectSettingsTransition(const ProjectInfo &projectInfo)

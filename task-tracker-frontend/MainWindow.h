@@ -42,6 +42,8 @@ public slots:
 
     void OnProjectStatisticsTransition(const ProjectInfo& projectInfo);
 
+    void OnProfileTransition(const UserInfo& userInfo);
+
 private slots:
     void OnLogout();
 

@@ -30,7 +30,8 @@ void NavBar::OnNotificationBtnClicked()
 
 void NavBar::OnProfileBtnClicked()
 {
-    emit NavButtonClicked(MainWindow::Transition::Profile);
+    //emit NavButtonClicked(MainWindow::Transition::Profile);
+    emit ProfileButtonClicked(Backend::Instance.GetProfile());
 }
 
 void NavBar::OnLogoutBtnClicked()
