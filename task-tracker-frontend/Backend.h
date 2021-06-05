@@ -44,7 +44,7 @@ public:
 
     UserInfo GetProfile();
 
-    void UpdateProfile();
+    void UpdateProfile(const UserInfo& user);
 
 signals:
     void SignedIn(Status status);
@@ -80,6 +80,7 @@ private:
     QString SignInAccountUrl();
     QString SignUpAccountUrl();
     QString GetAccountUrl();
+    QString EditAccountUrl();
 
     QString GetTasksUrl();
     QString CreateTaskUrl();

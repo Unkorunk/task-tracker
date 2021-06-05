@@ -29,6 +29,6 @@ void AuthorizationWindow::OnSwitchingWindow() {
     mWindow.show();
     this->close();
 
-    Backend::Instance.UpdateProfile();
+    Backend::Instance.GetProfile();
     Backend::Instance.GetProjects();
 }

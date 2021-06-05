@@ -51,6 +51,10 @@ QString Backend::GetAccountUrl() {
     return BaseUrl + "/user/getByAccessToken";
 }
 
+QString Backend::EditAccountUrl() {
+    return BaseUrl + "/user/edit";
+}
+
 QString Backend::GetTasksUrl() {
     return BaseUrl + "/task/all";
 }
@@ -194,14 +198,24 @@ void Backend::EditTask(const TaskInfo &taskInfo)
 
 UserInfo Backend::GetProfile()
 {
+    GetRequest(GetAccountUrl(), QMap<QString, QString> {
+                       { "access_token", myToken }
+                   });
     return myUserInfo;
 }
 
-void Backend::UpdateProfile()
+void Backend::UpdateProfile(const UserInfo& user)
 {
-    GetRequest(GetAccountUrl(), QMap<QString, QString> {
-                   { "access_token", myToken }
-               });
+//    GetRequest(GetAccountUrl(), QMap<QString, QString> {
+//                   { "access_token", myToken }
+//               });
+    QMap<QString, QString> query {
+        { "access_token", myToken },
+        { "full_name", QString("%1").arg(user.GetFullName()) },
+        { "email", user.GetEmail() }
+    };
+
+    PostRequest(EditAccountUrl(), query);
 }
 
 void Backend::OnResponse(QNetworkReply* reply)

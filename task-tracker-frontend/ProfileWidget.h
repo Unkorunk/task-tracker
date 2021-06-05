@@ -21,6 +21,9 @@ public:
 
     void LoadAvatar(const std::string &strAvatarUrl);
 
+private slots:
+    void OnEditUserInfoBtnClicked();
+
 private:
     Ui::ProfileWidget *ui;
     UserInfo user_info;

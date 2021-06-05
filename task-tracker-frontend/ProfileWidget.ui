@@ -118,7 +118,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="SaveChangesBtn">
+       <widget class="QPushButton" name="EditUserInfoBtn">
         <property name="text">
          <string>Edit</string>
         </property>
@@ -155,7 +155,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="newPasswordField"/>
       </item>
       <item>
        <widget class="QLabel" name="label_7">

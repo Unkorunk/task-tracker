@@ -1,6 +1,7 @@
 #include <QNetworkReply>
 #include "ProfileWidget.h"
 #include "ui_ProfileWidget.h"
+#include "Backend.h"
 
 ProfileWidget::ProfileWidget(QWidget *parent) :
     QWidget(parent),
@@ -9,6 +10,8 @@ ProfileWidget::ProfileWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     this->SetupProfile(user_info);
+
+    connect(ui->EditUserInfoBtn, SIGNAL(clicked()), this, SLOT(OnEditUserInfoBtnClicked()));
 }
 
 ProfileWidget::~ProfileWidget()
@@ -53,4 +56,26 @@ void ProfileWidget::LoadAvatar(const std::string &strAvatarUrl)
    });
 
    loop.exec();
+}
+
+void ProfileWidget::OnEditUserInfoBtnClicked()
+{
+    if (this->ui->EditUserInfoBtn->text() == "Edit" &&
+            !this->ui->fullNameField->isEnabled() && !this->ui->eMailField->isEnabled())
+    {
+        this->ui->EditUserInfoBtn->setText("Submit changes");
+        this->ui->fullNameField->setEnabled(true);
+        this->ui->eMailField->setEnabled(true);
+    }
+    else
+    {
+        this->ui->EditUserInfoBtn->setText("Edit");
+        this->ui->fullNameField->setEnabled(false);
+        this->ui->eMailField->setEnabled(false);
+
+        user_info.SetEmail(this->ui->eMailField->text());
+        user_info.SetFullName(this->ui->fullNameField->text());
+
+        Backend::Instance.UpdateProfile(user_info);
+    }
 }

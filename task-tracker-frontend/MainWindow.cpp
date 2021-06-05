@@ -48,7 +48,8 @@ void MainWindow::OnIssueTransition(const ProjectInfo& project, const TaskInfo &t
     OnTransition(Transition::Issue);
 }
 
-void MainWindow::OnProfileTransition(const UserInfo& userInfo){
+void MainWindow::OnProfileTransition(const UserInfo& userInfo)
+{
     ProfileWidget* widget = dynamic_cast<ProfileWidget*>(ui->stackedWidget->widget(int(Transition::Profile)));
     widget->SetupProfile(userInfo);
     OnTransition(Transition::Profile);
