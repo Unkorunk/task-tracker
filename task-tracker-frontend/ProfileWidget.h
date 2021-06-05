@@ -21,10 +21,15 @@ public:
 
     void LoadAvatar(const std::string &strAvatarUrl);
 
+signals:
+    void Logout();
+
 private slots:
     void OnEditUserInfoBtnClicked();
     void OnResetPasswordBtnClicked();
     void OnCheck(Status status);
+    void OnDeleteAccountBtnClicked();
+    //void OnUserDeleted(Status status);
 
 private:
     Ui::ProfileWidget *ui;

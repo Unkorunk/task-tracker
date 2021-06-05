@@ -50,6 +50,8 @@ public:
 
     void ResetPassword(const QString& new_password);
 
+    void DeleteUser(const UserInfo& user);
+
 signals:
     void SignedIn(Status status);
 
@@ -63,7 +65,7 @@ signals:
 
     void ProjectEdited(Status status);
 
-    void ProfileUpdated(Status status);
+    void ProfileUpdated(Status status, UserInfo user);
 
     void TasksLoaded(Status status, const QList<TaskInfo>& tasks);
 
@@ -92,6 +94,7 @@ private:
     QString CreateTaskUrl();
     QString EditTaskUrl();
     QString DeleteTaskUrl();
+    QString DeleteUserUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 

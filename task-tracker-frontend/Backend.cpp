@@ -71,6 +71,10 @@ QString Backend::DeleteTaskUrl() {
     return BaseUrl + "/task/delete";
 }
 
+QString Backend::DeleteUserUrl() {
+    return BaseUrl + "/user/delete";
+}
+
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {
     QNetworkReply::NetworkError error = reply->error();
 
@@ -226,6 +230,13 @@ void Backend::UpdateProfile(const UserInfo& user)
     PostRequest(EditAccountUrl(), query);
 }
 
+void Backend::DeleteUser(const UserInfo& user)
+{
+    GetRequest(DeleteUserUrl(), QMap<QString, QString> {
+                   { "access_token", myToken }
+               });
+}
+
 void Backend::ResetPassword(const QString& new_password)
 {
     QMap<QString, QString> query {
@@ -298,7 +309,7 @@ void Backend::OnResponse(QNetworkReply* reply)
             myUserInfo = UserInfo::ParseFromJson(root["user"].toObject());
         }
 
-        emit ProfileUpdated(status);
+        emit ProfileUpdated(status, myUserInfo);
     } else if (pattern == GetTasksUrl()) {
         QList<TaskInfo> tasks;
         // TODO: process all information
@@ -314,5 +325,7 @@ void Backend::OnResponse(QNetworkReply* reply)
         emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));
     } else if (pattern == DeleteTaskUrl()) {
         emit TaskDeleted(status);
+    } else if (pattern == DeleteUserUrl()){
     }
+
 }

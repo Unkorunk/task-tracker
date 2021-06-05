@@ -16,6 +16,8 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
     connect(ui->navBar, &NavBar::ProfileButtonClicked, this, &MainWindow::OnProfileTransition);
     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);
 
+    connect(ui->page_2, &ProfileWidget::Logout, this, &MainWindow::OnLogout);
+
     connect(ui->navBar, &NavBar::BackButtonClicked, this, &MainWindow::OnBackButtonClicked);
 }
 

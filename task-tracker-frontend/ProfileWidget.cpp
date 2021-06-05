@@ -1,7 +1,9 @@
 #include <QNetworkReply>
+#include <QMessageBox>
 #include "ProfileWidget.h"
 #include "ui_ProfileWidget.h"
 #include "Backend.h"
+#include "MainWindow.h"
 
 ProfileWidget::ProfileWidget(QWidget *parent) :
     QWidget(parent),
@@ -10,13 +12,12 @@ ProfileWidget::ProfileWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->rptNewPasswordField->setEchoMode(QLineEdit::Password);
-
     this->SetupProfile(user_info);
 
     connect(ui->EditUserInfoBtn, SIGNAL(clicked()), this, SLOT(OnEditUserInfoBtnClicked()));
     connect(ui->ResetPasswordBtn, SIGNAL(clicked()), this, SLOT(OnResetPasswordBtnClicked()));
     connect(&Backend::Instance, &Backend::Checked, this, &ProfileWidget::OnCheck);
+    connect(ui->DeleteAccountBtn, SIGNAL(clicked()), this, SLOT(OnDeleteAccountBtnClicked()));
 }
 
 ProfileWidget::~ProfileWidget()
@@ -112,3 +113,26 @@ void ProfileWidget::OnCheck(Status status)
     this->ui->newPasswordField->setEnabled(true);
     this->ui->rptNewPasswordField->setEnabled(true);
 }
+
+void ProfileWidget::OnDeleteAccountBtnClicked()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Deleting account");
+    msgBox.setInformativeText("Do you really want to delete this accoutn?");
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);
+    int ret = msgBox.exec();
+
+    if (ret == QMessageBox::Yes)
+    {
+        Backend::Instance.DeleteUser(user_info);
+        emit Logout();
+    }
+}
+
+//void ProfileWidget::OnUserDeleted(Status status)
+//{
+//    MainWindow::Instance->StopLoading();
+//    if (status.isSuccess) {
+//        MainWindow::Instance->OnTransition(MainWindow::Transition::Greetings);
+//    }
+//}
