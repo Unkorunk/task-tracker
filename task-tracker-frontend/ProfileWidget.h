@@ -19,6 +19,8 @@ public:
 
     void SetupProfile(const UserInfo& user);
 
+    void LoadAvatar(const std::string &strAvatarUrl);
+
 private:
     Ui::ProfileWidget *ui;
     UserInfo user_info;

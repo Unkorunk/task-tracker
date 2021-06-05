@@ -1,3 +1,4 @@
+#include <QNetworkReply>
 #include "ProfileWidget.h"
 #include "ui_ProfileWidget.h"
 
@@ -23,7 +24,33 @@ void ProfileWidget::SetupProfile(const UserInfo& user)
     this->ui->loginField->setText(user_info.GetUsername());
     this->ui->fullNameField->setText(user_info.GetFullName());
     this->ui->eMailField->setText(user_info.GetEmail());
-    // TODO Make photo rendering
-    //this->ui->avatarView->Set(user_info.GetPhoto());
-    //this->ui->avatarView->setBackgroundBrush(QImage("https://www.philosophytalk.org/sites/default/files/styles/large_blog__900x400/public/graham-holtshausen-fUnfEz3VLv4-unsplash.jpg"));
+
+    std::string avatarUrl = "http://tinygraphs.com/squares/" + user_info.GetUsername().toStdString()
+            +"?theme=frogideas&numcolors=4&size=50&fmt=svg";
+    LoadAvatar(avatarUrl);
+}
+
+void ProfileWidget::LoadAvatar(const std::string &strAvatarUrl)
+{
+    QUrl url(QString().fromStdString(strAvatarUrl));
+    QNetworkAccessManager manager;
+    QEventLoop loop;
+
+    QNetworkReply *reply = manager.get(QNetworkRequest(url));
+    QObject::connect(reply, &QNetworkReply::finished, &loop, [&reply, &loop, this](){
+     if (reply->error() == QNetworkReply::NoError)
+     {
+         QByteArray jpegData = reply->readAll();
+         QPixmap pixmap;
+         pixmap.loadFromData(jpegData);
+         if (!pixmap.isNull())
+         {
+             this->ui->imgLbl->clear();
+             this->ui->imgLbl->setPixmap(pixmap);
+         }
+     }
+     loop.quit();
+   });
+
+   loop.exec();
 }
