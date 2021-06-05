@@ -271,22 +271,22 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="153"/>
+        <location filename="ProfileWidget.ui" line="157"/>
         <source>New Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="163"/>
+        <location filename="ProfileWidget.ui" line="171"/>
         <source>Repeat New Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="173"/>
+        <location filename="ProfileWidget.ui" line="185"/>
         <source>Reset Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="193"/>
+        <location filename="ProfileWidget.ui" line="205"/>
         <source>Delete Account</source>
         <translation type="unfinished"></translation>
     </message>

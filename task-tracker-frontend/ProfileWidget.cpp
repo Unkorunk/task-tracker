@@ -9,9 +9,14 @@ ProfileWidget::ProfileWidget(QWidget *parent) :
     user_info(-1, "", "", "")
 {
     ui->setupUi(this);
+
+    ui->rptNewPasswordField->setEchoMode(QLineEdit::Password);
+
     this->SetupProfile(user_info);
 
     connect(ui->EditUserInfoBtn, SIGNAL(clicked()), this, SLOT(OnEditUserInfoBtnClicked()));
+    connect(ui->ResetPasswordBtn, SIGNAL(clicked()), this, SLOT(OnResetPasswordBtnClicked()));
+    connect(&Backend::Instance, &Backend::Checked, this, &ProfileWidget::OnCheck);
 }
 
 ProfileWidget::~ProfileWidget()
@@ -78,4 +83,32 @@ void ProfileWidget::OnEditUserInfoBtnClicked()
 
         Backend::Instance.UpdateProfile(user_info);
     }
+}
+
+void ProfileWidget::OnResetPasswordBtnClicked()
+{
+    if (this->ui->newPasswordField->text() != this->ui->rptNewPasswordField->text())
+    {
+        return;
+    }
+
+    this->ui->currPasswordField->setEnabled(false);
+    this->ui->newPasswordField->setEnabled(false);
+    this->ui->rptNewPasswordField->setEnabled(false);
+
+    Backend::Instance.CheckPassword(user_info.GetUsername(), this->ui->currPasswordField->text());
+}
+
+void ProfileWidget::OnCheck(Status status)
+{
+    if (status.isSuccess)
+    {
+        Backend::Instance.ResetPassword(this->ui->newPasswordField->text());
+        this->ui->currPasswordField->clear();
+        this->ui->newPasswordField->clear();
+        this->ui->rptNewPasswordField->clear();
+    }
+    this->ui->currPasswordField->setEnabled(true);
+    this->ui->newPasswordField->setEnabled(true);
+    this->ui->rptNewPasswordField->setEnabled(true);
 }

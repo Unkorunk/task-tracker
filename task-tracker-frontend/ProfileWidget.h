@@ -23,6 +23,8 @@ public:
 
 private slots:
     void OnEditUserInfoBtnClicked();
+    void OnResetPasswordBtnClicked();
+    void OnCheck(Status status);
 
 private:
     Ui::ProfileWidget *ui;

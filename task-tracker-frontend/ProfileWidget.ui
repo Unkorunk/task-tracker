@@ -145,7 +145,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="currPasswordField"/>
+       <widget class="QLineEdit" name="currPasswordField">
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_6">
@@ -155,7 +159,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="newPasswordField"/>
+       <widget class="QLineEdit" name="newPasswordField">
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_7">
@@ -165,7 +173,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="rptNewPasswordField"/>
+       <widget class="QLineEdit" name="rptNewPasswordField">
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="ResetPasswordBtn">

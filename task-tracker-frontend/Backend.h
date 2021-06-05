@@ -26,6 +26,8 @@ public:
 
     void SignIn(const QString& username, const QString& password);
 
+    void CheckPassword(const QString& username, const QString& password);
+
     void SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password);
 
     void GetProjects();
@@ -46,8 +48,12 @@ public:
 
     void UpdateProfile(const UserInfo& user);
 
+    void ResetPassword(const QString& new_password);
+
 signals:
     void SignedIn(Status status);
+
+    void Checked(Status status);
 
     void SignedUp(Status status);
 

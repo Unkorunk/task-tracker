@@ -119,6 +119,14 @@ void Backend::SignIn(const QString& username, const QString& password) {
                });
 }
 
+void Backend::CheckPassword(const QString& username, const QString& password) {
+    GetRequest(SignInAccountUrl(), QMap<QString, QString> {
+                   { "screen_name", username },
+                   { "password", password },
+                   { "to_check", "true"}
+               });
+}
+
 void Backend::SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password) {
     PostRequest(SignUpAccountUrl(), QMap<QString, QString> {
                     { "full_name", fullName },
@@ -218,6 +226,16 @@ void Backend::UpdateProfile(const UserInfo& user)
     PostRequest(EditAccountUrl(), query);
 }
 
+void Backend::ResetPassword(const QString& new_password)
+{
+    QMap<QString, QString> query {
+        { "access_token", myToken },
+        { "password", new_password }
+    };
+
+    PostRequest(EditAccountUrl(), query);
+}
+
 void Backend::OnResponse(QNetworkReply* reply)
 {
     Status status;
@@ -261,8 +279,13 @@ void Backend::OnResponse(QNetworkReply* reply)
             myToken = root["accessToken"].toString();
             myUserInfo = UserInfo::ParseFromJson(root["user"].toObject());
         }
-
-        emit SignedIn(status);
+        if (request.toStdString().find("to_check") == std::string::npos) {
+            emit SignedIn(status);
+        }
+        else
+        {
+            emit Checked(status);
+        }
     } else if (pattern == SignUpAccountUrl()) {
         if (status.isSuccess) {
             myToken = root["accessToken"].toString();
