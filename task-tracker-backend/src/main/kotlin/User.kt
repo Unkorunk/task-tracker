@@ -48,20 +48,67 @@ class User {
     val notifications: Set<Notification> = emptySet()
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.DETACH], mappedBy = "author")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     val comments: Set<Comment> = emptySet()
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.DETACH], mappedBy = "assignedTo")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assignedTo")
     val assignedTasks: Set<Task> = emptySet()
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.DETACH], mappedBy = "updatedBy")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "updatedBy")
     val updatedTasks: Set<Task> = emptySet()
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.DETACH], mappedBy = "createdBy")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "createdBy")
     val createdTasks: Set<Task> = emptySet()
+
+    fun nullifyRefs(commentRepository: CommentRepository, taskRepository: TaskRepository) {
+        for (comment in comments) {
+            comment.author = null
+        }
+        commentRepository.saveAll(comments)
+
+        for (assignedTask in assignedTasks) {
+            if (assignedTask.assignedTo == this) {
+                assignedTask.assignedTo = null
+            }
+            if (assignedTask.updatedBy == this) {
+                assignedTask.updatedBy = null
+            }
+            if (assignedTask.createdBy == this) {
+                assignedTask.createdBy = null
+            }
+        }
+
+        for (updatedTask in updatedTasks) {
+            if (updatedTask.assignedTo == this) {
+                updatedTask.assignedTo = null
+            }
+            if (updatedTask.updatedBy == this) {
+                updatedTask.updatedBy = null
+            }
+            if (updatedTask.createdBy == this) {
+                updatedTask.createdBy = null
+            }
+        }
+
+        for (createdTask in createdTasks) {
+            if (createdTask.assignedTo == this) {
+                createdTask.assignedTo = null
+            }
+            if (createdTask.updatedBy == this) {
+                createdTask.updatedBy = null
+            }
+            if (createdTask.createdBy == this) {
+                createdTask.createdBy = null
+            }
+        }
+
+        taskRepository.saveAll(assignedTasks)
+        taskRepository.saveAll(updatedTasks)
+        taskRepository.saveAll(createdTasks)
+    }
 
     private fun getRandomString(length: Int): String {
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
