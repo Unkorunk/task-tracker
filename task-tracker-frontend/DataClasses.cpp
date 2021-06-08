@@ -1,6 +1,8 @@
 #include "DataClasses.h"
 
 #include <QJsonObject>
+#include <QJsonArray>
+#include <algorithm>
 
 // PROJECT INFO
 ProjectInfo ProjectInfo::ParseFromJson(const QJsonObject &object) {
@@ -88,6 +90,48 @@ void UserInfo::SetPhoto(const QString &photo) {
 
 // END USER INFO
 
+// COMMENT INFO
+CommentInfo CommentInfo::ParseFromJson(const QJsonObject &object) {
+    std::optional<UserInfo> user;
+    if (object.contains("author") && !object["author"].isNull()) {
+        user.emplace(UserInfo::ParseFromJson(object["author"].toObject()));
+    }
+
+    CommentInfo comment(object["id"].toInt(), user, QDateTime::fromString(object["createdAt"].toString(), DATE_FORMAT),
+            object["text"].toString());
+    return comment;
+}
+
+CommentInfo::CommentInfo(int id, const std::optional<UserInfo> &user, const QDateTime& date, const QString &text)
+    : myId(id), myUser(user), myDate(date), myText(text) { }
+
+int CommentInfo::GetId() const {
+    return myId;
+}
+
+std::optional<UserInfo> CommentInfo::GetCommentator() const {
+    return myUser;
+}
+
+void CommentInfo::SetCommentator(const std::optional<UserInfo> &user, const QDateTime& creationDate) {
+    myUser = user;
+    myDate = creationDate;
+}
+
+QDateTime CommentInfo::GetDate() const {
+    return myDate;
+}
+
+QString CommentInfo::GetText() const {
+    return myText;
+}
+
+void CommentInfo::SetText(const QString &text) {
+    myText = text;
+}
+
+// END COMMENT INFO
+
 // TASK INFO
 TaskInfo TaskInfo::ParseFromJson(const QJsonObject &object) {
     std::optional<UserInfo> creator;
@@ -112,6 +156,18 @@ TaskInfo TaskInfo::ParseFromJson(const QJsonObject &object) {
     if (object.contains("deadline") && !object["deadline"].isNull()) {
         task.SetDeadline(QDateTime::fromString(object["deadline"].toString(), DATE_FORMAT));
     }
+
+    QList<CommentInfo> comments;
+    for (QJsonValueRef comment : object["comments"].toArray()) {
+        comments.push_back(CommentInfo::ParseFromJson(comment.toObject()));
+    }
+    task.SetComments(comments);
+
+    QList<TaskTag> tags;
+    for (QJsonValueRef tag : object["tags"].toArray()) {
+        tags.push_back(TaskTag::ParseFromJson(tag.toObject()));
+    }
+    task.SetTags(tags);
 
     return task;
 }
@@ -194,6 +250,176 @@ void TaskInfo::SetDeadline(const std::optional<QDateTime> &deadline) {
     myDeadline = deadline;
 }
 
+QList<CommentInfo> TaskInfo::GetComments() const {
+    return myComments;
+}
+
+void TaskInfo::SetComments(const QList<CommentInfo> &comments) {
+    myComments = comments;
+}
+
+QList<TaskTag> TaskInfo::GetTags() const {
+    return myTags;
+}
+
+void TaskInfo::SetTags(const QList<TaskTag> &tags) {
+    myTags = tags;
+}
+
+// END TASK INFO
+
+// ROLE INFO
+RoleInfo RoleInfo::ParseFromJson(const QJsonObject &obj) {
+    QString bitString = obj["permissions"].toString();
+    uint64_t perms = 0;
+    for (uint64_t i = 0; i < std::min(64ll, bitString.length()); i++) {
+        if (bitString[i] == '1') {
+            perms += (1ull << i);
+        }
+    }
+
+    return RoleInfo(obj["id"].toInt(), obj["value"].toString(), perms, obj["project"].toObject()["id"].toInt());
+}
+
+RoleInfo::RoleInfo(int id, const QString &caption, uint64_t perms, int projectId) : myId(id), myCaption(caption),
+    myPermissions(perms), myProjectId(projectId) {}
+
+int RoleInfo::GetId() const {
+    return myId;
+}
+
+QString RoleInfo::GetCaption() const {
+    return myCaption;
+}
+
+void RoleInfo::SetCaption(const QString &caption) {
+    myCaption = caption;
+}
+
+uint64_t RoleInfo::GetPermission() const {
+    return myPermissions;
+}
+
+QString RoleInfo::GetPermissionStr() const {
+    QString res;
+    uint64_t mask = 0;
+    for (uint64_t i = 0; i < 8; i++) {
+        mask = 255 << (i * 8ull);
+        res.append((char)((myPermissions & mask) >> (i * 8ull)));
+    }
+
+    return res;
+}
+
+void RoleInfo::SetPermissions(uint64_t perm, bool add) {
+    if (add) {
+        myPermissions |= perm;
+    }
+}
+
+int RoleInfo::GetProjectId() const {
+    return myProjectId;
+}
+
+bool RoleInfo::HasPermission(uint64_t perm) const {
+    return ((myPermissions & perm) == perm);
+}
+
+// END ROLE INFO
+
+// TAG VALUE
+TagValue TagValue::ParseFromJson(const QJsonObject &obj) {
+    return TagValue(obj["id"].toInt(), obj["value"].toString());
+}
+
+TagValue::TagValue(int id, const QString &value)
+    : myId(id), myValue(value) {}
+
+int TagValue::GetId() const {
+    return myId;
+}
+
+QString TagValue::GetValue() const {
+    return myValue;
+}
+
+void TagValue::SetValue(const QString &value) {
+    myValue = value;
+}
+
+TagInfo TagValue::FindProperty(const QList<TagInfo> &properties) {
+    for (int i = 0; i < properties.count(); i++) {
+        QList<TagValue> values = properties[i].GetValues();
+        for (int j = 0; j < values.count(); j++) {
+            if (values[j].GetId() == myId) {
+                return properties[i];
+            }
+        }
+    }
+
+    return TagInfo(-1, -1, "", QList<TagValue>());
+}
+
+// END TAG VALUE
+
+// TAG INFO
+TagInfo TagInfo::ParseFromJson(const QJsonObject &obj) {
+    QList<TagValue> values;
+    for (QJsonValueRef it : obj["values"].toArray()) {
+        values.push_back(TagValue::ParseFromJson(it.toObject()));
+    }
+
+    return TagInfo(obj["id"].toInt(), obj["project"].toObject()["id"].toInt(), obj["caption"].toString(), values);
+}
+
+TagInfo::TagInfo(int id, int projectId, const QString &caption, const QList<TagValue>& values)
+    : myId(id), myProjectId(projectId), myCaption(caption), myValues(values) {}
+
+int TagInfo::GetId() const {
+    return myId;
+}
+
+int TagInfo::GetProjectId() const {
+    return myProjectId;
+}
+
+QString TagInfo::GetCaption() const {
+    return myCaption;
+}
+
+void TagInfo::SetCaption(const QString &caption) {
+    myCaption = caption;
+}
+
+QList<TagValue> TagInfo::GetValues() const {
+    return myValues;
+}
+
+void TagInfo::SetValues(const QList<TagValue> &values) {
+    myValues = values;
+}
+
+// END TAG INFO
+
+// TASK TAG
+TaskTag TaskTag::ParseFromJson(const QJsonObject &obj) {
+    TagValue val = TagValue::ParseFromJson(obj["tagValue"].toObject());
+    return TaskTag(obj["id"].toInt(), val);
+}
+
+TaskTag::TaskTag(int id, const TagValue &tagValue) : myId(id), myValue(tagValue) {}
+
+int TaskTag::GetId() const {
+    return myId;
+}
 
 
+TagValue TaskTag::GetValue() const {
+    return myValue;
+}
 
+void TaskTag::SetValue(const TagValue &tag) {
+    myValue = tag;
+}
+
+// END TASK TAG

@@ -8,12 +8,15 @@
 #include <memory>
 #include "TaskItemWidget.h"
 #include "Backend.h"
+#include "AbstractPage.h"
+#include "MainWindow.h"
+#include "MainWindow.h"
 
 namespace Ui {
 class ProjectWidget;
 }
 
-class ProjectWidget : public QWidget
+class ProjectWidget : public AbstractPage
 {
     Q_OBJECT
 
@@ -21,30 +24,23 @@ public:
     explicit ProjectWidget(QWidget *parent = nullptr);
     ~ProjectWidget();
 
-    void SetupProject(const ProjectInfo& project);
-
 signals:
-    void TaskSelected(const ProjectInfo& project, const TaskInfo& taskInfo);
-
-    void ProjectSettingsClicked(const ProjectInfo& projectInfo);
-
-    void ProjectStatisticsClicked(const ProjectInfo& projectInfo);
+    void TransitionRequested(MainWindow::Transition transition, const Context& context);
 
     void CreateTaskClicked(const QString& name);
+
+protected:
+    void SetupPage() override;
 
 private slots:
     void OnCreateTaskBtnClicked();
 
     void OnProjectSettingsBtnClicked();
-
     void OnProjectStatisticsBtnClicked();
 
     void OnItemClicked(QListWidgetItem*);
 
     void OnTasksLoaded(Status status, const QList<TaskInfo>& tasks);
-
-    void RemoveItem(const QString &text);
-
     void OnTaskUpdate(Status status);
 
 private:
@@ -53,8 +49,6 @@ private:
     ProjectInfo myProject;
 
     QList<TaskInfo> taskList;
-
-  //  std::unique_ptr<QDialog> myDialog;
 };
 
 #endif // PROJECTWIDGET_H

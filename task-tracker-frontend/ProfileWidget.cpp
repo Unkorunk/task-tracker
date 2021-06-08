@@ -6,13 +6,10 @@
 #include "MainWindow.h"
 
 ProfileWidget::ProfileWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ProfileWidget),
-    user_info(-1, "", "", "")
+    AbstractPage(parent),
+    ui(new Ui::ProfileWidget)
 {
     ui->setupUi(this);
-
-    this->SetupProfile(user_info);
 
     connect(ui->EditUserInfoBtn, SIGNAL(clicked()), this, SLOT(OnEditUserInfoBtnClicked()));
     connect(ui->ResetPasswordBtn, SIGNAL(clicked()), this, SLOT(OnResetPasswordBtnClicked()));
@@ -20,21 +17,20 @@ ProfileWidget::ProfileWidget(QWidget *parent) :
     connect(ui->DeleteAccountBtn, SIGNAL(clicked()), this, SLOT(OnDeleteAccountBtnClicked()));
 }
 
-ProfileWidget::~ProfileWidget()
-{
+ProfileWidget::~ProfileWidget() {
     delete ui;
 }
 
+
 void ProfileWidget::SetupProfile(const UserInfo& user)
 {
-    user_info = user;
 
     // Is it correct to set ui parameters here?
-    this->ui->loginField->setText(user_info.GetUsername());
-    this->ui->fullNameField->setText(user_info.GetFullName());
-    this->ui->eMailField->setText(user_info.GetEmail());
+    this->ui->loginField->setText(user.GetUsername());
+    this->ui->fullNameField->setText(user.GetFullName());
+    this->ui->eMailField->setText(user.GetEmail());
 
-    std::string avatarUrl = "http://tinygraphs.com/squares/" + user_info.GetUsername().toStdString()
+    std::string avatarUrl = "http://tinygraphs.com/squares/" + user.GetUsername().toStdString()
             +"?theme=frogideas&numcolors=4&size=50&fmt=svg";
     LoadAvatar(avatarUrl);
 }
@@ -79,10 +75,15 @@ void ProfileWidget::OnEditUserInfoBtnClicked()
         this->ui->fullNameField->setEnabled(false);
         this->ui->eMailField->setEnabled(false);
 
-        user_info.SetEmail(this->ui->eMailField->text());
-        user_info.SetFullName(this->ui->fullNameField->text());
+        auto user = myContext.GetUser();
+        user.SetEmail(this->ui->eMailField->text());
+        user.SetFullName(this->ui->fullNameField->text());
+        myContext.SetUser(user);
 
-        Backend::Instance.UpdateProfile(user_info);
+        auto deb = myContext.GetUser();
+
+        Backend::Instance.UpdateUser(user);
+        //emit ProfileUpdate();
     }
 }
 
@@ -97,7 +98,7 @@ void ProfileWidget::OnResetPasswordBtnClicked()
     this->ui->newPasswordField->setEnabled(false);
     this->ui->rptNewPasswordField->setEnabled(false);
 
-    Backend::Instance.CheckPassword(user_info.GetUsername(), this->ui->currPasswordField->text());
+    Backend::Instance.CheckPassword(myContext.GetUser().GetUsername(), this->ui->currPasswordField->text());
 }
 
 void ProfileWidget::OnCheck(Status status)
@@ -116,15 +117,13 @@ void ProfileWidget::OnCheck(Status status)
 
 void ProfileWidget::OnDeleteAccountBtnClicked()
 {
-    QMessageBox msgBox;
-    msgBox.setText("Deleting account");
-    msgBox.setInformativeText("Do you really want to delete this accoutn?");
-    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);
-    int ret = msgBox.exec();
+    QMessageBox tt("Task tracker", "Deleting account. \n\nDo you really want to delete this account?",
+                   QMessageBox::NoIcon, QMessageBox::No, QMessageBox::Yes, QMessageBox::NoButton);
+    int ret = tt.exec();
 
     if (ret == QMessageBox::Yes)
     {
-        Backend::Instance.DeleteUser(user_info);
+        Backend::Instance.DeleteUser(myContext.GetUser());
         emit Logout();
     }
 }
@@ -136,3 +135,7 @@ void ProfileWidget::OnDeleteAccountBtnClicked()
 //        MainWindow::Instance->OnTransition(MainWindow::Transition::Greetings);
 //    }
 //}
+
+void ProfileWidget::SetupPage() {
+    SetupProfile(myContext.GetUser());
+}

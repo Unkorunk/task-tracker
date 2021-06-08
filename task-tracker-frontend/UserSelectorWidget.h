@@ -21,6 +21,8 @@ public:
     void ChangeData(const std::optional<UserInfo>& selectedUser);
     std::optional<UserInfo> GetData() const;
 
+    void SetUsers(const QList<UserInfo>& users);
+
     void SetEditable(bool editable);
     bool GetEditable() const;
 
@@ -31,6 +33,7 @@ private:
     bool isEditable;
 
     QList<UserInfo> myUsers;
+    UserInfo mySelectedUser;
 };
 
 #endif // USERSELECTORWIDGET_H

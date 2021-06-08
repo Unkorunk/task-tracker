@@ -1,6 +1,8 @@
 #ifndef PROFILEWIDGET_H
 #define PROFILEWIDGET_H
 
+#include "AbstractPage.h"
+
 #include <QWidget>
 #include "DataClasses.h"
 #include "Backend.h"
@@ -9,8 +11,7 @@ namespace Ui {
 class ProfileWidget;
 }
 
-class ProfileWidget : public QWidget
-{
+class ProfileWidget : public AbstractPage {
     Q_OBJECT
 
 public:
@@ -23,6 +24,7 @@ public:
 
 signals:
     void Logout();
+    //void ProfileUpdate();
 
 private slots:
     void OnEditUserInfoBtnClicked();
@@ -30,10 +32,11 @@ private slots:
     void OnCheck(Status status);
     void OnDeleteAccountBtnClicked();
     //void OnUserDeleted(Status status);
+protected:
+    void SetupPage() override;
 
 private:
     Ui::ProfileWidget *ui;
-    UserInfo user_info;
 };
 
 #endif // PROFILEWIDGET_H
