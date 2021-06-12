@@ -26,6 +26,9 @@ public:
     static Backend Instance;
 
     void SignIn(const QString& username, const QString& password);
+
+    void CheckPassword(const QString& username, const QString& password);
+
     void SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password);
 
     void GetProjects();
@@ -37,6 +40,14 @@ public:
     void CreateTask(const TaskInfo& taskInfo);
     void DeleteTask(const TaskInfo& taskInfo);
     void EditTask(const TaskInfo& taskInfo);
+
+
+    void UpdateProfile(const UserInfo& user);
+
+    void ResetPassword(const QString& new_password);
+
+    void DeleteUser(const UserInfo& user);
+    void UpdateUser(const UserInfo& user);
 
     void UpdateProfile();
 
@@ -71,6 +82,8 @@ signals:
 
     void SignedIn(Status status, const UserInfo& user);
     void SignedUp(Status status, const UserInfo& user);
+
+    void Checked(Status status);
 
     void ProjectsLoaded(Status status, const QList<QPair<ProjectInfo, RoleInfo>>& projects);
     void ProjectCreated(Status status);   
@@ -127,11 +140,13 @@ private:
     QString SignInAccountUrl();
     QString SignUpAccountUrl();
     QString GetAccountUrl();
+    QString EditAccountUrl();
 
     QString GetTasksUrl();
     QString CreateTaskUrl();
     QString EditTaskUrl();
     QString DeleteTaskUrl();
+    QString DeleteUserUrl();
 
     QString GetRolesUrl();
     QString CreateRoleUrl();

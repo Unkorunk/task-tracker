@@ -36,5 +36,6 @@ void AuthorizationWindow::OnSwitchingWindow(const UserInfo& user) {
     mWindow.OnTransition(MainWindow::Transition::Greetings, context);
 
     Backend::Instance.UpdateProfile();
+
     Backend::Instance.GetProjects();
 }

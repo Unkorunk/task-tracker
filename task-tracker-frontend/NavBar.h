@@ -18,6 +18,7 @@ public:
 
 signals:
     void NavButtonClicked(MainWindow::Transition transition);
+    void ProfileButtonClicked(const UserInfo& user);
     void Logout();
     void BackButtonClicked();
 

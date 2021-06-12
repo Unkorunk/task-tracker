@@ -5,6 +5,7 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), myAuthWindow(authWindow) {
     ui->setupUi(this);
 
+    //connect(ui->navBar, &NavBar::ProfileButtonClicked, this, &MainWindow::OnProfileTransition);
 
     ui->background->setStyleSheet("QWidget#background {background-color: rgb(232, 227, 227);border-radius: 20px;}");
 
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
 
     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);
     connect(ui->navBar, &NavBar::BackButtonClicked, this, &MainWindow::OnBackButtonClicked);
+    connect(ui->profilePage, &ProfileWidget::Logout, this, &MainWindow::OnLogout);
 
     connect(ui->greetingsPage, &GreetingsWidget::ProjectSelected, this, &MainWindow::OnTransition);
     connect(ui->projectPage, &ProjectWidget::TransitionRequested, this, &MainWindow::OnTransition);
@@ -19,8 +21,11 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
 
     connect(&Backend::Instance, &Backend::LoadingChanged, this, &MainWindow::OnLoadingChanged);
 
+    connect(&Backend::Instance, &Backend::ProfileUpdated, this, &MainWindow::OnProfileUpdated);
+
     ui->stackedWidget->setCurrentIndex(0);
 }
+
 
 MainWindow::~MainWindow() {
     delete ui;
@@ -67,5 +72,9 @@ void MainWindow::OnLogout() {
 
 void MainWindow::OnNavBarTransition(MainWindow::Transition transition) {
     OnTransition(transition, myContext);
+}
+
+void MainWindow::OnProfileUpdated(Status status, const UserInfo& user){
+    myContext.SetUser(user);
 }
 

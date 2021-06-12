@@ -69,7 +69,7 @@ margin-right: 15px;
 }</string>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>1</number>
          </property>
          <widget class="GreetingsWidget" name="greetingsPage">
           <property name="sizePolicy">
@@ -79,7 +79,7 @@ margin-right: 15px;
            </sizepolicy>
           </property>
          </widget>
-         <widget class="ProfileWidget" name="page_16"/>
+         <widget class="ProfileWidget" name="profilePage"/>
          <widget class="NotificationsWidget" name="page_17"/>
          <widget class="ProjectWidget" name="projectPage"/>
          <widget class="ProjectSettingsWidget" name="page_19"/>
