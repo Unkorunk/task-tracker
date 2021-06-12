@@ -23,6 +23,8 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(ui->ProjectStatisticsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectStatisticsBtnClicked);
 
     connect(&Backend::Instance, &Backend::TaskEdited, this, &ProjectWidget::OnTaskUpdate);
+
+    connect(&Backend::Instance, &Backend::ProjectUsersLoaded, this, &ProjectWidget::OnTeamLoaded);
 }
 
 ProjectWidget::~ProjectWidget() {
@@ -77,4 +79,21 @@ void ProjectWidget::SetupPage() {
 
     ui->ProjectNameLabel->setText(myProject.GetTitle());
     Backend::Instance.GetTasks(myProject);
+    Backend::Instance.GetProjectUsers(myProject);
+}
+
+void ProjectWidget::SetupFiltrage() {
+    auto pr_team = myContext.GetProjectTeam();
+    QStringList fullNames = {"Created by"};
+    for (auto& el : pr_team) {
+        fullNames.append(el.first.GetFullName());
+    }
+    ui->createdByBox->clear();
+    ui->createdByBox->addItems(fullNames);
+}
+
+void ProjectWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team){
+    myContext.SetProjectTeam(team);
+
+    SetupFiltrage();
 }
