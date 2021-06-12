@@ -45,8 +45,12 @@ private slots:
 
     void OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team);
 
+    void OnCreatorRequested(int index);
+
 private:
     void SetupFiltrage();
+
+    void DisplayTasks(const QList<TaskInfo> &tasks);
 
     Ui::ProjectWidget *ui;
 

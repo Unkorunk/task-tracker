@@ -25,6 +25,8 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(&Backend::Instance, &Backend::TaskEdited, this, &ProjectWidget::OnTaskUpdate);
 
     connect(&Backend::Instance, &Backend::ProjectUsersLoaded, this, &ProjectWidget::OnTeamLoaded);
+
+    connect(ui->createdByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnCreatorRequested);
 }
 
 ProjectWidget::~ProjectWidget() {
@@ -51,19 +53,11 @@ void ProjectWidget::OnItemClicked(QListWidgetItem* item) {
 }
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
-    ui->listWidget->clear();
-    for (auto& task : tasks) {
-        //TODO: change
+    taskList.clear();
+    for (auto& task : tasks){
         taskList.append(task);
-        auto item = new QListWidgetItem();
-        auto widget = new TaskItemWidget(this);
-        widget->SetTask(task);
-        item->setSizeHint(QSize(450, 60));
-        ui->listWidget->addItem(item);
-        ui->listWidget->setItemWidget(item, widget);
-
-        update();
     }
+    DisplayTasks(taskList);
 }
 
 void ProjectWidget::OnTaskUpdate(Status status) {
@@ -96,4 +90,34 @@ void ProjectWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, Role
     myContext.SetProjectTeam(team);
 
     SetupFiltrage();
+}
+
+void ProjectWidget::OnCreatorRequested(int index) {
+    if (index <= 0 || ui->createdByBox->currentIndex() <= 0) return;
+
+    QList<TaskInfo> filteredTasks;
+
+    auto creator = ui->createdByBox->currentText();
+
+    for (auto task : taskList) {
+        if (task.GetCreator()->GetFullName() == creator)
+            filteredTasks.append(task);
+    }
+
+    DisplayTasks(filteredTasks);
+}
+
+void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
+    ui->listWidget->clear();
+    for (auto& task : tasks) {
+        //TODO: change
+        auto item = new QListWidgetItem();
+        auto widget = new TaskItemWidget(this);
+        widget->SetTask(task);
+        item->setSizeHint(QSize(450, 60));
+        ui->listWidget->addItem(item);
+        ui->listWidget->setItemWidget(item, widget);
+
+        update();
+    }
 }
