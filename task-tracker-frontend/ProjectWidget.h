@@ -52,6 +52,8 @@ private:
 
     void DisplayTasks(const QList<TaskInfo> &tasks);
 
+    QList<TaskInfo> SortTasks(const QList<TaskInfo> &tasks);
+
     Ui::ProjectWidget *ui;
 
     ProjectInfo myProject;
