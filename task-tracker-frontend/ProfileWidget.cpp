@@ -38,26 +38,9 @@ void ProfileWidget::SetupProfile(const UserInfo& user)
 void ProfileWidget::LoadAvatar(const std::string &strAvatarUrl)
 {
     QUrl url(QString().fromStdString(strAvatarUrl));
-    QNetworkAccessManager manager;
-    QEventLoop loop;
-
-    QNetworkReply *reply = manager.get(QNetworkRequest(url));
-    QObject::connect(reply, &QNetworkReply::finished, &loop, [&reply, &loop, this](){
-     if (reply->error() == QNetworkReply::NoError)
-     {
-         QByteArray jpegData = reply->readAll();
-         QPixmap pixmap;
-         pixmap.loadFromData(jpegData);
-         if (!pixmap.isNull())
-         {
-             this->ui->imgLbl->clear();
-             this->ui->imgLbl->setPixmap(pixmap);
-         }
-     }
-     loop.quit();
-   });
-
-   loop.exec();
+    QNetworkAccessManager* manager = new QNetworkAccessManager(this);
+    connect(manager, &QNetworkAccessManager::finished, this, &ProfileWidget::OnGetPicture);
+    manager->get(QNetworkRequest(url));
 }
 
 void ProfileWidget::OnEditUserInfoBtnClicked()
@@ -138,4 +121,18 @@ void ProfileWidget::OnDeleteAccountBtnClicked()
 
 void ProfileWidget::SetupPage() {
     SetupProfile(myContext.GetUser());
+}
+
+void ProfileWidget::OnGetPicture(QNetworkReply* reply) {
+    if (reply->error() == QNetworkReply::NoError)
+         {
+             QByteArray jpegData = reply->readAll();
+             QPixmap pixmap;
+             pixmap.loadFromData(jpegData);
+             if (!pixmap.isNull())
+             {
+                 this->ui->imgLbl->clear();
+                 this->ui->imgLbl->setPixmap(pixmap);
+             }
+         }
 }

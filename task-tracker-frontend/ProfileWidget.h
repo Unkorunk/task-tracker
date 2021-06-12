@@ -32,6 +32,7 @@ private slots:
     void OnCheck(Status status);
     void OnDeleteAccountBtnClicked();
     //void OnUserDeleted(Status status);
+    void OnGetPicture(QNetworkReply* relpy);
 protected:
     void SetupPage() override;
 
