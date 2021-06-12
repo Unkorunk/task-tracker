@@ -577,9 +577,10 @@ void Backend::OnResponse(QNetworkReply* reply) {
         UserInfo user = Context::DEFAULT_USER;
         if (status.isSuccess) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
+
+            emit ProfileUpdated(status, user);
         }
 
-        emit ProfileUpdated(status, user);
 
     } else if (pattern == GetTasksUrl()) {
         QList<TaskInfo> tasks;
