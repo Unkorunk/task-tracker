@@ -4,6 +4,8 @@
 #include "AbstractPage.h"
 
 #include <QWidget>
+#include "DataClasses.h"
+#include "Backend.h"
 
 namespace Ui {
 class ProfileWidget;
@@ -16,6 +18,21 @@ public:
     explicit ProfileWidget(QWidget *parent = nullptr);
     ~ProfileWidget();
 
+    void SetupProfile(const UserInfo& user);
+
+    void LoadAvatar(const std::string &strAvatarUrl);
+
+signals:
+    void Logout();
+    //void ProfileUpdate();
+
+private slots:
+    void OnEditUserInfoBtnClicked();
+    void OnResetPasswordBtnClicked();
+    void OnCheck(Status status);
+    void OnDeleteAccountBtnClicked();
+    //void OnUserDeleted(Status status);
+    void OnGetPicture(QNetworkReply* relpy);
 protected:
     void SetupPage() override;
 

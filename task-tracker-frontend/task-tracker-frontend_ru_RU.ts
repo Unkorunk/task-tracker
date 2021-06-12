@@ -254,8 +254,53 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="26"/>
-        <source>Profile Widget</source>
+        <location filename="ProfileWidget.ui" line="61"/>
+        <source>Login</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProfileWidget.ui" line="75"/>
+        <source>Full Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProfileWidget.ui" line="89"/>
+        <source>Email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProfileWidget.ui" line="103"/>
+        <source>Avatar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProfileWidget.ui" line="123"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProfileWidget.ui" line="143"/>
+        <source>Current Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProfileWidget.ui" line="157"/>
+        <source>New Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProfileWidget.ui" line="171"/>
+        <source>Repeat New Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProfileWidget.ui" line="185"/>
+        <source>Reset Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProfileWidget.ui" line="205"/>
+        <source>Delete Account</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

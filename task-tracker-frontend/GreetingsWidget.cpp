@@ -45,8 +45,6 @@ void GreetingsWidget::OnProjectAdd(const QString& name) {
     Backend::Instance.CreateProject(name);
 }
 
-
-
 void GreetingsWidget::OnProfileUpdate(Status status, const UserInfo& user) {
     myContext.SetUser(user);
     ui->greetingsLabel->setText("Welcome, " + user.GetFullName() + "!");

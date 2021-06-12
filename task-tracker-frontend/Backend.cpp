@@ -54,6 +54,10 @@ QString Backend::GetAccountUrl() {
     return BaseUrl + "/user/getByAccessToken";
 }
 
+QString Backend::EditAccountUrl() {
+    return BaseUrl + "/user/edit";
+}
+
 QString Backend::GetTasksUrl() {
     return BaseUrl + "/task/all";
 }
@@ -68,6 +72,11 @@ QString Backend::EditTaskUrl() {
 
 QString Backend::DeleteTaskUrl() {
     return BaseUrl + "/task/delete";
+}
+
+
+QString Backend::DeleteUserUrl() {
+    return BaseUrl + "/user/delete";
 }
 
 QString Backend::GetRolesUrl() {
@@ -205,6 +214,14 @@ void Backend::SignIn(const QString& username, const QString& password) {
                });
 }
 
+void Backend::CheckPassword(const QString& username, const QString& password) {
+    GetRequest(SignInAccountUrl(), QMap<QString, QString> {
+                   { "screen_name", username },
+                   { "password", password },
+                   { "to_check", "true"}
+               });
+}
+
 void Backend::SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password) {
     PostRequest(SignUpAccountUrl(), QMap<QString, QString> {
                     { "full_name", fullName },
@@ -285,10 +302,39 @@ void Backend::EditTask(const TaskInfo &taskInfo) {
     PostRequest(EditTaskUrl(), query);
 }
 
-void Backend::UpdateProfile() {
-    GetRequest(GetAccountUrl(), QMap<QString, QString> {
+void Backend::UpdateUser(const UserInfo& user)
+{
+    QMap<QString, QString> query {
+        { "access_token", myToken },
+        { "full_name", QString("%1").arg(user.GetFullName()) },
+        { "email", user.GetEmail() }
+    };
+
+    PostRequest(EditAccountUrl(), query);
+}
+
+void Backend::DeleteUser(const UserInfo& user)
+{
+    GetRequest(DeleteUserUrl(), QMap<QString, QString> {
                    { "access_token", myToken }
                });
+}
+
+void Backend::UpdateProfile() {
+    GetRequest(GetAccountUrl(), QMap<QString, QString> {
+
+                   { "access_token", myToken }
+               });
+}
+
+void Backend::ResetPassword(const QString& new_password)
+{
+    QMap<QString, QString> query {
+        { "access_token", myToken },
+        { "password", new_password }
+    };
+
+    PostRequest(EditAccountUrl(), query);
 }
 
 void Backend::GetRoles(const ProjectInfo &projectInfo) {
@@ -502,8 +548,15 @@ void Backend::OnResponse(QNetworkReply* reply) {
             myToken = root["accessToken"].toString();
             user = UserInfo::ParseFromJson(root["user"].toObject());
         }
+        if (request.toStdString().find("to_check") == std::string::npos) {
+            emit SignedIn(status, user);
+        }
+        else
+        {
+            emit Checked(status);
+        }
 
-        emit SignedIn(status, user);
+        //emit SignedIn(status, user);
     } else if (pattern == SignUpAccountUrl()) {
         UserInfo user = Context::DEFAULT_USER;
         if (status.isSuccess) {
@@ -519,6 +572,16 @@ void Backend::OnResponse(QNetworkReply* reply) {
         }
 
         emit ProfileUpdated(status, user);
+
+    } else if (pattern == EditAccountUrl()){
+        UserInfo user = Context::DEFAULT_USER;
+        if (status.isSuccess) {
+            user = UserInfo::ParseFromJson(root["user"].toObject());
+
+            emit ProfileUpdated(status, user);
+        }
+
+
     } else if (pattern == GetTasksUrl()) {
         QList<TaskInfo> tasks;
         // TODO: process all information
@@ -536,6 +599,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
         emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));
     } else if (pattern == DeleteTaskUrl()) {
         emit TaskDeleted(status);
+    } else if (pattern == DeleteUserUrl()){
+
     } else if (pattern == GetRolesUrl()) {
         QList<RoleInfo> roles;
         if (status.isSuccess) {
@@ -653,4 +718,5 @@ void Backend::OnResponse(QNetworkReply* reply) {
     if (myRequestCounting == 0) {
         emit LoadingChanged(false);
     }
+
 }
