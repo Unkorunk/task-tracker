@@ -7,10 +7,8 @@ GreetingsWidget::GreetingsWidget(QWidget *parent) : AbstractPage(parent),
         ui(new Ui::GreetingsWidget) {
     ui->setupUi(this);
 
-    ui->personalProjectsList->ChangeHeader("Personal projects");
     SetupPage();
 
-    ui->personalProjectsList->setStyleSheet("ProjectsList {background-color: white; border-radius: 20px;}");
     ui->projectList->setStyleSheet("background-color: rgb(232, 227, 227);");
 
 
