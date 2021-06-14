@@ -234,6 +234,19 @@ an account?</source>
     </message>
 </context>
 <context>
+    <name>NotificationItemWidget</name>
+    <message>
+        <location filename="NotificationItemWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="NotificationItemWidget.ui" line="25"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>NotificationsWidget</name>
     <message>
         <location filename="NotificationsWidget.ui" line="20"/>
@@ -241,8 +254,8 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NotificationsWidget.ui" line="26"/>
-        <source>Notifications Widget</source>
+        <location filename="NotificationsWidget.ui" line="36"/>
+        <source>Notifications</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -655,13 +668,8 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="TaskItemWidget.ui" line="186"/>
-        <source>Status</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="TaskItemWidget.ui" line="204"/>
-        <location filename="TaskItemWidget.ui" line="222"/>
+        <location filename="TaskItemWidget.ui" line="182"/>
+        <location filename="TaskItemWidget.ui" line="200"/>
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
