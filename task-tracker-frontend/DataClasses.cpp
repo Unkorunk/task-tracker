@@ -422,4 +422,24 @@ void TaskTag::SetValue(const TagValue &tag) {
     myValue = tag;
 }
 
+int NotificationInfo::GetId() {
+    return myId;
+}
+
+QString NotificationInfo::GetText() const {
+    return myText;
+}
+
+void NotificationInfo::SetText(QString text) {
+    myText = text;
+}
+
+NotificationInfo::NotificationInfo(int id, QString text): myId(id), myText(text) {
+
+}
+
+NotificationInfo NotificationInfo::ParseFromJson(const QJsonObject &obj) {
+    return NotificationInfo(obj["id"].toInt(), obj["text"].toString());
+}
+
 // END TASK TAG

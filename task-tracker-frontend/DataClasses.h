@@ -173,6 +173,22 @@ private:
     TagValue myValue;
 };
 
+class NotificationInfo {
+public:
+    static NotificationInfo ParseFromJson(const QJsonObject& obj);
+
+    NotificationInfo(int id, QString text);
+
+    int GetId();
+
+    void SetText(QString text);
+    QString GetText() const;
+
+private:
+    int myId;
+    QString myText;
+};
+
 class TaskInfo {
 public:
     static TaskInfo ParseFromJson(const QJsonObject& object);

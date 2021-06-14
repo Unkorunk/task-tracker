@@ -12,12 +12,8 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     myProject(-1, "") {
     ui->setupUi(this);
 
-<<<<<<< HEAD
-    ui->listWidget->clear();
-
-=======
     ui->listWidget->verticalScrollBar()->setSingleStep(2);
->>>>>>> 233aa20336832975e6e1f0ebe51c9880d04f8ca1
+
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 
     connect(ui->CreateTaskBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnCreateTaskBtnClicked);
