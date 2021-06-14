@@ -80,7 +80,7 @@ public:
 signals:
 
     //void SignedUp(Status status);
-    void SignInFailed(QString log);
+    void RequestFailed(QString log);
 
     void LoadingChanged(bool isLoading);
 

@@ -13,7 +13,7 @@ LoadingBar::LoadingBar(QWidget *parent) :
     ui->waitingSpinner->setInnerRadius(5);
     ui->label->hide();
 
-    connect(&Backend::Instance, &Backend::SignInFailed, this, &LoadingBar::FailLoading);
+    connect(&Backend::Instance, &Backend::RequestFailed, this, &LoadingBar::FailLoading);
     //connect(, &AuthorizationWidget::FailAuthorization, this, &LoadingBar::FailLoading)
 }
 

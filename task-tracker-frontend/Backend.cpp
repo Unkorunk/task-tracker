@@ -521,7 +521,7 @@ void Backend::OnResponse(QNetworkReply* reply) {
             }
         } else {
             qInfo() << "ошибочка вышла..";
-            emit SignInFailed("Не удалось получить данные о проекте.");
+            emit RequestFailed("Не удалось получить данные о проекте.");
         }
 
         emit ProjectsLoaded(status, projects);
@@ -534,7 +534,7 @@ void Backend::OnResponse(QNetworkReply* reply) {
             GetProjects();
         } else {
             qInfo() << "ошибочка вышла..";
-            emit SignInFailed("Не удалось сохранить изменения.");
+            emit RequestFailed("Не удалось сохранить изменения.");
         }
 
         emit ProjectEdited(status);
@@ -557,7 +557,7 @@ void Backend::OnResponse(QNetworkReply* reply) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
         } else {
             qInfo() << "ошибочка вышла..";
-            //emit SignInFailed("Неправильный логин или пароль!");
+            emit RequestFailed("Неправильный логин или пароль!");
         }
         if (request.toStdString().find("to_check") == std::string::npos) {
             emit SignedIn(status, user);
@@ -575,7 +575,7 @@ void Backend::OnResponse(QNetworkReply* reply) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
         } else {
             qInfo() << "ошибочка вышла..";
-            emit SignInFailed("Вы не заполнили все обязательные поля!");
+            emit RequestFailed("Вы не заполнили все обязательные поля!");
         }
 
         emit SignedUp(status, user);
@@ -585,7 +585,7 @@ void Backend::OnResponse(QNetworkReply* reply) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
         } else {
             qInfo() << "ошибочка вышла..";
-            emit SignInFailed("Не удалось получить url аккаунта.");
+            emit RequestFailed("Не удалось получить url аккаунта.");
         }
 
         emit ProfileUpdated(status, user);

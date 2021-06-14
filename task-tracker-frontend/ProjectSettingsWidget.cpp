@@ -70,7 +70,7 @@ void ProjectSettingsWidget::OnRoleCreateClicked() {
 
 void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &roles) {
     if (!status.isSuccess) {
-        // TODO: Handle errors;
+        emit Backend::Instance.RequestFailed("Не удалось получить информацию о ролях!");
         return;
     }
 
@@ -95,7 +95,7 @@ void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &
 
 void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
     if (!status.isSuccess) {
-        // TODO: Handle errors
+        emit Backend::Instance.RequestFailed("Не удалось создать роль!");
         return;
     }
 
@@ -113,7 +113,7 @@ void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
 
 void ProjectSettingsWidget::OnRoleEdited(Status status, const RoleInfo &role) {
     if (!status.isSuccess) {
-        // TODO: Handle errors
+        emit Backend::Instance.RequestFailed("Не удалось обновить информацию о роли!");
         return;
     }
 
@@ -130,7 +130,7 @@ void ProjectSettingsWidget::OnRoleEdited(Status status, const RoleInfo &role) {
 
 void ProjectSettingsWidget::OnRoleDeleted(Status status) {
     if (!status.isSuccess) {
-        // TODO: Handle errors;
+        emit Backend::Instance.RequestFailed("Не удалось удалить роль!");
         return;
     }
 
@@ -143,7 +143,7 @@ void ProjectSettingsWidget::OnInviteClicked() {
 
 void ProjectSettingsWidget::OnMemberInvited(Status status){
     if (!status.isSuccess) {
-        // TODO: handle errors
+        emit Backend::Instance.RequestFailed("Не удалось пригласить пользователя!");
         return;
     }
 
@@ -152,7 +152,7 @@ void ProjectSettingsWidget::OnMemberInvited(Status status){
 
 void ProjectSettingsWidget::OnMemberKicked(Status status) {
     if (!status.isSuccess) {
-        // TODO: handle errors
+        emit Backend::Instance.RequestFailed("Не удалось исключить пользователя!");
         return;
     }
 
@@ -161,7 +161,7 @@ void ProjectSettingsWidget::OnMemberKicked(Status status) {
 
 void ProjectSettingsWidget::OnUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo> > &users) {
     if (!status.isSuccess) {
-        // TODO: Handle errors;
+        emit Backend::Instance.RequestFailed("Не удалось получить список пользователей!");
         return;
     }
 
@@ -183,7 +183,7 @@ void ProjectSettingsWidget::OnTagCreateClicked() {
 
 void ProjectSettingsWidget::OnTagsLoaded(Status status, const QList<TagInfo> &tags) {
     if (!status.isSuccess) {
-        // TODO: Handle errors
+        emit Backend::Instance.RequestFailed("Не удалось загрузить теги!");
         return;
     }
 
@@ -201,7 +201,7 @@ void ProjectSettingsWidget::OnTagsLoaded(Status status, const QList<TagInfo> &ta
 
 void ProjectSettingsWidget::OnTagDeleted(Status status) {
     if (!status.isSuccess) {
-        // TODO: handle errors
+        emit Backend::Instance.RequestFailed("Не удалось удалить тег!");
         return;
     }
     Backend::Instance.GetTagCaptions(myContext.GetCurrentProject());
@@ -209,7 +209,7 @@ void ProjectSettingsWidget::OnTagDeleted(Status status) {
 
 void ProjectSettingsWidget::OnTagCreated(Status status, const TagInfo &tag){
     if (!status.isSuccess) {
-        // TODO: handle errors
+        emit Backend::Instance.RequestFailed("Не удалось создать тег!");
         return;
     }
 
@@ -223,7 +223,7 @@ void ProjectSettingsWidget::OnTagCreated(Status status, const TagInfo &tag){
 
 void ProjectSettingsWidget::OnTagEdited(Status status, const TagInfo &tag) {
     if (!status.isSuccess) {
-        // TODO: Handle errors;
+        emit Backend::Instance.RequestFailed("Не удалось обновить информацию о теге!");
         return;
     }
 
