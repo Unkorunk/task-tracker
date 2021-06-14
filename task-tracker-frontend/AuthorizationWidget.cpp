@@ -33,7 +33,7 @@ void AuthorizationWidget::OnMoveToSignUpBtnClicked() {
     ui->passwordField->setText("");
 }
 
-void AuthorizationWidget::OnLogin(Status status)
+void AuthorizationWidget::OnLogin(Status status, const UserInfo& user)
 {
     ui->usernameField->setReadOnly(false);
     ui->passwordField->setReadOnly(false);
@@ -41,7 +41,7 @@ void AuthorizationWidget::OnLogin(Status status)
     ui->loadingBar->StopLoading();
 
     if (status.isSuccess) {
-        emit LoggedIn();
+        emit LoggedIn(user);
         ui->usernameField->setText("");
         ui->passwordField->setText("");
         return;

@@ -2,13 +2,14 @@
 #define PROJECTSETTINGSWIDGET_H
 
 #include <QWidget>
+#include "AbstractPage.h"
 #include "Backend.h"
 
 namespace Ui {
 class ProjectSettingsWidget;
 }
 
-class ProjectSettingsWidget : public QWidget
+class ProjectSettingsWidget : public AbstractPage
 {
     Q_OBJECT
 
@@ -31,11 +32,19 @@ private slots:
     void OnMemberKicked(Status status);
 
     void OnUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>>& users);
+
+    void OnTagCreateClicked();
+
+    void OnTagsLoaded(Status status, const QList<TagInfo>& tags);
+    void OnTagDeleted(Status status);
+    void OnTagCreated(Status status, const TagInfo& tag);
+    void OnTagEdited(Status status, const TagInfo& tag);
 public:
     explicit ProjectSettingsWidget(QWidget *parent = nullptr);
     ~ProjectSettingsWidget();
 
-    void SetupProject(const ProjectInfo& project);
+protected:
+    void SetupPage() override;
 
 private:
     void ToEditMode();

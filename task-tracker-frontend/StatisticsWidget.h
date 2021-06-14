@@ -2,13 +2,14 @@
 #define STATISTICSWIDGET_H
 
 #include <QWidget>
+#include "AbstractPage.h"
 #include "Backend.h"
 
 namespace Ui {
 class StatisticsWidget;
 }
 
-class StatisticsWidget : public QWidget
+class StatisticsWidget : public AbstractPage
 {
     Q_OBJECT
 
@@ -16,7 +17,9 @@ public:
     explicit StatisticsWidget(QWidget *parent = nullptr);
     ~StatisticsWidget();
 
-    void SetupProject(const ProjectInfo& project);
+protected:
+    void SetupPage() override;
+
 private:
     Ui::StatisticsWidget *ui;
 };

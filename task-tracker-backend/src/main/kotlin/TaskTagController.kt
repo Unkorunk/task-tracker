@@ -10,6 +10,7 @@ import java.util.*
 @RequestMapping(path = ["/taskTag"])
 class TaskTagController {
     data class CreateResult(val status: Boolean, val taskTag: TaskTag? = null)
+    data class EditResult(val status: Boolean, val taskTag: TaskTag? = null)
     data class DeleteResult(val status: Boolean)
 
     @Autowired
@@ -67,6 +68,48 @@ class TaskTagController {
         }
 
         return CreateResult(true, taskTag)
+    }
+
+    @PostMapping(path = ["/edit"])
+    @ResponseBody
+    fun edit(
+        @RequestParam(value = "access_token") accessToken: String,
+        @RequestParam(value = "task_tag_id") taskTagId: Int,
+        @RequestParam(value = "tag_value_id") tagValueId: Int
+    ): EditResult {
+        val sender = userRepository.findByAccessToken(accessToken) ?: return EditResult(false)
+        if (sender.validUntil < Date()) {
+            return EditResult(false)
+        }
+
+        val taskTagOptional = taskTagRepository.findById(taskTagId)
+        if (taskTagOptional.isEmpty) {
+            return EditResult(false)
+        }
+        val taskTag = taskTagOptional.get()
+
+        val senderRole = sender.projects.find {
+            it.project.id == taskTag.tagValue.tagCaption.project.id
+        }?.role ?: return EditResult(false)
+        val ownTask = senderRole.checkPermission(Permission.MANAGE_OWN_TASK) && taskTag.task.createdBy?.id == sender.id
+        if (!ownTask && !senderRole.checkPermission(Permission.MANAGE_ALL_TASKS)) {
+            return EditResult(false)
+        }
+
+        val tagValueOptional = tagValueRepository.findById(tagValueId)
+        if (tagValueOptional.isEmpty) {
+            return EditResult(false)
+        }
+        val tagValue = tagValueOptional.get()
+
+        taskTag.tagValue = tagValue
+
+        try {
+            taskTagRepository.save(taskTag)
+        } catch (ex: Exception) {
+            return EditResult(false)
+        }
+        return EditResult(true, taskTag)
     }
 
     @GetMapping(path = ["/delete"])

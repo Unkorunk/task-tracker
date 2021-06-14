@@ -1,0 +1,1076 @@
+[1mdiff --cc task-tracker-frontend/AuthorizationWindow.cpp[m
+[1mindex 42a295f,7053424..0000000[m
+[1m--- a/task-tracker-frontend/AuthorizationWindow.cpp[m
+[1m+++ b/task-tracker-frontend/AuthorizationWindow.cpp[m
+[36m@@@ -29,6 -31,10 +31,11 @@@[m [mvoid AuthorizationWindow::OnSwitchingWi[m
+      mWindow.show();[m
+      this->close();[m
+  [m
+[31m-     Backend::Instance.GetProfile();[m
+[32m+     Context context;[m
+[32m+     context.SetUser(user);[m
+[32m+     mWindow.OnTransition(MainWindow::Transition::Greetings, context);[m
+[32m+ [m
+[32m+     Backend::Instance.UpdateProfile();[m
+[32m++[m
+      Backend::Instance.GetProjects();[m
+  }[m
+[1mdiff --cc task-tracker-frontend/Backend.cpp[m
+[1mindex e4278c4,3b838cf..0000000[m
+[1m--- a/task-tracker-frontend/Backend.cpp[m
+[1m+++ b/task-tracker-frontend/Backend.cpp[m
+[36m@@@ -71,10 -70,87 +74,92 @@@[m [mQString Backend::DeleteTaskUrl() [m
+      return BaseUrl + "/task/delete";[m
+  }[m
+  [m
+[32m++[m
+[32m +QString Backend::DeleteUserUrl() {[m
+[32m +    return BaseUrl + "/user/delete";[m
+[32m +}[m
+[32m +[m
+[32m+ QString Backend::GetRolesUrl() {[m
+[32m+     return BaseUrl + "/role/all";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::CreateRoleUrl() {[m
+[32m+     return BaseUrl + "/role/create";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::EditRoleUrl() {[m
+[32m+     return BaseUrl + "/role/edit";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::DeleteRoleUrl() {[m
+[32m+     return BaseUrl + "/role/delete";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::InviteByEmailUrl() {[m
+[32m+     return BaseUrl + "/projectUserRole/createByEmail";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::KickUrl() {[m
+[32m+     return BaseUrl + "/projectUserRole/deleteById";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::ChangeRoleUrl() {[m
+[32m+     return BaseUrl + "/projectUserRole/edit";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::CreateCommentUrl() {[m
+[32m+     return BaseUrl + "/comment/create";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::DeleteCommentUrl() {[m
+[32m+     return BaseUrl + "/comment/delete";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::EditCommentUrl() {[m
+[32m+     return BaseUrl + "/comment/edit";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::GetCommentsUrl() {[m
+[32m+     // TODO: change to actual[m
+[32m+     return BaseUrl + "/comment/all";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::CreateTagCaptionUrl() {[m
+[32m+     return BaseUrl + "/tagCaption/create";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::DeleteTagCaptionUrl() {[m
+[32m+     return BaseUrl + "/tagCaption/delete";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::EditTagCaptionUrl() {[m
+[32m+     return BaseUrl + "/tagCaption/edit";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::GetTagCaptionUrl() {[m
+[32m+     return BaseUrl + "/tagCaption/all";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::CreateTagValueUrl() {[m
+[32m+     return BaseUrl + "/tagValue/create";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::DeleteTagValueUrl() {[m
+[32m+     return BaseUrl + "/tagValue/delete";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::EditTagValueUrl() {[m
+[32m+     return BaseUrl + "/tagValue/edit";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::AddTagUrl() {[m
+[32m+     return BaseUrl + "/taskTag/create";[m
+[32m+ }[m
+[32m+ [m
+[32m+ QString Backend::RemoveTagUrl() {[m
+[32m+     return BaseUrl + "/taskTag/delete";[m
+[32m+ }[m
+[32m+ [m
+  QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {[m
+      QNetworkReply::NetworkError error = reply->error();[m
+  [m
+[36m@@@ -208,51 -285,174 +302,203 @@@[m [mvoid Backend::EditTask(const TaskInfo &[m
+      PostRequest(EditTaskUrl(), query);[m
+  }[m
+  [m
+[31m- UserInfo Backend::GetProfile()[m
+[32m++void Backend::UpdateUser(const UserInfo& user)[m
+[32m +{[m
+[31m-     GetRequest(GetAccountUrl(), QMap<QString, QString> {[m
+[31m-                        { "access_token", myToken }[m
+[31m-                    });[m
+[31m-     return myUserInfo;[m
+[31m- }[m
+[31m- [m
+[31m- void Backend::UpdateProfile(const UserInfo& user)[m
+[31m- {[m
+[31m- //    GetRequest(GetAccountUrl(), QMap<QString, QString> {[m
+[31m- //                   { "access_token", myToken }[m
+[31m- //               });[m
+[32m +    QMap<QString, QString> query {[m
+[32m +        { "access_token", myToken },[m
+[32m +        { "full_name", QString("%1").arg(user.GetFullName()) },[m
+[32m +        { "email", user.GetEmail() }[m
+[32m +    };[m
+[32m +[m
+[32m +    PostRequest(EditAccountUrl(), query);[m
+[32m +}[m
+[32m +[m
+[32m +void Backend::DeleteUser(const UserInfo& user)[m
+[32m +{[m
+[32m +    GetRequest(DeleteUserUrl(), QMap<QString, QString> {[m
+[32m +                   { "access_token", myToken }[m
+[32m +               });[m
+[32m +}[m
+[32m +[m
+[32m+ void Backend::UpdateProfile() {[m
+[32m+     GetRequest(GetAccountUrl(), QMap<QString, QString> {[m
+[32m++[m
+[32m+                    { "access_token", myToken }[m
+[32m+                });[m
+[32m+ }[m
+[32m+ [m
+[32m +void Backend::ResetPassword(const QString& new_password)[m
+[32m +{[m
+[32m +    QMap<QString, QString> query {[m
+[32m +        { "access_token", myToken },[m
+[32m +        { "password", new_password }[m
+[32m +    };[m
+[32m +[m
+[32m +    PostRequest(EditAccountUrl(), query);[m
+[32m +}[m
+[32m +[m
+[31m- void Backend::OnResponse(QNetworkReply* reply)[m
+[31m- {[m
+[32m+ void Backend::GetRoles(const ProjectInfo &projectInfo) {[m
+[32m+     GetRequest(GetRolesUrl(), QMap<QString, QString> {[m
+[32m+                    { "access_token", myToken },[m
+[32m+                    { "project_id", QString("%1").arg(projectInfo.GetId()) }[m
+[32m+                });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::CreateRole(const RoleInfo &roleInfo) {[m
+[32m+     PostRequest(CreateRoleUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "project_id", QString("%1").arg(roleInfo.GetProjectId()) },[m
+[32m+                     { "value", roleInfo.GetCaption() },[m
+[32m+                     { "permissions", roleInfo.GetPermissionStr() }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::EditRole(const RoleInfo &roleInfo) {[m
+[32m+     PostRequest(EditRoleUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "role_id", QString("%1").arg(roleInfo.GetId()) },[m
+[32m+                     { "value", roleInfo.GetCaption() },[m
+[32m+                     { "permissions", roleInfo.GetPermissionStr() }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::DeleteRole(const RoleInfo &roleInfo) {[m
+[32m+     GetRequest(DeleteRoleUrl(), QMap<QString, QString> {[m
+[32m+                    { "access_token", myToken },[m
+[32m+                    { "role_id", QString("%1").arg(roleInfo.GetId()) }[m
+[32m+                });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::InviteByEmail(const ProjectInfo &project, const RoleInfo &role, const QString &email) {[m
+[32m+     PostRequest(InviteByEmailUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "email", email },[m
+[32m+                     { "project_id", QString("%1").arg(project.GetId()) },[m
+[32m+                     { "role_id", QString("%1").arg(role.GetId()) }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::Kick(const ProjectInfo &project, const UserInfo &user) {[m
+[32m+     GetRequest(KickUrl(), QMap<QString, QString> {[m
+[32m+                    { "access_token", myToken },[m
+[32m+                    { "user_id", QString("%1").arg(user.GetId()) },[m
+[32m+                    { "project_id", QString("%1").arg(project.GetId()) }[m
+[32m+                });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::ChangeRole(const UserInfo &user, const RoleInfo &role) {[m
+[32m+     PostRequest(ChangeRoleUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "user_id", QString("%1").arg(user.GetId()) },[m
+[32m+                     { "role_id", QString("%1").arg(role.GetId()) }[m
+[32m+                 });[m
+[32m+ [m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::CreateComment(const TaskInfo& task, const CommentInfo &comment) {[m
+[32m+     PostRequest(CreateCommentUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "task_id", QString("%1").arg(task.GetId()) },[m
+[32m+                     { "text", comment.GetText() }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::DeleteComment(const CommentInfo &comment) {[m
+[32m+     GetRequest(DeleteCommentUrl(), QMap<QString, QString> {[m
+[32m+                    { "access_token", myToken },[m
+[32m+                    { "comment_id", QString("%1").arg(comment.GetId()) }[m
+[32m+                });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::EditComment(const CommentInfo &comment) {[m
+[32m+     PostRequest(EditCommentUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "comment_id", QString("%1").arg(comment.GetId()) },[m
+[32m+                     { "text", comment.GetText() }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::GetComments(const TaskInfo &task) {[m
+[32m+     GetRequest(GetCommentsUrl(), QMap<QString, QString> {[m
+[32m+                    { "access_token", myToken },[m
+[32m+                    { "task_id", QString("%1").arg(task.GetId())}[m
+[32m+                });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::CreateTagCaption(const ProjectInfo &project, const QString &tagCaption) {[m
+[32m+     PostRequest(CreateTagCaptionUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "project_id", QString("%1").arg(project.GetId()) },[m
+[32m+                     { "caption", tagCaption }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::DeleteTagCaption(const TagInfo &tag) {[m
+[32m+     GetRequest(DeleteTagCaptionUrl(), QMap<QString, QString> {[m
+[32m+                    { "access_token", myToken },[m
+[32m+                    { "tag_caption_id", QString("%1").arg(tag.GetId()) }[m
+[32m+                });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::EditTagCaption(const TagInfo &tag) {[m
+[32m+     PostRequest(EditTagCaptionUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "tag_caption_id", QString("%1").arg(tag.GetId()) },[m
+[32m+                     { "caption", tag.GetCaption() }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::GetTagCaptions(const ProjectInfo &project) {[m
+[32m+     GetRequest(GetTagCaptionUrl(), QMap<QString, QString> {[m
+[32m+                    { "access_token", myToken },[m
+[32m+                    { "project_id", QString("%1").arg(project.GetId()) }[m
+[32m+                });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::CreateTagValue(const TagInfo &tag, const QString &tagValue) {[m
+[32m+     PostRequest(CreateTagValueUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "tag_caption_id", QString("%1").arg(tag.GetId()) },[m
+[32m+                     { "value", tagValue }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::DeleteTagValue(const TagValue &tagValue) {[m
+[32m+     GetRequest(DeleteTagValueUrl(), QMap<QString, QString> {[m
+[32m+                    { "access_token", myToken },[m
+[32m+                    { "tag_value_id", QString("%1").arg(tagValue.GetId()) }[m
+[32m+                });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::EditTagValue(const TagValue &tagValue) {[m
+[32m+     PostRequest(EditTagValueUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "tag_value_id", QString("%1").arg(tagValue.GetId()) },[m
+[32m+                     { "value", tagValue.GetValue() }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::AddTag(const TaskInfo &task, const TagValue &tag) {[m
+[32m+     PostRequest(AddTagUrl(), QMap<QString, QString> {[m
+[32m+                     { "access_token", myToken },[m
+[32m+                     { "task_id", QString("%1").arg(task.GetId()) },[m
+[32m+                     { "tag_value_id", QString("%1").arg(tag.GetId()) }[m
+[32m+                 });[m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::RemoveTag(const TaskTag &taskTag) {[m
+[32m+     GetRequest(RemoveTagUrl(), QMap<QString, QString> {[m
+[32m+                    { "access_token", myToken },[m
+[32m+                    { "task_tag_id", QString("%1").arg(taskTag.GetId()) }[m
+[32m+                });[m
+[32m+ [m
+[32m+ }[m
+[32m+ [m
+[32m+ void Backend::OnResponse(QNetworkReply* reply) {[m
+      Status status;[m
+[32m+     myRequestCounting--;[m
+      QJsonObject root = GetRootFromReply(reply, status);[m
+  [m
+[31m- [m
+      qInfo() << status.isSuccess << " " << status.response;[m
+  [m
+      QString request = reply->request().url().toString();[m
+[36m@@@ -285,31 -484,41 +530,57 @@@[m
+          }[m
+  [m
+          emit ProjectEdited(status);[m
+[32m+     } else if (pattern == GetProjectUsersUrl()) {[m
+[32m+         QList<QPair<UserInfo, RoleInfo>> users;[m
+[32m+         if (status.isSuccess) {[m
+[32m+             for (QJsonValueRef it : root["users"].toArray()) {[m
+[32m+                 QJsonObject obj = it.toObject();[m
+[32m+                 UserInfo user = UserInfo::ParseFromJson(obj["user"].toObject());[m
+[32m+                 RoleInfo role = RoleInfo::ParseFromJson(obj["role"].toObject());[m
+[32m+                 users.push_back(QPair<UserInfo, RoleInfo>(user, role));[m
+[32m+             }[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit ProjectUsersLoaded(status, users);[m
+      } else if (pattern == SignInAccountUrl()) {[m
+[32m+         UserInfo user = Context::DEFAULT_USER;[m
+          if (status.isSuccess) {[m
+              myToken = root["accessToken"].toString();[m
+[31m-             myUserInfo = UserInfo::ParseFromJson(root["user"].toObject());[m
+[32m+             user = UserInfo::ParseFromJson(root["user"].toObject());[m
+          }[m
+[32m +        if (request.toStdString().find("to_check") == std::string::npos) {[m
+[31m-             emit SignedIn(status);[m
+[32m++            emit SignedIn(status, user);[m
+[32m +        }[m
+[32m +        else[m
+[32m +        {[m
+[32m +            emit Checked(status);[m
+[32m +        }[m
+[32m+ [m
+[31m -        emit SignedIn(status, user);[m
+[32m++        //emit SignedIn(status, user);[m
+      } else if (pattern == SignUpAccountUrl()) {[m
+[32m+         UserInfo user = Context::DEFAULT_USER;[m
+          if (status.isSuccess) {[m
+              myToken = root["accessToken"].toString();[m
+[31m-             myUserInfo = UserInfo::ParseFromJson(root["user"].toObject());[m
+[32m+             user = UserInfo::ParseFromJson(root["user"].toObject());[m
+          }[m
+  [m
+[31m-         emit SignedUp(status);[m
+[32m+         emit SignedUp(status, user);[m
+      } else if (pattern == GetAccountUrl()) {[m
+[32m+         UserInfo user = Context::DEFAULT_USER;[m
+          if (status.isSuccess) {[m
+[31m-             myUserInfo = UserInfo::ParseFromJson(root["user"].toObject());[m
+[32m+             user = UserInfo::ParseFromJson(root["user"].toObject());[m
+          }[m
+  [m
+[31m-         emit ProfileUpdated(status, myUserInfo);[m
+[32m+         emit ProfileUpdated(status, user);[m
+[32m++[m
+[32m++    } else if (pattern == EditAccountUrl()){[m
+[32m++        UserInfo user = Context::DEFAULT_USER;[m
+[32m++        if (status.isSuccess) {[m
+[32m++            user = UserInfo::ParseFromJson(root["user"].toObject());[m
+[32m++        }[m
+[32m++[m
+[32m++        emit ProfileUpdated(status, user);[m
+[32m++[m
+      } else if (pattern == GetTasksUrl()) {[m
+          QList<TaskInfo> tasks;[m
+          // TODO: process all information[m
+[36m@@@ -325,7 -536,121 +598,124 @@@[m
+          emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));[m
+      } else if (pattern == DeleteTaskUrl()) {[m
+          emit TaskDeleted(status);[m
+[32m +    } else if (pattern == DeleteUserUrl()){[m
+[32m++[m
+[32m+     } else if (pattern == GetRolesUrl()) {[m
+[32m+         QList<RoleInfo> roles;[m
+[32m+         if (status.isSuccess) {[m
+[32m+             for (QJsonValueRef it : root["roles"].toArray()) {[m
+[32m+                 roles.push_back(RoleInfo::ParseFromJson(it.toObject()));[m
+[32m+             }[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit RolesLoaded(status, roles);[m
+[32m+     } else if (pattern == CreateRoleUrl()) {[m
+[32m+         RoleInfo role(-1, "", 0, -1);[m
+[32m+         if (status.isSuccess) {[m
+[32m+             role = RoleInfo::ParseFromJson(root["role"].toObject());[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit RoleCreated(status, role);[m
+[32m+     } else if (pattern == EditRoleUrl()) {[m
+[32m+         RoleInfo role(-1, "", 0, -1);[m
+[32m+         if (status.isSuccess) {[m
+[32m+             role = RoleInfo::ParseFromJson(root["role"].toObject());[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit RoleEdited(status, role);[m
+[32m+     } else if (pattern == DeleteRoleUrl()) {[m
+[32m+         emit RoleDeleted(status);[m
+[32m+     } else if (pattern == InviteByEmailUrl()) {[m
+[32m+         emit MemberInvited(status);[m
+[32m+     } else if (pattern == KickUrl()) {[m
+[32m+         emit MemberKicked(status);[m
+[32m+     } else if (pattern == ChangeRoleUrl()) {[m
+[32m+         emit RoleChanged(status);[m
+[32m+     } else if (pattern == CreateCommentUrl()) {[m
+[32m+         CommentInfo comment(-1, std::optional<UserInfo>(), QDateTime(), "");[m
+[32m+         if (status.isSuccess) {[m
+[32m+             comment = CommentInfo::ParseFromJson(root["comment"].toObject());[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit CommentCreated(status, comment);[m
+[32m+     } else if (pattern == DeleteCommentUrl()) {[m
+[32m+         emit CommentDeleted(status);[m
+[32m+     } else if (pattern == EditCommentUrl()) {[m
+[32m+         CommentInfo comment(-1, std::optional<UserInfo>(), QDateTime(), "");[m
+[32m+         if (status.isSuccess) {[m
+[32m+             comment = CommentInfo::ParseFromJson(root["comment"].toObject());[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit CommentEdited(status, comment);[m
+[32m+     } else if (pattern == GetCommentsUrl()) {[m
+[32m+         QList<CommentInfo> comments;[m
+[32m+ [m
+[32m+         if (status.isSuccess) {[m
+[32m+             for (QJsonValueRef obj : root["comments"].toArray()) {[m
+[32m+                 comments.push_back(CommentInfo::ParseFromJson(obj.toObject()));[m
+[32m+             }[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit CommentsLoaded(status, comments);[m
+[32m+     } else if (pattern == CreateTagCaptionUrl()) {[m
+[32m+         TagInfo tag(-1, -1, "", QList<TagValue>());[m
+[32m+         if (status.isSuccess) {[m
+[32m+             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());[m
+[32m+         }[m
+[32m+         emit TagCaptionCreated(status, tag);[m
+[32m+     } else if (pattern == DeleteTagCaptionUrl()) {[m
+[32m+         emit TagCaptionDeleted(status);[m
+[32m+     } else if (pattern == EditTagCaptionUrl()) {[m
+[32m+         TagInfo tag(-1, -1, "", QList<TagValue>());[m
+[32m+         if (status.isSuccess) {[m
+[32m+             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());[m
+[32m+         }[m
+[32m+         emit TagCaptionEdited(status, tag);[m
+[32m+     } else if (pattern == GetTagCaptionUrl()) {[m
+[32m+         QList<TagInfo> tags;[m
+[32m+         if (status.isSuccess) {[m
+[32m+             for (QJsonValueRef obj : root["tagCaptions"].toArray()) {[m
+[32m+                 tags.push_back(TagInfo::ParseFromJson(obj.toObject()));[m
+[32m+             }[m
+[32m+         }[m
+[32m+         emit TagCaptionsLoaded(status, tags);[m
+[32m+     } else if (pattern == CreateTagValueUrl()) {[m
+[32m+         TagInfo tag(-1, -1, "", QList<TagValue>());[m
+[32m+         TagValue tagValue(-1, "");[m
+[32m+         if (status.isSuccess) {[m
+[32m+             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());[m
+[32m+             tagValue = TagValue::ParseFromJson(root["tagValue"].toObject());[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit TagCaptionEdited(status, tag);[m
+[32m+     } else if (pattern == DeleteTagValueUrl()) {[m
+[32m+         TagInfo tag(-1, -1, "", QList<TagValue>());[m
+[32m+         if (status.isSuccess) {[m
+[32m+             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit TagCaptionEdited(status, tag);[m
+[32m+     } else if (pattern == EditTagCaptionUrl()) {[m
+[32m+         TagInfo tag(-1, -1, "", QList<TagValue>());[m
+[32m+         TagValue tagValue(-1, "");[m
+[32m+         if (status.isSuccess) {[m
+[32m+             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());[m
+[32m+             tagValue = TagValue::ParseFromJson(root["tagValue"].toObject());[m
+[32m+         }[m
+[32m+ [m
+[32m+         emit TagCaptionEdited(status, tag);[m
+[32m+     } else if (pattern == AddTagUrl()) {[m
+[32m+         TaskTag taskTag(-1, TagValue(-1, ""));[m
+[32m+         if (status.isSuccess) {[m
+[32m+             taskTag = TaskTag::ParseFromJson(root["taskTag"].toObject());[m
+[32m+         }[m
+[32m+         emit TagAdded(status, taskTag);[m
+[32m+     } else if (pattern == RemoveTagUrl()) {[m
+[32m+         emit TagRemoved(status);[m
+[32m+     }[m
+[32m+ [m
+[32m+     if (myRequestCounting == 0) {[m
+[32m+         emit LoadingChanged(false);[m
+      }[m
+[32m +[m
+  }[m
+[1mdiff --cc task-tracker-frontend/Backend.h[m
+[1mindex 29b3624,be1188e..0000000[m
+[1m--- a/task-tracker-frontend/Backend.h[m
+[1m+++ b/task-tracker-frontend/Backend.h[m
+[36m@@@ -31,48 -29,86 +32,96 @@@[m [mpublic[m
+      void SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password);[m
+  [m
+      void GetProjects();[m
+[31m- [m
+      void CreateProject(const QString& projectName);[m
+[31m- [m
+      void EditProject(const ProjectInfo& projectInfo);[m
+[32m+     void GetProjectUsers(const ProjectInfo& projectInfo);[m
+  [m
+      void GetTasks(const ProjectInfo& projectInfo);[m
+[31m- [m
+      void CreateTask(const TaskInfo& taskInfo);[m
+[31m- [m
+      void DeleteTask(const TaskInfo& taskInfo);[m
+[31m- [m
+      void EditTask(const TaskInfo& taskInfo);[m
+  [m
+[31m-     UserInfo GetProfile();[m
+[32m +[m
+[32m +    void UpdateProfile(const UserInfo& user);[m
+[32m +[m
+[32m +    void ResetPassword(const QString& new_password);[m
+[32m +[m
+[32m +    void DeleteUser(const UserInfo& user);[m
+[32m++    void UpdateUser(const UserInfo& user);[m
+[32m +[m
+[31m- signals:[m
+[31m-     void SignedIn(Status status);[m
+[32m+     void UpdateProfile();[m
+  [m
+[31m-     void Checked(Status status);[m
+[32m+     void GetRoles(const ProjectInfo& projectInfo);[m
+[32m+     void CreateRole(const RoleInfo& roleInfo);[m
+[32m+     void EditRole(const RoleInfo& roleInfo);[m
+[32m+     void DeleteRole(const RoleInfo& roleInfo);[m
+  [m
+[31m-     void SignedUp(Status status);[m
+[32m+     void InviteByEmail(const ProjectInfo& project, const RoleInfo& role, const QString& email);[m
+[32m+     void Kick(const ProjectInfo& project, const UserInfo& user);[m
+[32m+     void ChangeRole(const UserInfo& user, const RoleInfo& role);[m
+  [m
+[31m-     void ProjectsLoaded(Status status, const QList<ProjectInfo>& projects);[m
+[32m+     void CreateComment(const TaskInfo& task, const CommentInfo& comment);[m
+[32m+     void DeleteComment(const CommentInfo& comment);[m
+[32m+     void EditComment(const CommentInfo& comment);[m
+[32m+     void GetComments(const TaskInfo& task);[m
+  [m
+[31m-     void ProjectCreated(Status status);   [m
+[32m+     void CreateTagCaption(const ProjectInfo& project, const QString& tagCaption);[m
+[32m+     void DeleteTagCaption(const TagInfo& tag);[m
+[32m+     void EditTagCaption(const TagInfo& tag);[m
+[32m+     void GetTagCaptions(const ProjectInfo& project);[m
+[32m+ [m
+[32m+     void CreateTagValue(const TagInfo& tag, const QString& tagValue);[m
+[32m+     void DeleteTagValue(const TagValue& tagValue);[m
+[32m+     void EditTagValue(const TagValue& tagValue);[m
+  [m
+[32m+     void AddTag(const TaskInfo& task, const TagValue& tag);[m
+[32m+     void RemoveTag(const TaskTag& taskTag);[m
+[32m+ [m
+[32m+ signals:[m
+[32m+     void LoadingChanged(bool isLoading);[m
+[32m+ [m
+[32m+     void SignedIn(Status status, const UserInfo& user);[m
+[32m+     void SignedUp(Status status, const UserInfo& user);[m
+[32m+ [m
+[32m++    void Checked(Status status);[m
+[32m++[m
+[32m+     void ProjectsLoaded(Status status, const QList<QPair<ProjectInfo, RoleInfo>>& projects);[m
+[32m+     void ProjectCreated(Status status);   [m
+      void ProjectEdited(Status status);[m
+[32m+     void ProjectUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>>& users);[m
+  [m
+[31m-     void ProfileUpdated(Status status, UserInfo user);[m
+[32m+     void ProfileUpdated(Status status, const UserInfo& user);[m
+  [m
+      void TasksLoaded(Status status, const QList<TaskInfo>& tasks);[m
+[31m- [m
+      void TaskEdited(Status status, const TaskInfo& task);[m
+[31m- [m
+      void TaskDeleted(Status status);[m
+  [m
+[32m+     void RolesLoaded(Status status, const QList<RoleInfo>& roles);[m
+[32m+     void RoleCreated(Status statsu, const RoleInfo& role);[m
+[32m+     void RoleEdited(Status statsu, const RoleInfo& role);[m
+[32m+     void RoleDeleted(Status status);[m
+[32m+ [m
+[32m+     void MemberInvited(Status status);[m
+[32m+     void MemberKicked(Status status);[m
+[32m+     void RoleChanged(Status status);[m
+[32m+ [m
+[32m+     void CommentCreated(Status status, const CommentInfo& comment);[m
+[32m+     void CommentDeleted(Status status);[m
+[32m+     void CommentEdited(Status status, const CommentInfo& comment);[m
+[32m+     void CommentsLoaded(Status status, const QList<CommentInfo>& comments);[m
+[32m+ [m
+[32m+     void TagCaptionCreated(Status status, const TagInfo& tag);[m
+[32m+     void TagCaptionDeleted(Status status);[m
+[32m+     void TagCaptionEdited(Status status, const TagInfo& tag);[m
+[32m+     void TagCaptionsLoaded(Status status, const QList<TagInfo>& tags);[m
+[32m+ [m
+[32m+     void TagValueCreated(Status status, const TagValue& tagValue, const TagInfo& tagCaption);[m
+[32m+     void TagValueDeleted(Status status, const TagInfo& tagCaption);[m
+[32m+     void TagValueEdited(Status status, const TagInfo& tagCaption);[m
+[32m+ [m
+[32m+     void TagAdded(Status status, const TaskTag& tagTask);[m
+[32m+     void TagRemoved(Status status);[m
+[32m+ [m
+  private slots:[m
+      void OnResponse(QNetworkReply* reply);[m
+  [m
+[36m@@@ -94,8 -132,33 +146,34 @@@[m [mprivate[m
+      QString CreateTaskUrl();[m
+      QString EditTaskUrl();[m
+      QString DeleteTaskUrl();[m
+[32m +    QString DeleteUserUrl();[m
+  [m
+[32m+     QString GetRolesUrl();[m
+[32m+     QString CreateRoleUrl();[m
+[32m+     QString EditRoleUrl();[m
+[32m+     QString DeleteRoleUrl();[m
+[32m+ [m
+[32m+     QString InviteByEmailUrl();[m
+[32m+     QString KickUrl();[m
+[32m+     QString ChangeRoleUrl();[m
+[32m+ [m
+[32m+     QString CreateCommentUrl();[m
+[32m+     QString DeleteCommentUrl();[m
+[32m+     QString EditCommentUrl();[m
+[32m+     QString GetCommentsUrl();[m
+[32m+ [m
+[32m+     QString CreateTagCaptionUrl();[m
+[32m+     QString DeleteTagCaptionUrl();[m
+[32m+     QString EditTagCaptionUrl();[m
+[32m+     QString GetTagCaptionUrl();[m
+[32m+ [m
+[32m+     QString CreateTagValueUrl();[m
+[32m+     QString DeleteTagValueUrl();[m
+[32m+     QString EditTagValueUrl();[m
+[32m+ [m
+[32m+     QString AddTagUrl();[m
+[32m+     QString RemoveTagUrl();[m
+[32m+ [m
+      QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);[m
+  [m
+      void PostRequest(const QString& urlString, const QMap<QString, QString>& args);[m
+[1mdiff --cc task-tracker-frontend/GreetingsWidget.cpp[m
+[1mindex 27e91cb,11ced63..0000000[m
+[1m--- a/task-tracker-frontend/GreetingsWidget.cpp[m
+[1m+++ b/task-tracker-frontend/GreetingsWidget.cpp[m
+[36m@@@ -38,7 -45,9 +45,7 @@@[m [mvoid GreetingsWidget::OnProjectAdd(cons[m
+      Backend::Instance.CreateProject(name);[m
+  }[m
+  [m
+[31m- void GreetingsWidget::OnProfileUpdate(Status status, UserInfo user)[m
+[31m- {[m
+[31m-     ui->greetingsLabel->setText("Greetings, " + user.GetFullName() + "!");[m
+[31m -[m
+[31m -[m
+[32m+ void GreetingsWidget::OnProfileUpdate(Status status, const UserInfo& user) {[m
+[32m+     myContext.SetUser(user);[m
+[32m+     ui->greetingsLabel->setText("Welcome, " + user.GetFullName() + "!");[m
+  }[m
+[1mdiff --cc task-tracker-frontend/GreetingsWidget.h[m
+[1mindex 10dd835,56f012a..0000000[m
+[1m--- a/task-tracker-frontend/GreetingsWidget.h[m
+[1m+++ b/task-tracker-frontend/GreetingsWidget.h[m
+[1mdiff --cc task-tracker-frontend/MainWindow.cpp[m
+[1mindex c2220d5,3055c04..0000000[m
+[1m--- a/task-tracker-frontend/MainWindow.cpp[m
+[1m+++ b/task-tracker-frontend/MainWindow.cpp[m
+[36m@@@ -1,78 -1,34 +1,39 @@@[m
+  #include "MainWindow.h"[m
+  #include "./ui_MainWindow.h"[m
+  [m
+[31m- MainWindow* MainWindow::Instance = nullptr;[m
+[31m- [m
+  MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)[m
+[31m-     : QMainWindow(parent),[m
+[31m-       myAuthWindow(authWindow),[m
+[31m-       ui(new Ui::MainWindow)[m
+[31m- {[m
+[31m- [m
+[31m-     Instance = this;[m
+[32m+     : QMainWindow(parent), ui(new Ui::MainWindow), myAuthWindow(authWindow) {[m
+      ui->setupUi(this);[m
+  [m
+[31m-     connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnTransition);[m
+[31m-     connect(ui->navBar, &NavBar::ProfileButtonClicked, this, &MainWindow::OnProfileTransition);[m
+[31m-     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);[m
+[32m++    //connect(ui->navBar, &NavBar::ProfileButtonClicked, this, &MainWindow::OnProfileTransition);[m
+  [m
+[31m-     connect(ui->page_2, &ProfileWidget::Logout, this, &MainWindow::OnLogout);[m
+[32m+     ui->background->setStyleSheet("QWidget#background {background-color: rgb(232, 227, 227);border-radius: 20px;}");[m
+  [m
+[32m+     connect(ui->navBar, &NavBar::NavButtonClicked, this, &MainWindow::OnNavBarTransition);[m
+[32m+ [m
+[32m+     connect(ui->navBar, &NavBar::Logout, this, &MainWindow::OnLogout);[m
+      connect(ui->navBar, &NavBar::BackButtonClicked, this, &MainWindow::OnBackButtonClicked);[m
+[31m- }[m
+[32m++    connect(ui->profilePage, &ProfileWidget::Logout, this, &MainWindow::OnLogout);[m
+  [m
+[31m- MainWindow::~MainWindow()[m
+[31m- {[m
+[31m-     delete ui;[m
+[31m- }[m
+[32m+     connect(ui->greetingsPage, &GreetingsWidget::ProjectSelected, this, &MainWindow::OnTransition);[m
+[32m+     connect(ui->projectPage, &ProjectWidget::TransitionRequested, this, &MainWindow::OnTransition);[m
+[32m+     connect(ui->issuePage, &IssueWidget::TaskDeleted, this, &MainWindow::OnTransition);[m
+  [m
+[31m- void MainWindow::StartLoading()[m
+[31m- {[m
+[31m-     ui->loadingBar->StartLoading();[m
+[31m- }[m
+[32m+     connect(&Backend::Instance, &Backend::LoadingChanged, this, &MainWindow::OnLoadingChanged);[m
+  [m
+[31m- void MainWindow::StopLoading()[m
+[31m- {[m
+[31m-     ui->loadingBar->StopLoading();[m
+[31m- }[m
+[32m++    connect(&Backend::Instance, &Backend::ProfileUpdated, this, &MainWindow::OnProfileUpdated);[m
+[32m +[m
+[31m- void MainWindow::OnProjectTransition(const ProjectInfo &projectInfo)[m
+[31m- {[m
+[31m-     ProjectWidget* widget = dynamic_cast<ProjectWidget*>(ui->stackedWidget->widget(int(Transition::Project)));[m
+[31m-     widget->SetupProject(projectInfo);[m
+[31m-     OnTransition(Transition::Project);[m
+[32m+     ui->stackedWidget->setCurrentIndex(0);[m
+  }[m
+  [m
+[31m- void MainWindow::OnIssueTransition(const ProjectInfo& project, const TaskInfo &taskInfo)[m
+[31m- {[m
+[31m-     IssueWidget* widget = dynamic_cast<IssueWidget*>(ui->stackedWidget->widget(int(Transition::Issue)));[m
+[31m-     widget->SetupTask(project, taskInfo);[m
+[31m-     OnTransition(Transition::Issue);[m
+[31m- }[m
+[32m +[m
+[31m- void MainWindow::OnProfileTransition(const UserInfo& userInfo)[m
+[31m- {[m
+[31m-     ProfileWidget* widget = dynamic_cast<ProfileWidget*>(ui->stackedWidget->widget(int(Transition::Profile)));[m
+[31m-     widget->SetupProfile(userInfo);[m
+[31m-     OnTransition(Transition::Profile);[m
+[31m- }[m
+[31m- [m
+[31m- void MainWindow::OnProjectSettingsTransition(const ProjectInfo &projectInfo)[m
+[31m- {[m
+[31m-     ProjectSettingsWidget* widget = dynamic_cast<ProjectSettingsWidget*>(ui->stackedWidget->widget(int(Transition::ProjectSettings)));[m
+[31m-     widget->SetupProject(projectInfo);[m
+[31m-     OnTransition(Transition::ProjectSettings);[m
+[32m+ MainWindow::~MainWindow() {[m
+[32m+     delete ui;[m
+  }[m
+  [m
+[31m- void MainWindow::OnProjectStatisticsTransition(const ProjectInfo &projectInfo)[m
+[31m- {[m
+[31m-     StatisticsWidget* widget = dynamic_cast<StatisticsWidget*>(ui->stackedWidget->widget(int(Transition::ProjectSettings)));[m
+[31m-     widget->SetupProject(projectInfo);[m
+[31m-     OnTransition(Transition::ProjectSettings);[m
+[31m- }[m
+[32m+ void MainWindow::OnTransition(MainWindow::Transition transition, const Context& context) {[m
+[32m+     myContext = context;[m
+  [m
+[31m- void MainWindow::OnTransition(MainWindow::Transition transition)[m
+[31m- {[m
+      switch (transition) {[m
+      case Transition::Greetings:[m
+          Backend::Instance.GetProjects();[m
+[36m@@@ -101,3 -65,7 +70,11 @@@[m [mvoid MainWindow::OnLogout() [m
+      this->close();[m
+  }[m
+  [m
+[32m+ void MainWindow::OnNavBarTransition(MainWindow::Transition transition) {[m
+[32m+     OnTransition(transition, myContext);[m
+[32m+ }[m
+[32m+ [m
+[32m++void MainWindow::OnProfileUpdated(Status status, const UserInfo& user){[m
+[32m++    myContext.SetUser(user);[m
+[32m++}[m
+[32m++[m
+[1mdiff --cc task-tracker-frontend/ProfileWidget.cpp[m
+[1mindex 2f050f8,a37deba..0000000[m
+[1m--- a/task-tracker-frontend/ProfileWidget.cpp[m
+[1m+++ b/task-tracker-frontend/ProfileWidget.cpp[m
+[36m@@@ -1,138 -1,14 +1,148 @@@[m
+[32m +#include <QNetworkReply>[m
+[32m +#include <QMessageBox>[m
+  #include "ProfileWidget.h"[m
+  #include "ui_ProfileWidget.h"[m
+[32m +#include "Backend.h"[m
+[32m +#include "MainWindow.h"[m
+  [m
+  ProfileWidget::ProfileWidget(QWidget *parent) :[m
+[31m-     QWidget(parent),[m
+[31m-     ui(new Ui::ProfileWidget),[m
+[31m-     user_info(-1, "", "", "")[m
+[32m+     AbstractPage(parent),[m
+[31m -    ui(new Ui::ProfileWidget) {[m
+[32m++    ui(new Ui::ProfileWidget)[m
+[32m +{[m
+      ui->setupUi(this);[m
+[32m +[m
+[31m-     this->SetupProfile(user_info);[m
+[31m- [m
+[32m +    connect(ui->EditUserInfoBtn, SIGNAL(clicked()), this, SLOT(OnEditUserInfoBtnClicked()));[m
+[32m +    connect(ui->ResetPasswordBtn, SIGNAL(clicked()), this, SLOT(OnResetPasswordBtnClicked()));[m
+[32m +    connect(&Backend::Instance, &Backend::Checked, this, &ProfileWidget::OnCheck);[m
+[32m +    connect(ui->DeleteAccountBtn, SIGNAL(clicked()), this, SLOT(OnDeleteAccountBtnClicked()));[m
+  }[m
+  [m
+[31m- ProfileWidget::~ProfileWidget()[m
+[31m- {[m
+[32m+ ProfileWidget::~ProfileWidget() {[m
+      delete ui;[m
+  }[m
+  [m
+[31m -void ProfileWidget::SetupPage() { }[m
+[32m++[m
+[32m +void ProfileWidget::SetupProfile(const UserInfo& user)[m
+[32m +{[m
+[31m-     user_info = user;[m
+[32m +[m
+[32m +    // Is it correct to set ui parameters here?[m
+[31m-     this->ui->loginField->setText(user_info.GetUsername());[m
+[31m-     this->ui->fullNameField->setText(user_info.GetFullName());[m
+[31m-     this->ui->eMailField->setText(user_info.GetEmail());[m
+[32m++    this->ui->loginField->setText(user.GetUsername());[m
+[32m++    this->ui->fullNameField->setText(user.GetFullName());[m
+[32m++    this->ui->eMailField->setText(user.GetEmail());[m
+[32m +[m
+[31m-     std::string avatarUrl = "http://tinygraphs.com/squares/" + user_info.GetUsername().toStdString()[m
+[32m++    std::string avatarUrl = "http://tinygraphs.com/squares/" + user.GetUsername().toStdString()[m
+[32m +            +"?theme=frogideas&numcolors=4&size=50&fmt=svg";[m
+[32m +    LoadAvatar(avatarUrl);[m
+[32m +}[m
+[32m +[m
+[32m +void ProfileWidget::LoadAvatar(const std::string &strAvatarUrl)[m
+[32m +{[m
+[32m +    QUrl url(QString().fromStdString(strAvatarUrl));[m
+[32m +    QNetworkAccessManager manager;[m
+[32m +    QEventLoop loop;[m
+[32m +[m
+[32m +    QNetworkReply *reply = manager.get(QNetworkRequest(url));[m
+[32m +    QObject::connect(reply, &QNetworkReply::finished, &loop, [&reply, &loop, this](){[m
+[32m +     if (reply->error() == QNetworkReply::NoError)[m
+[32m +     {[m
+[32m +         QByteArray jpegData = reply->readAll();[m
+[32m +         QPixmap pixmap;[m
+[32m +         pixmap.loadFromData(jpegData);[m
+[32m +         if (!pixmap.isNull())[m
+[32m +         {[m
+[32m +             this->ui->imgLbl->clear();[m
+[32m +             this->ui->imgLbl->setPixmap(pixmap);[m
+[32m +         }[m
+[32m +     }[m
+[32m +     loop.quit();[m
+[32m +   });[m
+[32m +[m
+[32m +   loop.exec();[m
+[32m +}[m
+[32m +[m
+[32m +void ProfileWidget::OnEditUserInfoBtnClicked()[m
+[32m +{[m
+[32m +    if (this->ui->EditUserInfoBtn->text() == "Edit" &&[m
+[32m +            !this->ui->fullNameField->isEnabled() && !this->ui->eMailField->isEnabled())[m
+[32m +    {[m
+[32m +        this->ui->EditUserInfoBtn->setText("Submit changes");[m
+[32m +        this->ui->fullNameField->setEnabled(true);[m
+[32m +        this->ui->eMailField->setEnabled(true);[m
+[32m +    }[m
+[32m +    else[m
+[32m +    {[m
+[32m +        this->ui->EditUserInfoBtn->setText("Edit");[m
+[32m +        this->ui->fullNameField->setEnabled(false);[m
+[32m +        this->ui->eMailField->setEnabled(false);[m
+[32m +[m
+[31m-         user_info.SetEmail(this->ui->eMailField->text());[m
+[31m-         user_info.SetFullName(this->ui->fullNameField->text());[m
+[32m++        auto user = myContext.GetUser();[m
+[32m++        user.SetEmail(this->ui->eMailField->text());[m
+[32m++        user.SetFullName(this->ui->fullNameField->text());[m
+[32m++        myContext.SetUser(user);[m
+[32m++[m
+[32m++        auto deb = myContext.GetUser();[m
+[32m +[m
+[31m-         Backend::Instance.UpdateProfile(user_info);[m
+[32m++        Backend::Instance.UpdateUser(user);[m
+[32m++        //emit ProfileUpdate();[m
+[32m +    }[m
+[32m +}[m
+[32m +[m
+[32m +void ProfileWidget::OnResetPasswordBtnClicked()[m
+[32m +{[m
+[32m +    if (this->ui->newPasswordField->text() != this->ui->rptNewPasswordField->text())[m
+[32m +    {[m
+[32m +        return;[m
+[32m +    }[m
+[32m +[m
+[32m +    this->ui->currPasswordField->setEnabled(false);[m
+[32m +    this->ui->newPasswordField->setEnabled(false);[m
+[32m +    this->ui->rptNewPasswordField->setEnabled(false);[m
+[32m +[m
+[31m-     Backend::Instance.CheckPassword(user_info.GetUsername(), this->ui->currPasswordField->text());[m
+[32m++    Backend::Instance.CheckPassword(myContext.GetUser().GetUsername(), this->ui->currPasswordField->text());[m
+[32m +}[m
+[32m +[m
+[32m +void ProfileWidget::OnCheck(Status status)[m
+[32m +{[m
+[32m +    if (status.isSuccess)[m
+[32m +    {[m
+[32m +        Backend::Instance.ResetPassword(this->ui->newPasswordField->text());[m
+[32m +        this->ui->currPasswordField->clear();[m
+[32m +        this->ui->newPasswordField->clear();[m
+[32m +        this->ui->rptNewPasswordField->clear();[m
+[32m +    }[m
+[32m +    this->ui->currPasswordField->setEnabled(true);[m
+[warning: LF will be replaced by CRLF in task-tracker-frontend/task-tracker-frontend_ru_RU.ts.
+The file will have its original line endings in your working directory
+32m +    this->ui->newPasswordField->setEnabled(true);[m
+[32m +    this->ui->rptNewPasswordField->setEnabled(true);[m
+[32m +}[m
+[32m +[m
+[32m +void ProfileWidget::OnDeleteAccountBtnClicked()[m
+[32m +{[m
+[31m-     QMessageBox msgBox;[m
+[31m-     msgBox.setText("Deleting account");[m
+[31m-     msgBox.setInformativeText("Do you really want to delete this accoutn?");[m
+[31m-     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);[m
+[31m-     int ret = msgBox.exec();[m
+[32m++    QMessageBox mb("Task tracker",[m
+[32m++                               "Deleting account.\nDo you really want to delete this account?",[m
+[32m++                               QMessageBox::NoIcon,[m
+[32m++                               QMessageBox::No | QMessageBox::Yes | QMessageBox::Default,[m
+[32m++                               QMessageBox::NoButton,[m
+[32m++                               QMessageBox::NoButton);[m
+[32m++[m
+[32m++    QMessageBox tt("Task tracker", "Deleting account. \n\nDo you really want to delete this account?",[m
+[32m++                   QMessageBox::NoIcon, QMessageBox::No, QMessageBox::Yes, QMessageBox::NoButton);[m
+[32m++    int ret = tt.exec();[m
+[32m +[m
+[32m +    if (ret == QMessageBox::Yes)[m
+[32m +    {[m
+[31m-         Backend::Instance.DeleteUser(user_info);[m
+[32m++        Backend::Instance.DeleteUser(myContext.GetUser());[m
+[32m +        emit Logout();[m
+[32m +    }[m
+[32m +}[m
+[32m +[m
+[32m +//void ProfileWidget::OnUserDeleted(Status status)[m
+[32m +//{[m
+[32m +//    MainWindow::Instance->StopLoading();[m
+[32m +//    if (status.isSuccess) {[m
+[32m +//        MainWindow::Instance->OnTransition(MainWindow::Transition::Greetings);[m
+[32m +//    }[m
+[32m +//}[m
+[32m++[m
+[32m++void ProfileWidget::SetupPage() {[m
+[32m++    SetupProfile(myContext.GetUser());[m
+[32m++}[m
+[1mdiff --cc task-tracker-frontend/ProfileWidget.h[m
+[1mindex 70e97f4,95ba18c..0000000[m
+[1m--- a/task-tracker-frontend/ProfileWidget.h[m
+[1m+++ b/task-tracker-frontend/ProfileWidget.h[m
+[36m@@@ -1,9 -1,9 +1,11 @@@[m
+  #ifndef PROFILEWIDGET_H[m
+  #define PROFILEWIDGET_H[m
+  [m
+[32m+ #include "AbstractPage.h"[m
+[32m+ [m
+  #include <QWidget>[m
+[32m +#include "DataClasses.h"[m
+[32m +#include "Backend.h"[m
+  [m
+  namespace Ui {[m
+  class ProfileWidget;[m
+[36m@@@ -17,19 -16,8 +18,22 @@@[m [mpublic[m
+      explicit ProfileWidget(QWidget *parent = nullptr);[m
+      ~ProfileWidget();[m
+  [m
+[32m +    void SetupProfile(const UserInfo& user);[m
+[32m +[m
+[32m +    void LoadAvatar(const std::string &strAvatarUrl);[m
+[32m +[m
+[32m +signals:[m
+[32m +    void Logout();[m
+[32m++    //void ProfileUpdate();[m
+[32m +[m
+[32m +private slots:[m
+[32m +    void OnEditUserInfoBtnClicked();[m
+[32m +    void OnResetPasswordBtnClicked();[m
+[32m +    void OnCheck(Status status);[m
+[32m +    void OnDeleteAccountBtnClicked();[m
+[32m +    //void OnUserDeleted(Status status);[m
+[32m+ protected:[m
+[32m+     void SetupPage() override;[m
+  [m
+  private:[m
+      Ui::ProfileWidget *ui;[m
+[1mdiff --git a/task-tracker-frontend/MainWindow.h b/task-tracker-frontend/MainWindow.h[m
+[1mindex 9362850..3d13c97 100644[m
+[1m--- a/task-tracker-frontend/MainWindow.h[m
+[1m+++ b/task-tracker-frontend/MainWindow.h[m
+[36m@@ -29,8 +29,9 @@[m [mpublic:[m
+ public slots:[m
+     void OnTransition(MainWindow::Transition transition, const Context& context);[m
+ [m
+[32m+[m[32m    void OnProfileUpdated(Status status, const UserInfo& user);[m
+ [m
+[31m-    void OnProfileTransition(const UserInfo& userInfo);[m
+[32m+[m[32m    //void OnProfileTransition(const UserInfo& userInfo);[m
+ [m
+ private slots:[m
+     void OnLogout();[m
+[1mdiff --git a/task-tracker-frontend/MainWindow.ui b/task-tracker-frontend/MainWindow.ui[m
+[1mindex f97c930..2639eff 100644[m
+[1m--- a/task-tracker-frontend/MainWindow.ui[m
+[1m+++ b/task-tracker-frontend/MainWindow.ui[m
+[36m@@ -69,7 +69,7 @@[m [mmargin-right: 15px;[m
+ }</string>[m
+          </property>[m
+          <property name="currentIndex">[m
+[31m-          <number>4</number>[m
+[32m+[m[32m          <number>1</number>[m
+          </property>[m
+          <widget class="GreetingsWidget" name="greetingsPage">[m
+           <property name="sizePolicy">[m
+[36m@@ -79,7 +79,7 @@[m [mmargin-right: 15px;[m
+            </sizepolicy>[m
+           </property>[m
+          </widget>[m
+[31m-         <widget class="ProfileWidget" name="page_16"/>[m
+[32m+[m[32m         <widget class="ProfileWidget" name="profilePage"/>[m
+          <widget class="NotificationsWidget" name="page_17"/>[m
+          <widget class="ProjectWidget" name="projectPage"/>[m
+          <widget class="ProjectSettingsWidget" name="page_19"/>[m
+[1mdiff --git a/task-tracker-frontend/NavBar.cpp b/task-tracker-frontend/NavBar.cpp[m
+[1mindex 62799f1..d178ee7 100644[m
+[1m--- a/task-tracker-frontend/NavBar.cpp[m
+[1m+++ b/task-tracker-frontend/NavBar.cpp[m
+[36m@@ -30,8 +30,7 @@[m [mvoid NavBar::OnNotificationBtnClicked()[m
+ [m
+ void NavBar::OnProfileBtnClicked()[m
+ {[m
+[31m-    //emit NavButtonClicked(MainWindow::Transition::Profile);[m
+[31m-    emit ProfileButtonClicked(Backend::Instance.GetProfile());[m
+[32m+[m[32m    emit NavButtonClicked(MainWindow::Transition::Profile);[m
+ }[m
+ [m
+ void NavBar::OnLogoutBtnClicked()[m

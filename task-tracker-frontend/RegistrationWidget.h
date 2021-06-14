@@ -19,9 +19,9 @@ public:
 private slots:
     void OnSignUpBtnClicked();
     void OnMoveToLogInBtnClicked();
-    void OnSignup(Status status);
+    void OnSignup(Status status, const UserInfo& user);
 signals:
-    void SignedUp();
+    void SignedUp(const UserInfo& user);
     void SignupBtnClicked(AuthorizationWindow::Transition transition);
 
 private:

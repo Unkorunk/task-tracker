@@ -21,6 +21,9 @@ set(PROJECT_SOURCES_FRONTEND
   QtWaitingSpinner/waitingspinnerwidget.cpp
   QtWaitingSpinner/waitingspinnerwidget.h
 
+  task-tracker-frontend/AbstractPage.h
+  task-tracker-frontend/AbstractPage.cpp
+
   task-tracker-frontend/main.cpp
   task-tracker-frontend/MainWindow.cpp
   task-tracker-frontend/MainWindow.h
@@ -96,6 +99,8 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/LoadingBar.h
   task-tracker-frontend/LoadingBar.ui
 
+  icons.qrc
+
   task-tracker-frontend/LabelPropertyWidget.cpp
   task-tracker-frontend/LabelPropertyWidget.h
   task-tracker-frontend/LabelPropertyWidget.ui
@@ -119,6 +124,25 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/UserItemWidget.cpp
   task-tracker-frontend/UserItemWidget.h
   task-tracker-frontend/UserItemWidget.ui
+
+  task-tracker-frontend/CommentWidgetItem.cpp
+  task-tracker-frontend/CommentWidgetItem.h
+  task-tracker-frontend/CommentWidgetItem.ui
+
+  task-tracker-frontend/PropertyItemWidget.cpp
+  task-tracker-frontend/PropertyItemWidget.h
+  task-tracker-frontend/PropertyItemWidget.ui
+
+  task-tracker-frontend/PropertyValueItemWidget.cpp
+  task-tracker-frontend/PropertyValueItemWidget.h
+  task-tracker-frontend/PropertyValueItemWidget.ui
+
+  task-tracker-frontend/ValueSelectorWidget.cpp
+  task-tracker-frontend/ValueSelectorWidget.h
+  task-tracker-frontend/ValueSelectorWidget.ui
+
+  task-tracker-frontend/Context.cpp
+  task-tracker-frontend/Context.h
 
   ${TS_FILES_FRONTEND}
 )
