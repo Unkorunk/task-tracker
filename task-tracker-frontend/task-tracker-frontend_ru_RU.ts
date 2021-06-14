@@ -445,11 +445,6 @@ p, li { white-space: pre-wrap; }
         <source>Enter search request</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="ProjectWidget.ui" line="207"/>
-        <source>Search</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ProjectsList</name>

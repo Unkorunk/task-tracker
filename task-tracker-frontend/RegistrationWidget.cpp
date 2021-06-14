@@ -23,8 +23,32 @@ void RegistrationWidget::OnSignUpBtnClicked() {
     QString email = ui->emailField->text();
     QString password = ui->passwordField->text();
 
-    if (password != ui->repPasswordField->text() || password.length() < 6 || username.length() == 0 || email.length() == 0) {
-        // TODO: handle this
+    if (ui->fullNameField->text().isEmpty()){
+        emit Backend::Instance.RequestFailed("Не заполнено полное имя пользователя!");
+        return;
+    }
+    else if (ui->usernameField->text().isEmpty()){
+        emit Backend::Instance.RequestFailed("Не заполнен логин!");
+        return;
+    }
+    else if (ui->emailField->text().isEmpty()){
+        emit Backend::Instance.RequestFailed("Не указан адрес электронной почты!");
+        return;
+    }
+    else if (ui->passwordField->text().isEmpty()){
+        emit Backend::Instance.RequestFailed("Не заполнен пароль!");
+        return;
+    }
+    else if (ui->passwordField->text().length() < 6){
+        emit Backend::Instance.RequestFailed("Длина пароля должна быть не меньше 6 символов!");
+        return;
+    }
+    else if (ui->repPasswordField->text().isEmpty()){
+        emit Backend::Instance.RequestFailed("Не введён дубликат пароля!");
+        return;
+    }
+    else if (ui->passwordField->text() != ui->repPasswordField->text()){
+        emit Backend::Instance.RequestFailed("Повторно введённый пароль не совпадает с исходным.");
         return;
     }
 
@@ -34,7 +58,6 @@ void RegistrationWidget::OnSignUpBtnClicked() {
     ui->passwordField->setReadOnly(true);
     ui->repPasswordField->setReadOnly(true);
 
-    ui->loadingBar->StartLoading();
     Backend::Instance.SignUp(ui->fullNameField->text(), username, email, password);
 }
 
@@ -49,7 +72,6 @@ void RegistrationWidget::OnMoveToLogInBtnClicked() {
 
 void RegistrationWidget::OnSignup(Status status, const UserInfo& user)
 {
-    ui->loadingBar->StopLoading();
     ui->fullNameField->setReadOnly(false);
     ui->emailField->setReadOnly(false);
     ui->usernameField->setReadOnly(false);
@@ -66,7 +88,27 @@ void RegistrationWidget::OnSignup(Status status, const UserInfo& user)
         ui->repPasswordField->setText("");
 
         return;
+    } else{
+        if (ui->fullNameField->text().isEmpty()){
+            emit Backend::Instance.RequestFailed("Не заполнено полное имя пользователя!");
+        }
+        else if (ui->usernameField->text().isEmpty()){
+            emit Backend::Instance.RequestFailed("Не заполнен логин!");
+        }
+        else if (ui->emailField->text().isEmpty()){
+            emit Backend::Instance.RequestFailed("Не указан адрес электронной почты!");
+        }
+        else if (ui->passwordField->text().isEmpty()){
+            emit Backend::Instance.RequestFailed("Не заполнен пароль!");
+        }
+        else if (ui->passwordField->text().length() < 6){
+            emit Backend::Instance.RequestFailed("Длина пароля должна быть не меньше 6 символов!");
+        }
+        else if (ui->repPasswordField->text().isEmpty()){
+            emit Backend::Instance.RequestFailed("Не введён дубликат пароля!");
+        }
+        else if (ui->passwordField->text() != ui->repPasswordField->text()){
+            emit Backend::Instance.RequestFailed("Повторно введённый пароль не совпадает с исходным.");
+        }
     }
-
-    // TODO: handle this
 }

@@ -61,7 +61,7 @@ void ValueSelectorWidget::OnAddDeleteClicked() {
     }
 
     if (myTags.count() == 0 || myTags[ui->propertySelector->currentIndex()].GetValues().count() == 0) {
-        // TODO: handle this
+        emit Backend::Instance.RequestFailed("Список тегов уже пуст!");
         return;
     }
 
@@ -74,7 +74,7 @@ void ValueSelectorWidget::OnAddDeleteClicked() {
     }
 
     if (curProps.count(tagValue.FindProperty(myTags).GetId())) {
-        // TODO: handle this
+        emit Backend::Instance.RequestFailed("Данный тег не имеет свойств!");
         return;
     }
 

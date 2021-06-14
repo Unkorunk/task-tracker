@@ -80,6 +80,10 @@ public:
     void GetNotifications();
 
 signals:
+
+    //void SignedUp(Status status);
+    void RequestFailed(QString log);
+
     void LoadingChanged(bool isLoading);
 
     void SignedIn(Status status, const UserInfo& user);

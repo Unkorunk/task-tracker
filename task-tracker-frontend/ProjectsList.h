@@ -35,6 +35,8 @@ private slots:
 
     void OnProjectCreated(QString& projectName);
 
+    void IfTextChanged();
+
     void OnItemClicked(QListWidgetItem*);
 private:
     Ui::ProjectsList *ui;

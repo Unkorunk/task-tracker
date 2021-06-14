@@ -37,6 +37,8 @@ private slots:
     void OnProjectSettingsBtnClicked();
     void OnProjectStatisticsBtnClicked();
 
+    void IfTextChanged();
+
     void OnItemClicked(QListWidgetItem*);
 
     void OnTasksLoaded(Status status, const QList<TaskInfo>& tasks);
