@@ -23,6 +23,7 @@ LoadingBar::~LoadingBar()
 
 void LoadingBar::StartLoading()
 {
+    isError = false;
     ui->waitingSpinner->start();
     ui->label->setText("Waiting for response...");
     ui->label->show();
@@ -31,12 +32,14 @@ void LoadingBar::StartLoading()
 void LoadingBar::StopLoading()
 {
     ui->waitingSpinner->stop();
-    ui->label->hide();
+    if (!isError) {
+        ui->label->hide();
+    }
 }
 
 void LoadingBar::FailLoading(QString log)
 {
-    ui->waitingSpinner->stop();
+    isError = true;
     //я бы принимал сюда текст снаружи
     ui->label->setText(log);
     ui->label->show();

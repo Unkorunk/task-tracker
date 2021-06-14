@@ -24,6 +24,8 @@ public:
 
 private:
     Ui::LoadingBar *ui;
+
+    bool isError = false;
 };
 
 #endif // LOADINGBAR_H
