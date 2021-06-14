@@ -77,11 +77,11 @@ public:
     void AddTag(const TaskInfo& task, const TagValue& tag);
     void RemoveTag(const TaskTag& taskTag);
 
+    void GetUnreadNotifications();
     void GetNotifications();
+    void ClearRead();
 
 signals:
-
-    //void SignedUp(Status status);
     void RequestFailed(QString log);
 
     void LoadingChanged(bool isLoading);
@@ -128,6 +128,7 @@ signals:
     void TagAdded(Status status, const TaskTag& tagTask);
     void TagRemoved(Status status);
 
+    void UnreadLoaded(Status status, const QList<NotificationInfo>& notifications);
     void NotificationsLoaded(Status status, const QList<NotificationInfo>& notifications);
 
 private slots:
@@ -182,9 +183,11 @@ private:
     QString AddTagUrl();
     QString RemoveTagUrl();
 
-    QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
-
+    QString GetUnreadsUrl();
     QString GetNotificationsUrl();
+    QString ClearNotificationsUrl();
+
+    QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 
     void PostRequest(const QString& urlString, const QMap<QString, QString>& args);
     void GetRequest(const QString& urlString, const QMap<QString, QString>& args);

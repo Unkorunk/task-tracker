@@ -7,7 +7,7 @@ NotificationsWidget::NotificationsWidget(QWidget *parent) :
     ui(new Ui::NotificationsWidget) {
     ui->setupUi(this);
 
-    connect(&Backend::Instance, &Backend::NotificationsLoaded, this, &NotificationsWidget::OnNotifictaionsLoaded);
+    connect(&Backend::Instance, &Backend::UnreadLoaded, this, &NotificationsWidget::OnNotifictaionsLoaded);
 }
 
 NotificationsWidget::~NotificationsWidget() {
@@ -15,7 +15,7 @@ NotificationsWidget::~NotificationsWidget() {
 }
 
 void NotificationsWidget::SetupPage() {
-    Backend::Instance.GetNotifications();
+    Backend::Instance.GetUnreadNotifications();
 }
 
 void NotificationsWidget::OnNotifictaionsLoaded(Status status, const QList<NotificationInfo> &notifications) {

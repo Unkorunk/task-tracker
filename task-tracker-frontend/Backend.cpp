@@ -162,12 +162,34 @@ QString Backend::RemoveTagUrl() {
     return BaseUrl + "/taskTag/delete";
 }
 
-QString Backend::GetNotificationsUrl() {
+QString Backend::GetUnreadsUrl() {
     return BaseUrl + "/notification/unread";
+}
+
+QString Backend::GetNotificationsUrl() {
+    return BaseUrl + "/notification/all";
+}
+
+QString Backend::ClearNotificationsUrl()
+{
+    return BaseUrl + "/notification/clearRead";
+}
+
+void Backend::GetUnreadNotifications() {
+    GetRequest(GetUnreadsUrl(), QMap<QString, QString> {
+                   { "access_token", myToken }
+               });
 }
 
 void Backend::GetNotifications() {
     GetRequest(GetNotificationsUrl(), QMap<QString, QString> {
+                   { "access_token", myToken }
+               });
+}
+
+void Backend::ClearRead()
+{
+    GetRequest(ClearNotificationsUrl(), QMap<QString, QString> {
                    { "access_token", myToken }
                });
 }
@@ -815,6 +837,18 @@ void Backend::OnResponse(QNetworkReply* reply) {
             emit RequestFailed("Не удалось удалить тег!");
         }
         emit TagRemoved(status);
+    } else if (pattern == GetUnreadsUrl()) {
+        QList<NotificationInfo> notifications;
+
+        if (status.isSuccess) {
+            for (QJsonValueRef it : root["notifications"].toArray()) {
+                NotificationInfo notification = NotificationInfo::ParseFromJson(it.toObject());
+                notifications.push_back(notification);
+            }
+            ClearRead();
+        }
+
+        emit UnreadLoaded(status, notifications);
     } else if (pattern == GetNotificationsUrl()) {
         QList<NotificationInfo> notifications;
 
