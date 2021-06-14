@@ -47,7 +47,7 @@ void RegistrationWidget::OnMoveToLogInBtnClicked() {
     emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);
 }
 
-void RegistrationWidget::OnSignup(Status status)
+void RegistrationWidget::OnSignup(Status status, const UserInfo& user)
 {
     ui->loadingBar->StopLoading();
     ui->fullNameField->setReadOnly(false);
@@ -57,7 +57,7 @@ void RegistrationWidget::OnSignup(Status status)
     ui->repPasswordField->setReadOnly(false);
 
     if (status.isSuccess) {
-        emit SignedUp();
+        emit SignedUp(user);
         //emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);
         ui->fullNameField->setText("");
         ui->emailField->setText("");

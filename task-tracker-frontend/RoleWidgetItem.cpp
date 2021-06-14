@@ -4,10 +4,8 @@
 #include "ui_RoleWidgetItem.h"
 
 RoleWidgetItem::RoleWidgetItem(QWidget *parent) :
-    QWidget(parent),
-    myRole(-1, "", 0, -1),
-    isEditable(false),
-    ui(new Ui::RoleWidgetItem) {
+        QWidget(parent), myRole(Context::DEFAULT_ROLE), myUserRole(Context::DEFAULT_ROLE),
+        isEditable(false), ui(new Ui::RoleWidgetItem) {
     ui->setupUi(this);
 
     connect(ui->EditCancelBtn, &QAbstractButton::clicked, this, &RoleWidgetItem::OnEditCancelBtnClicked);
@@ -34,9 +32,19 @@ RoleInfo RoleWidgetItem::GetRole() const {
     return myRole;
 }
 
-void RoleWidgetItem::SetRole(const RoleInfo &role) {
+void RoleWidgetItem::SetRole(const RoleInfo &role, const RoleInfo& userRole) {
     myRole = role;
+    myUserRole = userRole;
     ReadonlyMode();
+
+    ui->EditCancelBtn->hide();
+    ui->DeleteBtn->hide();
+    ui->SaveBtn->hide();
+    if (userRole.HasPermission(RoleInfo::MANAGE_ROLES)) {
+        ui->EditCancelBtn->show();
+        ui->DeleteBtn->show();
+        ui->SaveBtn->show();
+    }
 
     ui->captionText->setText(role.GetCaption());
 
@@ -101,7 +109,7 @@ void RoleWidgetItem::ReadonlyMode(){
 
 void RoleWidgetItem::OnEditCancelBtnClicked() {
     if (isEditable) {
-        SetRole(myRole);
+        SetRole(myRole, myUserRole);
     } else {
         EditMode();
     }

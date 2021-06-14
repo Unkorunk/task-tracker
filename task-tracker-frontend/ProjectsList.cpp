@@ -3,15 +3,18 @@
 #include "ProjectItemWidget.h"
 #include <QDialog>
 #include <QGraphicsDropShadowEffect>
+#include <QScrollBar>
 
 ProjectsList::ProjectsList(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProjectsList) {
     ui->setupUi(this);
-
+    setAttribute(Qt::WA_StyledBackground);
+    ui->listWidget->verticalScrollBar()->setSingleStep(2);
     dialog = new CreateProjectDialog(this);
 
     dialog->setModal(true);
+
     dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
 
     connect(ui->addProjectBtn, &QAbstractButton::clicked, this, &ProjectsList::OnAddProjectBtnClicked);
@@ -20,6 +23,7 @@ ProjectsList::ProjectsList(QWidget *parent) :
     connect(ui->textEdit, SIGNAL(textChanged()), this, SLOT (IfTextChanged()));
 
     connect(dialog, SIGNAL(createProject(QString&)), this, SLOT(OnProjectCreated(QString&)));
+
 }
 
 ProjectsList::~ProjectsList() {
@@ -38,8 +42,7 @@ void ProjectsList::SetProjects(const QList<QPair<ProjectInfo, RoleInfo>>& list) 
        auto item = new QListWidgetItem();
        auto widget = new ProjectItemWidget(this);
        widget->setProject(project.first.GetTitle());
-       item->setSizeHint(QSize(200, 50));
-
+       item->setSizeHint(QSize(200, 70));
        ui->listWidget->addItem(item);
        ui->listWidget->setItemWidget(item, widget);
        update();

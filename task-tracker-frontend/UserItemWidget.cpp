@@ -15,12 +15,16 @@ UserItemWidget::~UserItemWidget() {
     delete ui;
 }
 
-void UserItemWidget::SetRoles(const UserInfo &user, const QList<RoleInfo> &roles, const ProjectInfo& projectInfo, int roleId) {
+void UserItemWidget::SetRoles(const UserInfo &user, const QList<RoleInfo> &roles, const ProjectInfo& projectInfo, int roleId, bool isEditable) {
     myRoles = roles;
     myUser = user;
     myProject = projectInfo;
 
     ui->userLabel->setText(user.GetFullName());
+    if (!isEditable) {
+        ui->kickBtn->hide();
+        ui->roleSelector->setEnabled(false);
+    }
 
     int currentRole = 0;
     for (int i = 0; i < roles.size(); i++) {

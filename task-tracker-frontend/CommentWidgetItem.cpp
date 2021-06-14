@@ -5,6 +5,8 @@
 CommentWidgetItem::CommentWidgetItem(QWidget *parent) : QWidget(parent), ui(new Ui::CommentWidgetItem),
         myTask(Context::DEFAULT_TASK), myComment(-1, std::optional<UserInfo>(), QDateTime::currentDateTimeUtc(), "") {
     ui->setupUi(this);
+    ui->cancelEditButton->hide();
+    ui->deleteBtn->hide();
 
     connect(ui->cancelEditButton, &QAbstractButton::clicked, this, &CommentWidgetItem::OnCancelClicked);
     connect(ui->deleteBtn, &QAbstractButton::clicked, this, &CommentWidgetItem::OnDeleteClicked);
@@ -18,12 +20,22 @@ CommentWidgetItem::~CommentWidgetItem() {
     delete ui;
 }
 
-void CommentWidgetItem::SetupComment(const CommentInfo &comment) {
+void CommentWidgetItem::SetupComment(const CommentInfo &comment, const Context& context) {
     myComment = comment;
+    myContext = context;
     ui->commentEdit->setText(comment.GetText());
     QString header = "Unknown user";
     if (comment.GetCommentator().has_value()) {
         header = comment.GetCommentator().value().GetFullName();
+        if (comment.GetCommentator().value().GetId() == context.GetUser().GetId() && context.GetCurrentRole().HasPermission(RoleInfo::MANAGE_OWN_COMMENT)) {
+            ui->cancelEditButton->show();
+            ui->deleteBtn->show();
+        }
+    }
+
+    if (context.GetCurrentRole().HasPermission(RoleInfo::MANAGE_ALL_COMMENT)) {
+        ui->cancelEditButton->show();
+        ui->deleteBtn->show();
     }
 
     isNewComment = false;
@@ -85,7 +97,7 @@ void CommentWidgetItem::OnSaveClicked() {
 
 void CommentWidgetItem::OnCancelClicked() {
     if (isEditable) {
-        SetupComment(myComment);
+        SetupComment(myComment, myContext);
     }
 
     SetEditable(!isEditable);
@@ -102,6 +114,6 @@ void CommentWidgetItem::OnCommentPosted(Status status, const CommentInfo& commen
 void CommentWidgetItem::OnCommentEdited(Status status, const CommentInfo& comment) {
     if (!isNewComment && comment.GetId() == myComment.GetId() && status.isSuccess) {
         myComment.SetText(ui->commentEdit->toPlainText());
-        SetupComment(myComment);
+        SetupComment(myComment, myContext);
     }
 }

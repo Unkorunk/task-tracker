@@ -23,8 +23,11 @@ public:
     ProjectInfo GetCurrentProject() const;
     void SetProject(const ProjectInfo& project = DEFAULT_PROJECT);
 
-    // make set in setproject
-    QList<UserInfo> GetProjectTeam() const;
+    QList<QPair<UserInfo, RoleInfo>> GetProjectTeam() const;
+    void SetProjectTeam(const QList<QPair<UserInfo, RoleInfo>>& team);
+
+    QList<TagInfo> GetTags() const;
+    void SetTags(const QList<TagInfo>& tags);
 
     TaskInfo GetTask() const;
     void SetTask(const TaskInfo& task);
@@ -34,7 +37,8 @@ private:
     RoleInfo myRole;
 
     ProjectInfo myProject;
-    QList<UserInfo> myProjectTeam;
+    QList<QPair<UserInfo, RoleInfo>> myProjectTeam;
+    QList<TagInfo> myProjectTags;
 
     TaskInfo myTask;
 };

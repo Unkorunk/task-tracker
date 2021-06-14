@@ -16,7 +16,13 @@ class UserController {
     data class EnterResult(val status: Boolean, val user: User? = null, val accessToken: String? = null)
 
     @Autowired
+    private lateinit var commentRepository: CommentRepository
+
+    @Autowired
     private lateinit var userRepository: UserRepository
+
+    @Autowired
+    private lateinit var taskRepository: TaskRepository
 
     @PostMapping(path = ["/create"])
     @ResponseBody
@@ -54,6 +60,7 @@ class UserController {
         }
 
         try {
+            user.nullifyRefs(commentRepository, taskRepository)
             userRepository.deleteById(user.id)
         } catch (ex: Exception) {
             return DeleteUserResult(false)

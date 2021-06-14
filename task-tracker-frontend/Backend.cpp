@@ -56,6 +56,10 @@ QString Backend::GetAccountUrl() {
     return BaseUrl + "/user/getByAccessToken";
 }
 
+QString Backend::EditAccountUrl() {
+    return BaseUrl + "/user/edit";
+}
+
 QString Backend::GetTasksUrl() {
     return BaseUrl + "/task/all";
 }
@@ -70,6 +74,11 @@ QString Backend::EditTaskUrl() {
 
 QString Backend::DeleteTaskUrl() {
     return BaseUrl + "/task/delete";
+}
+
+
+QString Backend::DeleteUserUrl() {
+    return BaseUrl + "/user/delete";
 }
 
 QString Backend::GetRolesUrl() {
@@ -115,6 +124,42 @@ QString Backend::EditCommentUrl() {
 QString Backend::GetCommentsUrl() {
     // TODO: change to actual
     return BaseUrl + "/comment/all";
+}
+
+QString Backend::CreateTagCaptionUrl() {
+    return BaseUrl + "/tagCaption/create";
+}
+
+QString Backend::DeleteTagCaptionUrl() {
+    return BaseUrl + "/tagCaption/delete";
+}
+
+QString Backend::EditTagCaptionUrl() {
+    return BaseUrl + "/tagCaption/edit";
+}
+
+QString Backend::GetTagCaptionUrl() {
+    return BaseUrl + "/tagCaption/all";
+}
+
+QString Backend::CreateTagValueUrl() {
+    return BaseUrl + "/tagValue/create";
+}
+
+QString Backend::DeleteTagValueUrl() {
+    return BaseUrl + "/tagValue/delete";
+}
+
+QString Backend::EditTagValueUrl() {
+    return BaseUrl + "/tagValue/edit";
+}
+
+QString Backend::AddTagUrl() {
+    return BaseUrl + "/taskTag/create";
+}
+
+QString Backend::RemoveTagUrl() {
+    return BaseUrl + "/taskTag/delete";
 }
 
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {
@@ -168,6 +213,14 @@ void Backend::SignIn(const QString& username, const QString& password) {
     GetRequest(SignInAccountUrl(), QMap<QString, QString> {
                    { "screen_name", username },
                    { "password", password }
+               });
+}
+
+void Backend::CheckPassword(const QString& username, const QString& password) {
+    GetRequest(SignInAccountUrl(), QMap<QString, QString> {
+                   { "screen_name", username },
+                   { "password", password },
+                   { "to_check", "true"}
                });
 }
 
@@ -251,10 +304,39 @@ void Backend::EditTask(const TaskInfo &taskInfo) {
     PostRequest(EditTaskUrl(), query);
 }
 
-void Backend::UpdateProfile() {
-    GetRequest(GetAccountUrl(), QMap<QString, QString> {
+void Backend::UpdateUser(const UserInfo& user)
+{
+    QMap<QString, QString> query {
+        { "access_token", myToken },
+        { "full_name", QString("%1").arg(user.GetFullName()) },
+        { "email", user.GetEmail() }
+    };
+
+    PostRequest(EditAccountUrl(), query);
+}
+
+void Backend::DeleteUser(const UserInfo& user)
+{
+    GetRequest(DeleteUserUrl(), QMap<QString, QString> {
                    { "access_token", myToken }
                });
+}
+
+void Backend::UpdateProfile() {
+    GetRequest(GetAccountUrl(), QMap<QString, QString> {
+
+                   { "access_token", myToken }
+               });
+}
+
+void Backend::ResetPassword(const QString& new_password)
+{
+    QMap<QString, QString> query {
+        { "access_token", myToken },
+        { "password", new_password }
+    };
+
+    PostRequest(EditAccountUrl(), query);
 }
 
 void Backend::GetRoles(const ProjectInfo &projectInfo) {
@@ -345,6 +427,75 @@ void Backend::GetComments(const TaskInfo &task) {
                });
 }
 
+void Backend::CreateTagCaption(const ProjectInfo &project, const QString &tagCaption) {
+    PostRequest(CreateTagCaptionUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "project_id", QString("%1").arg(project.GetId()) },
+                    { "caption", tagCaption }
+                });
+}
+
+void Backend::DeleteTagCaption(const TagInfo &tag) {
+    GetRequest(DeleteTagCaptionUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "tag_caption_id", QString("%1").arg(tag.GetId()) }
+               });
+}
+
+void Backend::EditTagCaption(const TagInfo &tag) {
+    PostRequest(EditTagCaptionUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "tag_caption_id", QString("%1").arg(tag.GetId()) },
+                    { "caption", tag.GetCaption() }
+                });
+}
+
+void Backend::GetTagCaptions(const ProjectInfo &project) {
+    GetRequest(GetTagCaptionUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "project_id", QString("%1").arg(project.GetId()) }
+               });
+}
+
+void Backend::CreateTagValue(const TagInfo &tag, const QString &tagValue) {
+    PostRequest(CreateTagValueUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "tag_caption_id", QString("%1").arg(tag.GetId()) },
+                    { "value", tagValue }
+                });
+}
+
+void Backend::DeleteTagValue(const TagValue &tagValue) {
+    GetRequest(DeleteTagValueUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "tag_value_id", QString("%1").arg(tagValue.GetId()) }
+               });
+}
+
+void Backend::EditTagValue(const TagValue &tagValue) {
+    PostRequest(EditTagValueUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "tag_value_id", QString("%1").arg(tagValue.GetId()) },
+                    { "value", tagValue.GetValue() }
+                });
+}
+
+void Backend::AddTag(const TaskInfo &task, const TagValue &tag) {
+    PostRequest(AddTagUrl(), QMap<QString, QString> {
+                    { "access_token", myToken },
+                    { "task_id", QString("%1").arg(task.GetId()) },
+                    { "tag_value_id", QString("%1").arg(tag.GetId()) }
+                });
+}
+
+void Backend::RemoveTag(const TaskTag &taskTag) {
+    GetRequest(RemoveTagUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "task_tag_id", QString("%1").arg(taskTag.GetId()) }
+               });
+
+}
+
 void Backend::OnResponse(QNetworkReply* reply) {
     Status status;
     myRequestCounting--;
@@ -408,8 +559,15 @@ void Backend::OnResponse(QNetworkReply* reply) {
             qInfo() << "ошибочка вышла..";
             //emit SignInFailed("Неправильный логин или пароль!");
         }
+        if (request.toStdString().find("to_check") == std::string::npos) {
+            emit SignedIn(status, user);
+        }
+        else
+        {
+            emit Checked(status);
+        }
 
-        emit SignedIn(status, user);
+        //emit SignedIn(status, user);
     } else if (pattern == SignUpAccountUrl()) {
         UserInfo user = Context::DEFAULT_USER;
         if (status.isSuccess) {
@@ -431,6 +589,16 @@ void Backend::OnResponse(QNetworkReply* reply) {
         }
 
         emit ProfileUpdated(status, user);
+
+    } else if (pattern == EditAccountUrl()){
+        UserInfo user = Context::DEFAULT_USER;
+        if (status.isSuccess) {
+            user = UserInfo::ParseFromJson(root["user"].toObject());
+
+            emit ProfileUpdated(status, user);
+        }
+
+
     } else if (pattern == GetTasksUrl()) {
         QList<TaskInfo> tasks;
         // TODO: process all information
@@ -448,6 +616,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
         emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));
     } else if (pattern == DeleteTaskUrl()) {
         emit TaskDeleted(status);
+    } else if (pattern == DeleteUserUrl()){
+
     } else if (pattern == GetRolesUrl()) {
         QList<RoleInfo> roles;
         if (status.isSuccess) {
@@ -505,9 +675,65 @@ void Backend::OnResponse(QNetworkReply* reply) {
         }
 
         emit CommentsLoaded(status, comments);
+    } else if (pattern == CreateTagCaptionUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+        }
+        emit TagCaptionCreated(status, tag);
+    } else if (pattern == DeleteTagCaptionUrl()) {
+        emit TagCaptionDeleted(status);
+    } else if (pattern == EditTagCaptionUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+        }
+        emit TagCaptionEdited(status, tag);
+    } else if (pattern == GetTagCaptionUrl()) {
+        QList<TagInfo> tags;
+        if (status.isSuccess) {
+            for (QJsonValueRef obj : root["tagCaptions"].toArray()) {
+                tags.push_back(TagInfo::ParseFromJson(obj.toObject()));
+            }
+        }
+        emit TagCaptionsLoaded(status, tags);
+    } else if (pattern == CreateTagValueUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        TagValue tagValue(-1, "");
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+            tagValue = TagValue::ParseFromJson(root["tagValue"].toObject());
+        }
+
+        emit TagCaptionEdited(status, tag);
+    } else if (pattern == DeleteTagValueUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+        }
+
+        emit TagCaptionEdited(status, tag);
+    } else if (pattern == EditTagCaptionUrl()) {
+        TagInfo tag(-1, -1, "", QList<TagValue>());
+        TagValue tagValue(-1, "");
+        if (status.isSuccess) {
+            tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+            tagValue = TagValue::ParseFromJson(root["tagValue"].toObject());
+        }
+
+        emit TagCaptionEdited(status, tag);
+    } else if (pattern == AddTagUrl()) {
+        TaskTag taskTag(-1, TagValue(-1, ""));
+        if (status.isSuccess) {
+            taskTag = TaskTag::ParseFromJson(root["taskTag"].toObject());
+        }
+        emit TagAdded(status, taskTag);
+    } else if (pattern == RemoveTagUrl()) {
+        emit TagRemoved(status);
     }
 
     if (myRequestCounting == 0) {
         emit LoadingChanged(false);
     }
+
 }

@@ -126,16 +126,6 @@ border-radius: 0px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox">
-        <property name="styleSheet">
-         <string notr="true">border: none;</string>
-        </property>
-        <property name="text">
-         <string>Personal project</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="spacing">
          <number>7</number>

@@ -26,6 +26,9 @@ public:
     static Backend Instance;
 
     void SignIn(const QString& username, const QString& password);
+
+    void CheckPassword(const QString& username, const QString& password);
+
     void SignUp(const QString& fullName, const QString& username, const QString& email, const QString& password);
 
     void GetProjects();
@@ -37,6 +40,14 @@ public:
     void CreateTask(const TaskInfo& taskInfo);
     void DeleteTask(const TaskInfo& taskInfo);
     void EditTask(const TaskInfo& taskInfo);
+
+
+    void UpdateProfile(const UserInfo& user);
+
+    void ResetPassword(const QString& new_password);
+
+    void DeleteUser(const UserInfo& user);
+    void UpdateUser(const UserInfo& user);
 
     void UpdateProfile();
 
@@ -52,8 +63,19 @@ public:
     void CreateComment(const TaskInfo& task, const CommentInfo& comment);
     void DeleteComment(const CommentInfo& comment);
     void EditComment(const CommentInfo& comment);
-
     void GetComments(const TaskInfo& task);
+
+    void CreateTagCaption(const ProjectInfo& project, const QString& tagCaption);
+    void DeleteTagCaption(const TagInfo& tag);
+    void EditTagCaption(const TagInfo& tag);
+    void GetTagCaptions(const ProjectInfo& project);
+
+    void CreateTagValue(const TagInfo& tag, const QString& tagValue);
+    void DeleteTagValue(const TagValue& tagValue);
+    void EditTagValue(const TagValue& tagValue);
+
+    void AddTag(const TaskInfo& task, const TagValue& tag);
+    void RemoveTag(const TaskTag& taskTag);
 
 signals:
 
@@ -64,6 +86,8 @@ signals:
 
     void SignedIn(Status status, const UserInfo& user);
     void SignedUp(Status status, const UserInfo& user);
+
+    void Checked(Status status);
 
     void ProjectsLoaded(Status status, const QList<QPair<ProjectInfo, RoleInfo>>& projects);
     void ProjectCreated(Status status);   
@@ -88,8 +112,19 @@ signals:
     void CommentCreated(Status status, const CommentInfo& comment);
     void CommentDeleted(Status status);
     void CommentEdited(Status status, const CommentInfo& comment);
-
     void CommentsLoaded(Status status, const QList<CommentInfo>& comments);
+
+    void TagCaptionCreated(Status status, const TagInfo& tag);
+    void TagCaptionDeleted(Status status);
+    void TagCaptionEdited(Status status, const TagInfo& tag);
+    void TagCaptionsLoaded(Status status, const QList<TagInfo>& tags);
+
+    void TagValueCreated(Status status, const TagValue& tagValue, const TagInfo& tagCaption);
+    void TagValueDeleted(Status status, const TagInfo& tagCaption);
+    void TagValueEdited(Status status, const TagInfo& tagCaption);
+
+    void TagAdded(Status status, const TaskTag& tagTask);
+    void TagRemoved(Status status);
 
 private slots:
     void OnResponse(QNetworkReply* reply);
@@ -109,11 +144,13 @@ private:
     QString SignInAccountUrl();
     QString SignUpAccountUrl();
     QString GetAccountUrl();
+    QString EditAccountUrl();
 
     QString GetTasksUrl();
     QString CreateTaskUrl();
     QString EditTaskUrl();
     QString DeleteTaskUrl();
+    QString DeleteUserUrl();
 
     QString GetRolesUrl();
     QString CreateRoleUrl();
@@ -127,17 +164,24 @@ private:
     QString CreateCommentUrl();
     QString DeleteCommentUrl();
     QString EditCommentUrl();
-
     QString GetCommentsUrl();
+
+    QString CreateTagCaptionUrl();
+    QString DeleteTagCaptionUrl();
+    QString EditTagCaptionUrl();
+    QString GetTagCaptionUrl();
+
+    QString CreateTagValueUrl();
+    QString DeleteTagValueUrl();
+    QString EditTagValueUrl();
+
+    QString AddTagUrl();
+    QString RemoveTagUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 
     void PostRequest(const QString& urlString, const QMap<QString, QString>& args);
     void GetRequest(const QString& urlString, const QMap<QString, QString>& args);
-
-//    QMap<int, PropertyValue> valIdToVal;
-//    QMap<int, QList<PropertyValue>> propIdToVals;
-//    QMap<int, QString> propIdToCaption;
 
     int myRequestCounting = 0;
 

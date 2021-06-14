@@ -1,10 +1,13 @@
 #include "TaskItemWidget.h"
 #include "ui_TaskItemWidget.h"
+#include <QGraphicsDropShadowEffect>
 
 TaskItemWidget::TaskItemWidget(QWidget *parent) :
         QWidget(parent), ui(new Ui::TaskItemWidget) {
     ui->setupUi(this);
-    ui->endDate->setSpecialValueText("No deadline");
+    setAttribute(Qt::WA_StyledBackground);
+    ui->endDate->setText("No deadline");
+    ui->endDate->setText("No deadline");
 }
 
 TaskItemWidget::~TaskItemWidget() {
@@ -13,12 +16,12 @@ TaskItemWidget::~TaskItemWidget() {
 
 void TaskItemWidget::SetTask(const TaskInfo &task) {
     ui->taskName->setText(task.GetTitle());
-    ui->startDate->setDateTime(task.GetCreationTime());
+    ui->startDate->setText((task.GetCreationTime()).toString("dd.MM.yyyy"));
 
     std::optional<QDateTime> deadline = task.GetDeadline();
     if (deadline.has_value()) {
-        ui->endDate->setDateTime(deadline.value());
+        ui->endDate->setText((deadline.value()).toString("dd.MM.yyyy"));
     } else {
-        ui->endDate->setDate(ui->endDate->minimumDate());
+        ui->endDate->setText("No deadline");
     }
 }

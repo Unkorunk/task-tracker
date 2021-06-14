@@ -19,7 +19,7 @@ public:
     explicit UserItemWidget(QWidget *parent = nullptr);
     ~UserItemWidget();
 
-    void SetRoles(const UserInfo& user, const QList<RoleInfo>& roles, const ProjectInfo& projectInfo, int roleId);
+    void SetRoles(const UserInfo& user, const QList<RoleInfo>& roles, const ProjectInfo& projectInfo, int roleId, bool isEditable);
 
 private slots:
     void OnRoleChangeRequested();

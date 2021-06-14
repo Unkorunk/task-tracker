@@ -4,6 +4,7 @@
 #include <QListWidget>
 #include <QDebug>
 #include "MainWindow.h"
+#include <QScrollBar>
 
 ProjectWidget::ProjectWidget(QWidget *parent) :
     AbstractPage(parent),
@@ -11,6 +12,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     myProject(-1, "") {
     ui->setupUi(this);
 
+    ui->listWidget->verticalScrollBar()->setSingleStep(2);
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 
     connect(ui->CreateTaskBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnCreateTaskBtnClicked);
@@ -20,7 +22,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(ui->ProjectSettingsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectSettingsBtnClicked);
     connect(ui->ProjectStatisticsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectStatisticsBtnClicked);
 
-    connect(ui->textEdit, SIGNAL(textChanged()), this, SLOT (IfTextChanged()));
+    connect(ui->searchInput, SIGNAL(textChanged()), this, SLOT (IfTextChanged()));
 
     connect(&Backend::Instance, &Backend::TaskEdited, this, &ProjectWidget::OnTaskUpdate);
 }
@@ -50,7 +52,7 @@ void ProjectWidget::OnItemClicked(QListWidgetItem* item) {
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
     ui->listWidget->clear();
-    ui->textEdit->clear();
+    ui->searchInput->clear();
 
     this->taskList.clear();
     for (auto& task : tasks) {
@@ -59,17 +61,17 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
         auto item = new QListWidgetItem();
         auto widget = new TaskItemWidget(this);
         widget->SetTask(task);
-        item->setSizeHint(QSize(200, 100));
-
+        item->setSizeHint(QSize(450, 60));
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item, widget);
+
         update();
     }
 }
 
 void ProjectWidget::IfTextChanged() {
 
-    QStringList query_parts = ui->textEdit->toPlainText().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
+    QStringList query_parts = ui->searchInput->toPlainText().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
 
     for(int i = 0; i < ui->listWidget->count(); i++){//this->taskList.size()
 

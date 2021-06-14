@@ -6,12 +6,15 @@
 #include "UserSelectorWidget.h"
 #include "IntegerSelectorWidget.h"
 #include "CommentWidgetItem.h"
+#include <QScrollBar>
+#include "ValueSelectorWidget.h"
 
 // TODO: refactor task_info
 IssueWidget::IssueWidget(QWidget *parent) : AbstractPage(parent),
         ui(new Ui::IssueWidget) {
 
     ui->setupUi(this);
+
     SetupPage();
 
     connect(ui->editButton, &QPushButton::clicked, this, &IssueWidget::OnEditClicked);
@@ -24,6 +27,13 @@ IssueWidget::IssueWidget(QWidget *parent) : AbstractPage(parent),
     connect(&Backend::Instance, &Backend::CommentCreated, this, &IssueWidget::OnCommentCreated);
     connect(&Backend::Instance, &Backend::CommentDeleted, this, &IssueWidget::OnCommentDeleted);
     connect(&Backend::Instance, &Backend::CommentsLoaded, this, &IssueWidget::OnCommentsLoaded);
+
+    ui->commentsList->verticalScrollBar()->setSingleStep(4);
+    connect(&Backend::Instance, &Backend::TagCaptionsLoaded, this, &IssueWidget::OnTagsLoaded);
+    connect(&Backend::Instance, &Backend::ProjectUsersLoaded, this, &IssueWidget::OnTeamLoaded);
+
+    connect(&Backend::Instance, &Backend::TagAdded, this, &IssueWidget::OnTagAdded);
+    connect(&Backend::Instance, &Backend::TagRemoved, this, &IssueWidget::OnTagRemoved);
 }
 
 IssueWidget::~IssueWidget() {
@@ -31,21 +41,22 @@ IssueWidget::~IssueWidget() {
 }
 
 void IssueWidget::SetupPage() {
+    ui->editButton->hide();
+    ui->deleteButton->hide();
     TaskInfo task = myContext.GetTask();
 
-    ui->statusComboBox->clear();
-    ui->statusComboBox->addItem("Not started");
-    ui->statusComboBox->addItem("TODO");
-    ui->statusComboBox->addItem("Completed");
+    if (task.GetId() != -1) {
+        Backend::Instance.GetTagCaptions(myContext.GetCurrentProject());
+        Backend::Instance.GetProjectUsers(myContext.GetCurrentProject());
+    }
 
     this->ui->taskNameEdit->setText(task.GetTitle());
     this->ui->descriptionEdit->setText(task.GetDescription());
-
     this->ui->propertyList->clear();
 
-    auto creatorWidget = new UserSelectorWidget(this);
-    creatorWidget->SetData("Creator", task.GetCreator(), QList<UserInfo> { myContext.GetUser() });
-    AddPropertyItem(creatorWidget);
+    myCreatorSelector = new UserSelectorWidget(this);
+    myCreatorSelector->SetData("Creator", task.GetCreator(), QList<UserInfo> { myContext.GetUser() });
+    AddPropertyItem(myCreatorSelector);
 
     auto creationTimeWidget = new DateTimePropertyWidget(this);
     creationTimeWidget->SetData("Creation time", task.GetCreationTime());
@@ -79,6 +90,21 @@ void IssueWidget::SetupPage() {
     ToReadOnlyMode();
 
     UpdateComments();
+
+    RoleInfo role = myContext.GetCurrentRole();
+    canEdit = false;
+    if (task.GetCreator().has_value() && task.GetCreator().value().GetId() == myContext.GetUser().GetId()) {
+        if (role.HasPermission(RoleInfo::MANAGE_OWN_TASK)) {
+            canEdit = true;
+        }
+    } else if (role.HasPermission(RoleInfo::MANAGE_ALL_TASK)) {
+        canEdit = true;
+    }
+
+    if (canEdit) {
+        ui->editButton->show();
+        ui->deleteButton->show();
+    }
 }
 
 void IssueWidget::OnEditClicked() {
@@ -90,6 +116,7 @@ void IssueWidget::OnEditClicked() {
 
         this->ui->taskNameEdit->setText(task.GetTitle());
         this->ui->descriptionEdit->setText(task.GetDescription());
+
         myAssigneeSelector->ChangeData(task.GetAssignee());
         myDeadlineSelector->ChangeData(task.GetDeadline());
         myStorypointSelector->ChangeData(task.GetStoryPoints());
@@ -125,17 +152,18 @@ void IssueWidget::OnDeleteClicked() {
 void IssueWidget::OnTaskUpdated(Status status, const TaskInfo& task) {
     UnlockUi();
     if (status.isSuccess) {
-        TaskInfo task = myContext.GetTask();
+//        TaskInfo task = myContext.GetTask();
 
-        //save
-        task.SetDescription(this->ui->descriptionEdit->toPlainText());
-        task.SetTitle(this->ui->taskNameEdit->text());
-        task.SetDeadline(myDeadlineSelector->GetData());
-        task.SetStoryPoints(myStorypointSelector->GetData());
-        task.SetAssignee(myAssigneeSelector->GetData());
-        task.SetUpdater(myContext.GetUser(), QDateTime::currentDateTimeUtc());
+//        //save
+//        task.SetDescription(this->ui->descriptionEdit->toPlainText());
+//        task.SetTitle(this->ui->taskNameEdit->text());
+//        task.SetDeadline(myDeadlineSelector->GetData());
+//        task.SetStoryPoints(myStorypointSelector->GetData());
+//        task.SetAssignee(myAssigneeSelector->GetData());
+//        task.SetUpdater(myContext.GetUser(), QDateTime::currentDateTimeUtc());
 
         myContext.SetTask(task);
+        SetupPage();
 
         //and lock
         ToReadOnlyMode();
@@ -172,26 +200,92 @@ void IssueWidget::OnCommentsLoaded(Status status, const QList<CommentInfo> &comm
     }
 }
 
+void IssueWidget::OnTagsLoaded(Status status, const QList<TagInfo> &tags) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    myContext.SetTags(tags);
+    UpdateTags();
+}
+
+void IssueWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    myContext.SetProjectTeam(team);
+    QList<UserInfo> users;
+    for (auto& it : team) {
+        users.push_back(it.first);
+    }
+
+    myCreatorSelector->SetUsers(users);
+    myUpdaterSelector->SetUsers(users);
+    myAssigneeSelector->SetUsers(users);
+}
+
+void IssueWidget::OnTagAdded(Status status, const TaskTag &taskTag) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    Backend::Instance.EditTask(myContext.GetTask());
+}
+
+void IssueWidget::OnTagRemoved(Status status) {
+    if (!status.isSuccess) {
+        // TODO: handle errors
+        return;
+    }
+
+    Backend::Instance.EditTask(myContext.GetTask());
+}
+
 void IssueWidget::UpdateComments() {
     TaskInfo task = myContext.GetTask();
     ui->commentsList->clear();
 
-    auto item = new QListWidgetItem();
-    auto widget = new CommentWidgetItem(this);
-    widget->SetupNewCommentMode(task);
-    item->setSizeHint(QSize(200, 150));
+    RoleInfo role = myContext.GetCurrentRole();
 
-    ui->commentsList->addItem(item);
-    ui->commentsList->setItemWidget(item, widget);
+    if (role.HasPermission(RoleInfo::MANAGE_OWN_COMMENT)) {
+        auto item = new QListWidgetItem();
+        auto widget = new CommentWidgetItem(this);
+        widget->SetupNewCommentMode(task);
+        item->setSizeHint(QSize(200, 150));
+        ui->commentsList->addItem(item);
+        ui->commentsList->setItemWidget(item, widget);
+    }
 
     for (const CommentInfo& comment : task.GetComments()) {
         auto item = new QListWidgetItem();
         auto widget = new CommentWidgetItem(this);
-        widget->SetupComment(comment);
+        widget->SetupComment(comment, myContext);
         item->setSizeHint(QSize(200, 150));
 
         ui->commentsList->addItem(item);
         ui->commentsList->setItemWidget(item, widget);
+    }
+}
+
+void IssueWidget::UpdateTags() {
+    TaskInfo task = myContext.GetTask();
+    QList<TagInfo> tags = myContext.GetTags();
+
+    for (auto& taskTag : task.GetTags()) {
+        ValueSelectorWidget* valueSelector = new ValueSelectorWidget(this);
+        valueSelector->SetupTags(tags, task);
+        valueSelector->SetupTag(taskTag, canEdit);
+        AddPropertyItem(valueSelector);
+    }
+
+    if (canEdit) {
+        ValueSelectorWidget* valueSelector = new ValueSelectorWidget(this);
+        valueSelector->SetupTags(tags, task);
+        AddPropertyItem(valueSelector);
     }
 }
 
@@ -207,6 +301,9 @@ void IssueWidget::ToEditMode() {
     myDeadlineSelector->SetEditable(true);
     myAssigneeSelector->SetEditable(true);
     myStorypointSelector->SetEditable(true);
+
+    this->ui->descriptionEdit->setStyleSheet("background-color: white;");
+    this->ui->taskNameEdit->setStyleSheet("background-color: white; border: 1px solid black");
 }
 
 void IssueWidget::ToReadOnlyMode() {
@@ -217,6 +314,9 @@ void IssueWidget::ToReadOnlyMode() {
     this->ui->taskNameEdit->setEnabled(false);
     this->ui->taskNameEdit->setReadOnly(true);
     this->ui->descriptionEdit->setReadOnly(true);
+
+    this->ui->descriptionEdit->setStyleSheet("background-color: rgb(232, 227, 227);");
+    this->ui->taskNameEdit->setStyleSheet("background-color: rgb(232, 227, 227); border: none");
 
     myDeadlineSelector->SetEditable(false);
     myAssigneeSelector->SetEditable(false);

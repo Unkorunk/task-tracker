@@ -25,7 +25,7 @@ public:
 
 private slots:
     void OnTransition(AuthorizationWindow::Transition transition);
-    void OnSwitchingWindow();
+    void OnSwitchingWindow(const UserInfo& user);
 
 private:
     Ui::AuthorizationWindow *ui;
