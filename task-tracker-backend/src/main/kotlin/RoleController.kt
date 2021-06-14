@@ -26,7 +26,7 @@ class RoleController {
         @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "project_id") projectId: Int,
         @RequestParam(value = "value") value: String,
-        @RequestParam(value = "permissions") permissions: ByteArray
+        @RequestParam(value = "permissions") permissions: String
     ): CreateResult {
         val user = userRepository.findByAccessToken(accessToken) ?: return CreateResult(false)
         if (user.validUntil < Date()) {
@@ -59,7 +59,7 @@ class RoleController {
         @RequestParam(value = "access_token") accessToken: String,
         @RequestParam(value = "role_id") roleId: Int,
         @RequestParam(value = "value") value: String?,
-        @RequestParam(value = "permissions") permissions: ByteArray?
+        @RequestParam(value = "permissions") permissions: String?
     ): EditResult {
         val user = userRepository.findByAccessToken(accessToken) ?: return EditResult(false)
         if (user.validUntil < Date()) {

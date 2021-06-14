@@ -162,6 +162,16 @@ QString Backend::RemoveTagUrl() {
     return BaseUrl + "/taskTag/delete";
 }
 
+QString Backend::GetNotificationsUrl() {
+    return BaseUrl + "/notification/unread";
+}
+
+void Backend::GetNotifications() {
+    GetRequest(GetNotificationsUrl(), QMap<QString, QString> {
+                   { "access_token", myToken }
+               });
+}
+
 QJsonObject Backend::GetRootFromReply(QNetworkReply *reply, Status &status) {
     QNetworkReply::NetworkError error = reply->error();
 
@@ -805,6 +815,17 @@ void Backend::OnResponse(QNetworkReply* reply) {
             emit RequestFailed("Не удалось удалить тег!");
         }
         emit TagRemoved(status);
+    } else if (pattern == GetNotificationsUrl()) {
+        QList<NotificationInfo> notifications;
+
+        if (status.isSuccess) {
+            for (QJsonValueRef it : root["notifications"].toArray()) {
+                NotificationInfo notification = NotificationInfo::ParseFromJson(it.toObject());
+                notifications.push_back(notification);
+            }
+        }
+
+        emit NotificationsLoaded(status, notifications);
     }
 
     if (myRequestCounting == 0) {
