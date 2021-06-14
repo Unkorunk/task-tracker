@@ -430,16 +430,19 @@ QString NotificationInfo::GetText() const {
     return myText;
 }
 
+bool NotificationInfo::IsRead() const
+{
+    return isRead;
+}
+
 void NotificationInfo::SetText(QString text) {
     myText = text;
 }
 
-NotificationInfo::NotificationInfo(int id, QString text): myId(id), myText(text) {
-
-}
+NotificationInfo::NotificationInfo(int id, QString text, bool readStatus): myId(id), myText(text), isRead(readStatus) {}
 
 NotificationInfo NotificationInfo::ParseFromJson(const QJsonObject &obj) {
-    return NotificationInfo(obj["id"].toInt(), obj["text"].toString());
+    return NotificationInfo(obj["id"].toInt(), obj["text"].toString(), obj["isRead"].toBool());
 }
 
 // END TASK TAG

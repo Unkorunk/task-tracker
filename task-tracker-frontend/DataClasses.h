@@ -177,16 +177,19 @@ class NotificationInfo {
 public:
     static NotificationInfo ParseFromJson(const QJsonObject& obj);
 
-    NotificationInfo(int id, QString text);
+    NotificationInfo(int id, QString text, bool isRead);
 
     int GetId();
 
     void SetText(QString text);
     QString GetText() const;
 
+    bool IsRead() const;
+
 private:
     int myId;
     QString myText;
+    bool isRead;
 };
 
 class TaskInfo {

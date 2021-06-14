@@ -29,8 +29,13 @@ private slots:
     void OnLogoutBtnClicked();
     void OnBackBtnClicked();
 
+    void OnSignedIn(Status status);
+    void OnInfoUpdateTime();
+    void OnNotificationsLoaded(Status status, const QList<NotificationInfo>& notifications);
+    void OnUnreadsLoaded(Status status, const QList<NotificationInfo>& notifications);
 private:
     Ui::NavBar *ui;
+    QTimer* myTimer;
 };
 
 #endif // NAVBAR_H

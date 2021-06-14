@@ -223,12 +223,17 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="213"/>
+        <location filename="NavBar.ui" line="207"/>
+        <source>19</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="NavBar.ui" line="233"/>
         <source>Profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="234"/>
+        <location filename="NavBar.ui" line="254"/>
         <source>Log out</source>
         <translation type="unfinished"></translation>
     </message>
