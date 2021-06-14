@@ -56,6 +56,10 @@ public:
     void GetComments(const TaskInfo& task);
 
 signals:
+
+    //void SignedUp(Status status);
+    void SignInFailed(QString log);
+
     void LoadingChanged(bool isLoading);
 
     void SignedIn(Status status, const UserInfo& user);

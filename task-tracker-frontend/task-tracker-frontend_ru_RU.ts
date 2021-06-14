@@ -378,11 +378,6 @@ an account?</source>
         <source>Create task</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="ProjectWidget.ui" line="163"/>
-        <source>Search</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ProjectsList</name>

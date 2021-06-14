@@ -20,6 +20,8 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(ui->ProjectSettingsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectSettingsBtnClicked);
     connect(ui->ProjectStatisticsBtn, &QAbstractButton::clicked, this, &ProjectWidget::OnProjectStatisticsBtnClicked);
 
+    connect(ui->textEdit, SIGNAL(textChanged()), this, SLOT (IfTextChanged()));
+
     connect(&Backend::Instance, &Backend::TaskEdited, this, &ProjectWidget::OnTaskUpdate);
 }
 
@@ -48,6 +50,9 @@ void ProjectWidget::OnItemClicked(QListWidgetItem* item) {
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
     ui->listWidget->clear();
+    ui->textEdit->clear();
+
+    this->taskList.clear();
     for (auto& task : tasks) {
         //TODO: change
         taskList.append(task);
@@ -58,6 +63,40 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
 
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item, widget);
+        update();
+    }
+}
+
+void ProjectWidget::IfTextChanged() {
+
+    QStringList query_parts = ui->textEdit->toPlainText().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
+
+    for(int i = 0; i < ui->listWidget->count(); i++){//this->taskList.size()
+
+        QStringList title_parts =
+                this->taskList[i].GetTitle().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
+
+        bool is_title_contains_query = true;
+
+        for (int k = 0; k < query_parts.size(); k++){
+
+            bool is_query_part_find = false;
+
+            for (int j = 0; j < title_parts.size(); j++){
+
+                if (title_parts[j].indexOf(query_parts[k]) == 0) {
+                    is_query_part_find = true;
+                }
+
+            }
+
+            if (!is_query_part_find) {
+                is_title_contains_query = false;
+                break;
+            }
+
+        }
+        ui->listWidget->item(ui->listWidget->count() - 1 - i)->setHidden(!is_title_contains_query);
         update();
     }
 }

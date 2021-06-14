@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QMetaEnum>
 #include <QUrlQuery>
+#include "LoadingBar.h"
 
 Status::Status() : Status(true, "") {}
 
@@ -24,6 +25,7 @@ const QString Backend::BaseUrl = "http://139.59.144.121:8080";
 
 Backend::Backend() : myNetworkManager(std::make_unique<QNetworkAccessManager>()) {
     connect(myNetworkManager.get(), &QNetworkAccessManager::finished, this, &Backend::OnResponse);
+    //connect(this, Backend::SignInFailed, this, &LoadingBar::FailLoading);
 }
 
 QString Backend::GetProjectsUrl() {
@@ -366,6 +368,9 @@ void Backend::OnResponse(QNetworkReply* reply) {
                 RoleInfo role = RoleInfo::ParseFromJson(it.toObject()["role"].toObject());
                 projects.push_back(QPair<ProjectInfo, RoleInfo>(project, role));
             }
+        } else {
+            qInfo() << "ошибочка вышла..";
+            emit SignInFailed("Не удалось получить данные о проекте.");
         }
 
         emit ProjectsLoaded(status, projects);
@@ -376,6 +381,9 @@ void Backend::OnResponse(QNetworkReply* reply) {
     } else if (pattern == EditProjectUrl()) {
         if (status.isSuccess) {
             GetProjects();
+        } else {
+            qInfo() << "ошибочка вышла..";
+            emit SignInFailed("Не удалось сохранить изменения.");
         }
 
         emit ProjectEdited(status);
@@ -396,6 +404,9 @@ void Backend::OnResponse(QNetworkReply* reply) {
         if (status.isSuccess) {
             myToken = root["accessToken"].toString();
             user = UserInfo::ParseFromJson(root["user"].toObject());
+        } else {
+            qInfo() << "ошибочка вышла..";
+            //emit SignInFailed("Неправильный логин или пароль!");
         }
 
         emit SignedIn(status, user);
@@ -404,6 +415,9 @@ void Backend::OnResponse(QNetworkReply* reply) {
         if (status.isSuccess) {
             myToken = root["accessToken"].toString();
             user = UserInfo::ParseFromJson(root["user"].toObject());
+        } else {
+            qInfo() << "ошибочка вышла..";
+            emit SignInFailed("Вы не заполнили все обязательные поля!");
         }
 
         emit SignedUp(status, user);
@@ -411,6 +425,9 @@ void Backend::OnResponse(QNetworkReply* reply) {
         UserInfo user = Context::DEFAULT_USER;
         if (status.isSuccess) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
+        } else {
+            qInfo() << "ошибочка вышла..";
+            emit SignInFailed("Не удалось получить url аккаунта.");
         }
 
         emit ProfileUpdated(status, user);

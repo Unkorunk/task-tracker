@@ -11,6 +11,9 @@ class LoadingBar : public QWidget
 {
     Q_OBJECT
 
+public slots:
+    void FailLoading(QString log);
+
 public:
     explicit LoadingBar(QWidget *parent = nullptr);
     ~LoadingBar();
