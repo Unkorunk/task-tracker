@@ -181,14 +181,14 @@ border: none;
    <item>
     <widget class="QListWidget" name="propertyList">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="minimumSize">
       <size>
-       <width>200</width>
+       <width>300</width>
        <height>0</height>
       </size>
      </property>
