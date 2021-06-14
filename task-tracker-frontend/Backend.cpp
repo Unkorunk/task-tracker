@@ -551,6 +551,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
                 RoleInfo role = RoleInfo::ParseFromJson(it.toObject()["role"].toObject());
                 projects.push_back(QPair<ProjectInfo, RoleInfo>(project, role));
             }
+            std::sort(projects.begin(), projects.end(), [](const QPair<ProjectInfo, RoleInfo>& lhs, const QPair<ProjectInfo, RoleInfo>& rhs)
+                { return lhs.first.GetTitle() < rhs.first.GetTitle(); });
         } else {
             qInfo() << "ошибочка вышла..";
             emit RequestFailed("Не удалось получить данные о проекте.");
@@ -583,6 +585,9 @@ void Backend::OnResponse(QNetworkReply* reply) {
                 RoleInfo role = RoleInfo::ParseFromJson(obj["role"].toObject());
                 users.push_back(QPair<UserInfo, RoleInfo>(user, role));
             }
+
+            std::sort(users.begin(), users.end(), [](const QPair<UserInfo, RoleInfo>& lhs, const QPair<UserInfo, RoleInfo>& rhs)
+                { return lhs.first.GetFullName() < rhs.first.GetFullName(); });
         }
 
         emit ProjectUsersLoaded(status, users);
@@ -645,6 +650,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
                 TaskInfo task = TaskInfo::ParseFromJson(it.toObject());
                 tasks.push_back(task);
             }
+            std::sort(tasks.begin(), tasks.end(), [](const TaskInfo& lhs, const TaskInfo& rhs)
+                { return lhs.GetUpdateTime() > rhs.GetUpdateTime(); });
         } else {
             emit RequestFailed("Не удалось получить список задач!");
         }
@@ -682,6 +689,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
             for (QJsonValueRef it : root["roles"].toArray()) {
                 roles.push_back(RoleInfo::ParseFromJson(it.toObject()));
             }
+            std::sort(roles.begin(), roles.end(), [](const RoleInfo& lhs, const RoleInfo& rhs)
+                { return lhs.GetPermissionStr() > rhs.GetPermissionStr(); });
         } else {
              emit RequestFailed("Не удалось получить список ролей");
         }
@@ -758,6 +767,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
             for (QJsonValueRef obj : root["comments"].toArray()) {
                 comments.push_back(CommentInfo::ParseFromJson(obj.toObject()));
             }
+            std::sort(comments.begin(), comments.end(), [](const CommentInfo& lhs, const CommentInfo& rhs)
+                { return lhs.GetDate() > rhs.GetDate(); });
         } else {
             emit RequestFailed("Не удалось получить комментарии!");
         }
@@ -791,6 +802,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
             for (QJsonValueRef obj : root["tagCaptions"].toArray()) {
                 tags.push_back(TagInfo::ParseFromJson(obj.toObject()));
             }
+            std::sort(tags.begin(), tags.end(), [](const TagInfo& lhs, const TagInfo& rhs)
+                { return lhs.GetCaption() < rhs.GetCaption(); });
         }
         emit TagCaptionsLoaded(status, tags);
     } else if (pattern == CreateTagValueUrl()) {
