@@ -44,6 +44,10 @@ QString Backend::GetProjectUsersUrl() {
     return BaseUrl + "/project/allUsers";
 }
 
+QString Backend::DeleteProjectUrl() {
+    return BaseUrl + "/project/delete";
+}
+
 QString Backend::SignInAccountUrl() {
     return BaseUrl + "/user/enter";
 }
@@ -290,6 +294,13 @@ void Backend::EditProject(const ProjectInfo& projectInfo) {
 
 void Backend::GetProjectUsers(const ProjectInfo &projectInfo) {
     GetRequest(GetProjectUsersUrl(), QMap<QString, QString> {
+                   { "access_token", myToken },
+                   { "project_id", QString("%1").arg(projectInfo.GetId()) }
+               });
+}
+
+void Backend::DeleteProject(const ProjectInfo &projectInfo) {
+    GetRequest(DeleteProjectUrl(), QMap<QString, QString> {
                    { "access_token", myToken },
                    { "project_id", QString("%1").arg(projectInfo.GetId()) }
                });
@@ -591,6 +602,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
         }
 
         emit ProjectUsersLoaded(status, users);
+    } else if (pattern == DeleteProjectUrl()) {
+        emit ProjectDeleted(status);
     } else if (pattern == SignInAccountUrl()) {
         UserInfo user = Context::DEFAULT_USER;
         if (status.isSuccess) {

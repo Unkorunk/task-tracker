@@ -18,6 +18,9 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     connect(ui->createRole, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnRoleCreateClicked);
     connect(ui->inviteButton, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnInviteClicked);
     connect(ui->newTagBtn, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnTagCreateClicked);
+    connect(ui->deleteBtn, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnDeleteClicked);
+
+    connect(&Backend::Instance, &Backend::ProjectDeleted, this, &ProjectSettingsWidget::OnProjectDeleted);
 
     connect(&Backend::Instance, &Backend::ProjectEdited, this, &ProjectSettingsWidget::OnProjectEdited);
     connect(&Backend::Instance, &Backend::RolesLoaded, this, &ProjectSettingsWidget::OnRolesLoaded);
@@ -32,6 +35,8 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     connect(&Backend::Instance, &Backend::TagCaptionDeleted, this, &ProjectSettingsWidget::OnTagDeleted);
     connect(&Backend::Instance, &Backend::TagCaptionCreated, this, &ProjectSettingsWidget::OnTagCreated);
     connect(&Backend::Instance, &Backend::TagCaptionEdited, this, &ProjectSettingsWidget::OnTagEdited);
+
+    ui->deleteBtn->hide();
 }
 
 void ProjectSettingsWidget::OnSaveClicked() {
@@ -61,6 +66,17 @@ void ProjectSettingsWidget::OnProjectEdited(Status status) {
        ToReadonlyMode();
     } else {
         // TODO: Handle errors
+    }
+}
+
+void ProjectSettingsWidget::OnDeleteClicked() {
+    Backend::Instance.DeleteProject(myContext.GetCurrentProject());
+}
+
+void ProjectSettingsWidget::OnProjectDeleted(Status status) {
+    if (status.isSuccess) {
+        myContext.SetProject(Context::DEFAULT_PROJECT);
+        emit TransitionRequested(MainWindow::Transition::Greetings, myContext);
     }
 }
 
@@ -236,6 +252,7 @@ void ProjectSettingsWidget::SetupPage() {
     ui->inviteButton->hide();
     ui->newTagBtn->hide();
     ui->saveNameButton->hide();
+    ui->deleteBtn->hide();
 
     ui->editProjectName->setText(myContext.GetCurrentProject().GetTitle());
     ui->rolesList->clear();
@@ -257,6 +274,9 @@ void ProjectSettingsWidget::SetupPage() {
     }
     if (role.HasPermission(RoleInfo::MANAGE_TEAM)) {
         ui->inviteButton->show();
+    }
+    if (role.HasPermission(RoleInfo::DELETE_PROJECT)) {
+        //ui->deleteBtn->show();
     }
 
     UnlockUi();

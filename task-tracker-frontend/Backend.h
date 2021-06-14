@@ -35,6 +35,7 @@ public:
     void CreateProject(const QString& projectName);
     void EditProject(const ProjectInfo& projectInfo);
     void GetProjectUsers(const ProjectInfo& projectInfo);
+    void DeleteProject(const ProjectInfo& projectInfo);
 
     void GetTasks(const ProjectInfo& projectInfo);
     void CreateTask(const TaskInfo& taskInfo);
@@ -95,6 +96,7 @@ signals:
     void ProjectCreated(Status status);   
     void ProjectEdited(Status status);
     void ProjectUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>>& users);
+    void ProjectDeleted(Status status);
 
     void ProfileUpdated(Status status, const UserInfo& user);
 
@@ -145,6 +147,7 @@ private:
     QString CreateProjectUrl();
     QString EditProjectUrl();
     QString GetProjectUsersUrl();
+    QString DeleteProjectUrl();
 
     QString SignInAccountUrl();
     QString SignUpAccountUrl();
