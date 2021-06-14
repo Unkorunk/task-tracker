@@ -144,6 +144,10 @@ set(PROJECT_SOURCES_FRONTEND
   task-tracker-frontend/Context.cpp
   task-tracker-frontend/Context.h
 
+  task-tracker-frontend/NotificationItemWidget.cpp
+  task-tracker-frontend/NotificationItemWidget.ui
+  task-tracker-frontend/NotificationItemWidget.h
+
   ${TS_FILES_FRONTEND}
 )
 
