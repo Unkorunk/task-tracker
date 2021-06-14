@@ -526,7 +526,11 @@ void Backend::OnResponse(QNetworkReply* reply) {
 
         emit ProjectsLoaded(status, projects);
     } else if (pattern == CreateProjectUrl()) {
-        GetProjects();
+        if (status.isSuccess) {
+            GetProjects();
+        } else {
+            emit RequestFailed("Не удалось создать проект!");
+        }
 
         emit ProjectCreated(status);
     } else if (pattern == EditProjectUrl()) {
@@ -585,7 +589,7 @@ void Backend::OnResponse(QNetworkReply* reply) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
         } else {
             qInfo() << "ошибочка вышла..";
-            emit RequestFailed("Не удалось получить url аккаунта.");
+            emit RequestFailed("Не удалось получить информацию об аккаунте.");
         }
 
         emit ProfileUpdated(status, user);
@@ -596,6 +600,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
 
             emit ProfileUpdated(status, user);
+        } else {
+            emit RequestFailed("Не удалось изменить данные пользователя!");
         }
 
 
@@ -607,14 +613,34 @@ void Backend::OnResponse(QNetworkReply* reply) {
                 TaskInfo task = TaskInfo::ParseFromJson(it.toObject());
                 tasks.push_back(task);
             }
+        } else {
+            emit RequestFailed("Не удалось получить список задач!");
         }
 
         emit TasksLoaded(status, tasks);
     } else if (pattern == CreateTaskUrl()) {
-        emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));
+        TaskInfo myTask = Context::DEFAULT_TASK;
+        if (status.isSuccess) {
+            myTask = TaskInfo::ParseFromJson(root["task"].toObject());
+        } else {
+            emit RequestFailed("Не удалось создать задачу!");
+        }
+
+        emit TaskEdited(status, myTask);
     } else if (pattern == EditTaskUrl()) {
-        emit TaskEdited(status, TaskInfo::ParseFromJson(root["task"].toObject()));
+        TaskInfo myTask = Context::DEFAULT_TASK;
+        if (status.isSuccess) {
+            myTask = TaskInfo::ParseFromJson(root["task"].toObject());
+        } else {
+            emit RequestFailed("Не удалось изменить задачу!");
+        }
+
+        emit TaskEdited(status, myTask);
     } else if (pattern == DeleteTaskUrl()) {
+        if (!status.isSuccess) {
+             emit RequestFailed("Не удалось удалить задачу!");
+        }
+
         emit TaskDeleted(status);
     } else if (pattern == DeleteUserUrl()){
 
@@ -624,6 +650,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
             for (QJsonValueRef it : root["roles"].toArray()) {
                 roles.push_back(RoleInfo::ParseFromJson(it.toObject()));
             }
+        } else {
+             emit RequestFailed("Не удалось получить список ролей");
         }
 
         emit RolesLoaded(status, roles);
@@ -631,6 +659,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
         RoleInfo role(-1, "", 0, -1);
         if (status.isSuccess) {
             role = RoleInfo::ParseFromJson(root["role"].toObject());
+        } else {
+             emit RequestFailed("Не удалось создать роль!");
         }
 
         emit RoleCreated(status, role);
@@ -638,30 +668,54 @@ void Backend::OnResponse(QNetworkReply* reply) {
         RoleInfo role(-1, "", 0, -1);
         if (status.isSuccess) {
             role = RoleInfo::ParseFromJson(root["role"].toObject());
+        } else {
+             emit RequestFailed("Не удалось изменить роль!");
         }
 
         emit RoleEdited(status, role);
     } else if (pattern == DeleteRoleUrl()) {
+        if (!status.isSuccess) {
+             emit RequestFailed("Не удалось удалить роль!");
+        }
+
         emit RoleDeleted(status);
     } else if (pattern == InviteByEmailUrl()) {
+        if (!status.isSuccess) {
+             emit RequestFailed("Не удалось пригласить пользователя!");
+        }
+
         emit MemberInvited(status);
     } else if (pattern == KickUrl()) {
+        if (!status.isSuccess) {
+             emit RequestFailed("Не удалось удалить пользователя!");
+        }
+
         emit MemberKicked(status);
     } else if (pattern == ChangeRoleUrl()) {
+        if (!status.isSuccess) {
+             emit RequestFailed("Не удалось изменить роль пользователя!");
+        }
         emit RoleChanged(status);
     } else if (pattern == CreateCommentUrl()) {
         CommentInfo comment(-1, std::optional<UserInfo>(), QDateTime(), "");
         if (status.isSuccess) {
             comment = CommentInfo::ParseFromJson(root["comment"].toObject());
+        } else {
+            emit RequestFailed("Не удалось создать комментарий!");
         }
 
         emit CommentCreated(status, comment);
     } else if (pattern == DeleteCommentUrl()) {
+        if (!status.isSuccess) {
+             emit RequestFailed("Не удалось удалить комментарий!");
+        }
         emit CommentDeleted(status);
     } else if (pattern == EditCommentUrl()) {
         CommentInfo comment(-1, std::optional<UserInfo>(), QDateTime(), "");
         if (status.isSuccess) {
             comment = CommentInfo::ParseFromJson(root["comment"].toObject());
+        } else {
+            emit RequestFailed("Не удалось изменить комментарий!");
         }
 
         emit CommentEdited(status, comment);
@@ -672,6 +726,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
             for (QJsonValueRef obj : root["comments"].toArray()) {
                 comments.push_back(CommentInfo::ParseFromJson(obj.toObject()));
             }
+        } else {
+            emit RequestFailed("Не удалось получить комментарии!");
         }
 
         emit CommentsLoaded(status, comments);
@@ -679,14 +735,22 @@ void Backend::OnResponse(QNetworkReply* reply) {
         TagInfo tag(-1, -1, "", QList<TagValue>());
         if (status.isSuccess) {
             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+        } else {
+            emit RequestFailed("Не удалось создать свойство!");
         }
         emit TagCaptionCreated(status, tag);
     } else if (pattern == DeleteTagCaptionUrl()) {
+        if (!status.isSuccess) {
+            emit RequestFailed("Не удалось удалить свойство!");
+        }
+
         emit TagCaptionDeleted(status);
     } else if (pattern == EditTagCaptionUrl()) {
         TagInfo tag(-1, -1, "", QList<TagValue>());
         if (status.isSuccess) {
             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+        } else {
+            emit RequestFailed("Не удалось изменить свойство!");
         }
         emit TagCaptionEdited(status, tag);
     } else if (pattern == GetTagCaptionUrl()) {
@@ -703,6 +767,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
         if (status.isSuccess) {
             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
             tagValue = TagValue::ParseFromJson(root["tagValue"].toObject());
+        } else {
+            emit RequestFailed("Не удалось создать тег!");
         }
 
         emit TagCaptionEdited(status, tag);
@@ -710,6 +776,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
         TagInfo tag(-1, -1, "", QList<TagValue>());
         if (status.isSuccess) {
             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
+        } else {
+            emit RequestFailed("Не удалось удалить тег!");
         }
 
         emit TagCaptionEdited(status, tag);
@@ -719,6 +787,8 @@ void Backend::OnResponse(QNetworkReply* reply) {
         if (status.isSuccess) {
             tag = TagInfo::ParseFromJson(root["tagCaption"].toObject());
             tagValue = TagValue::ParseFromJson(root["tagValue"].toObject());
+        } else {
+            emit RequestFailed("Не удалось изменить тег!");
         }
 
         emit TagCaptionEdited(status, tag);
@@ -726,9 +796,14 @@ void Backend::OnResponse(QNetworkReply* reply) {
         TaskTag taskTag(-1, TagValue(-1, ""));
         if (status.isSuccess) {
             taskTag = TaskTag::ParseFromJson(root["taskTag"].toObject());
+        } else {
+            emit RequestFailed("Не удалось добавить тег!");
         }
         emit TagAdded(status, taskTag);
     } else if (pattern == RemoveTagUrl()) {
+        if (!status.isSuccess) {
+            emit RequestFailed("Не удалось удалить тег!");
+        }
         emit TagRemoved(status);
     }
 

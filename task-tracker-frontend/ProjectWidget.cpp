@@ -106,8 +106,6 @@ void ProjectWidget::IfTextChanged() {
 void ProjectWidget::OnTaskUpdate(Status status) {
     if (status.isSuccess) {
         Backend::Instance.GetTasks(myProject);
-    } else {
-        emit Backend::Instance.RequestFailed("Не удалось получить список задач!");
     }
 }
 

@@ -167,8 +167,6 @@ void IssueWidget::OnTaskUpdated(Status status, const TaskInfo& task) {
 
         //and lock
         ToReadOnlyMode();
-    } else {
-        emit Backend::Instance.RequestFailed("Не удалось обновить задачу!");
     }
 }
 
@@ -202,7 +200,6 @@ void IssueWidget::OnCommentsLoaded(Status status, const QList<CommentInfo> &comm
 
 void IssueWidget::OnTagsLoaded(Status status, const QList<TagInfo> &tags) {
     if (!status.isSuccess) {
-        emit Backend::Instance.RequestFailed("Не удалось получить информацию о тегах!");
         return;
     }
 
@@ -212,7 +209,6 @@ void IssueWidget::OnTagsLoaded(Status status, const QList<TagInfo> &tags) {
 
 void IssueWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team) {
     if (!status.isSuccess) {
-        emit Backend::Instance.RequestFailed("Не удалось получить информацию о команде!");
         return;
     }
 
@@ -229,7 +225,6 @@ void IssueWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleIn
 
 void IssueWidget::OnTagAdded(Status status, const TaskTag &taskTag) {
     if (!status.isSuccess) {
-        emit Backend::Instance.RequestFailed("Не удалось добавить тег!");
         return;
     }
 
@@ -238,7 +233,6 @@ void IssueWidget::OnTagAdded(Status status, const TaskTag &taskTag) {
 
 void IssueWidget::OnTagRemoved(Status status) {
     if (!status.isSuccess) {
-        emit Backend::Instance.RequestFailed("Не удалось удалить тег!");
         return;
     }
 

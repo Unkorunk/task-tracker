@@ -14,7 +14,6 @@ LoadingBar::LoadingBar(QWidget *parent) :
     ui->label->hide();
 
     connect(&Backend::Instance, &Backend::RequestFailed, this, &LoadingBar::FailLoading);
-    //connect(, &AuthorizationWidget::FailAuthorization, this, &LoadingBar::FailLoading)
 }
 
 LoadingBar::~LoadingBar()

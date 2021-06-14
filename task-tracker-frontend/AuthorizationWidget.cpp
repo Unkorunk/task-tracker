@@ -24,13 +24,9 @@ void AuthorizationWidget::OnLogInBtnClicked() {
     ui->passwordField->setReadOnly(true);
 
     Backend::Instance.SignIn(ui->usernameField->text(), ui->passwordField->text());
-
-    ui->loadingBar->StartLoading();
-
 }
 
 void AuthorizationWidget::OnMoveToSignUpBtnClicked() {
-    ui->loadingBar->StopLoading();
     emit AuthClicked(AuthorizationWindow::Transition::Registration);
     ui->usernameField->setText("");
     ui->passwordField->setText("");
