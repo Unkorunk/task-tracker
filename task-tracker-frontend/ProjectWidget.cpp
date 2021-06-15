@@ -197,6 +197,7 @@ void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
 
 QList<TaskInfo> ProjectWidget::SortTasks(const QList<TaskInfo> &tasks) {
     QList<TaskInfo> res = tasks;
+
     std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
     {return left.GetCreationTime() > right.GetCreationTime();} );
     return res;
