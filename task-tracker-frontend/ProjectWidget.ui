@@ -195,6 +195,9 @@ p, li { white-space: pre-wrap; }
      <item>
       <widget class="QComboBox" name="sortingBox"/>
      </item>
+     <item>
+      <widget class="QComboBox" name="orderBox"/>
+     </item>
     </layout>
    </item>
    <item>

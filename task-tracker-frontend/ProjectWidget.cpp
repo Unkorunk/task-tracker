@@ -38,6 +38,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(ui->asigneeByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
     connect(ui->updateByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
     connect(ui->sortingBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+    connect(ui->orderBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
 
     connect(this, &ProjectWidget::RequestFilter, this, &ProjectWidget::OnFilterRequested);
 }
@@ -159,7 +160,7 @@ void ProjectWidget::SetupTeamFiltrage() {
     ui->createdByBox->clear();
     ui->asigneeByBox->clear();
     ui->updateByBox->clear();
-    QStringList fullNames = {"Created by"};
+    QStringList fullNames = {"Created by", "All"};
     for (auto& el : myContext.GetProjectTeam()) {
         auto newUsername = el.first.GetFullName();
         if (std::find(fullNames.begin(), fullNames.end(), newUsername) == fullNames.end())
@@ -174,10 +175,10 @@ void ProjectWidget::SetupTeamFiltrage() {
 }
 
 void ProjectWidget::OnFilterRequested(int index) {
-    if (index == -1)
+    if (index < 1)
         return;
     QList<TaskInfo> filteredTasks;
-    if (ui->createdByBox->currentIndex() > 0) {
+    if (ui->createdByBox->currentIndex() > 1) {
         auto creator = ui->createdByBox->currentText();
 
         for (auto task : taskList) {
@@ -185,9 +186,9 @@ void ProjectWidget::OnFilterRequested(int index) {
                 filteredTasks.append(task);
         }
     }
-    if (ui->asigneeByBox->currentIndex() > 0) {
+    if (ui->asigneeByBox->currentIndex() > 1) {
         auto asigner = ui->asigneeByBox->currentText();
-        if (ui->createdByBox->currentIndex() < 1){
+        if (ui->createdByBox->currentIndex() < 2){
             for (auto task : taskList) {
                 if (task.GetAssignee().has_value() && task.GetAssignee()->GetFullName() == asigner)
                     filteredTasks.append(task);
@@ -203,9 +204,9 @@ void ProjectWidget::OnFilterRequested(int index) {
             filteredTasks = newFilteredTasks;
         }
     }
-    if (ui->updateByBox->currentIndex() > 0) {
+    if (ui->updateByBox->currentIndex() > 1) {
         auto updater = ui->updateByBox->currentText();
-        if (ui->createdByBox->currentIndex() < 1 && ui->asigneeByBox->currentIndex() < 1){
+        if (ui->createdByBox->currentIndex() < 2 && ui->asigneeByBox->currentIndex() < 2){
             for (auto task : taskList) {
                 if (task.GetUpdater()->GetFullName() == updater)
                     filteredTasks.append(task);
@@ -220,8 +221,8 @@ void ProjectWidget::OnFilterRequested(int index) {
             filteredTasks = newFilteredTasks;
         }
     }
-    if (ui->updateByBox->currentIndex() < 1 && ui->asigneeByBox->currentIndex() < 1
-            && ui->createdByBox->currentIndex() < 1)
+    if (ui->updateByBox->currentIndex() < 2 && ui->asigneeByBox->currentIndex() < 2
+            && ui->createdByBox->currentIndex() < 2)
         DisplayTasks(SortTasks(taskList));
     else
         DisplayTasks(SortTasks(filteredTasks));
@@ -246,26 +247,47 @@ void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
 
 QList<TaskInfo> ProjectWidget::SortTasks(const QList<TaskInfo> &tasks) {
     QList<TaskInfo> res = tasks;
+    qInfo() << "Sort";
     switch(ui->sortingBox->currentIndex()){
     case 1:
-        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
                   {return left.GetCreationTime() > right.GetCreationTime();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetCreationTime() < right.GetCreationTime();} );
         break;
     case 2:
-        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
                   {return left.GetUpdateTime() > right.GetUpdateTime();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                      {return left.GetUpdateTime() < right.GetUpdateTime();} );
         break;
     case 3:
-        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
                   {return left.GetDeadline() > right.GetDeadline();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetDeadline() < right.GetDeadline();} );
         break;
     case 4:
-        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
                   {return left.GetStoryPoints() > right.GetStoryPoints();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetStoryPoints() < right.GetStoryPoints();} );
         break;
     default:
-        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
-        {return left.GetCreationTime() > right.GetCreationTime();} );
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                {return left.GetCreationTime() > right.GetCreationTime();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                {return left.GetCreationTime() < right.GetCreationTime();} );
         break;
     }
     return res;
@@ -277,6 +299,9 @@ void ProjectWidget::OnTagsLoaded(Status status, const QList<TagInfo>& tags) {
 
 void ProjectWidget::SetupSorting() {
     QStringList sortNames = {"Sort by", "Creation time", "Update time", "Deadline", "Story points"};
+    QStringList sortOrder = {"Order by", "ASC", "DSC"};
     ui->sortingBox->clear();
     ui->sortingBox->addItems(sortNames);
+    ui->orderBox->clear();
+    ui->orderBox->addItems(sortOrder);
 }
