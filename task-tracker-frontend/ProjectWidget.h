@@ -28,6 +28,8 @@ signals:
 
     void CreateTaskClicked(const QString& name);
 
+    void RequestFilter(int index);
+
 protected:
     void SetupPage() override;
 

@@ -38,6 +38,8 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(ui->asigneeByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
     connect(ui->updateByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
     connect(ui->sortingBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+
+    connect(this, &ProjectWidget::RequestFilter, this, &ProjectWidget::OnFilterRequested);
 }
 
 ProjectWidget::~ProjectWidget() {
@@ -65,6 +67,7 @@ void ProjectWidget::OnItemClicked(QListWidgetItem* item) {
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
     taskList.clear();
+    currentTaskList.clear();
 
     for (auto& task : tasks){
         taskList.append(task);
@@ -76,13 +79,12 @@ void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
 }
 
 void ProjectWidget::IfTextChanged() {
-
     QStringList query_parts = ui->searchInput->toPlainText().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
 
     for(int i = 0; i < ui->listWidget->count(); i++){//this->taskList.size()
 
         QStringList title_parts =
-                this->taskList[i].GetTitle().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
+                this->currentTaskList[i].GetTitle().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
 
         bool is_title_contains_query = true;
 
@@ -104,9 +106,19 @@ void ProjectWidget::IfTextChanged() {
             }
 
         }
-        ui->listWidget->item(ui->listWidget->count() - 1 - i)->setHidden(!is_title_contains_query);
+        ui->listWidget->item(ui->listWidget->count() - 1 - i)->
+                setHidden(!is_title_contains_query);
+        //if (is_title_contains_query)
+            //currentTaskList.append(taskList[i]);
         update();
     }
+//    if (ui->searchInput->toPlainText() == "")
+//        currentTaskList = taskList;
+//    qInfo() << "Test" << Qt::endl;
+//    for (auto task : currentTaskList){
+//        qInfo() << task.GetTitle() << Qt::endl;
+//    }
+//    emit RequestFilter(666);
 }
 
 void ProjectWidget::OnTaskUpdate(Status status) {
@@ -229,6 +241,7 @@ void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
         currentTaskList.append(task);
         update();
     }
+    ProjectWidget::IfTextChanged();
 }
 
 QList<TaskInfo> ProjectWidget::SortTasks(const QList<TaskInfo> &tasks) {
