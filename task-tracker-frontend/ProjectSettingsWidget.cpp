@@ -134,8 +134,17 @@ void ProjectSettingsWidget::OnRoleEdited(Status status, const RoleInfo &role) {
         RoleWidgetItem* item = (RoleWidgetItem*)ui->rolesList->itemWidget(ui->rolesList->item(i));
         if (item->GetRole().GetId() == role.GetId()) {
             item->SetRole(role, myContext.GetCurrentRole());
-            return;
+            break;
         }
+    }
+
+    ui->roleSelector->clear();
+    for (int i = 0; i < myRoles.size(); i++) {
+        if (myRoles[i].GetId() == role.GetId()) {
+            myRoles[i] = role;
+        }
+
+        ui->roleSelector->addItem(myRoles[i].GetCaption());
     }
 
     Backend::Instance.GetProjectUsers(myProject);
