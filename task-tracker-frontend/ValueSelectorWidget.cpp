@@ -61,7 +61,7 @@ void ValueSelectorWidget::OnAddDeleteClicked() {
     }
 
     if (myTags.count() == 0 || myTags[ui->propertySelector->currentIndex()].GetValues().count() == 0) {
-        emit Backend::Instance.RequestFailed("Список тегов уже пуст!");
+        emit Backend::Instance.RequestFailed("Список тегов пуст!");
         return;
     }
 
