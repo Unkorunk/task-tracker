@@ -628,7 +628,7 @@ void Backend::OnResponse(QNetworkReply* reply) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
         } else {
             qInfo() << "ошибочка вышла..";
-            emit RequestFailed("Данный логин уже занят!");
+            emit RequestFailed("Не удалось создать аккаунт!");
         }
 
         emit SignedUp(status, user);
