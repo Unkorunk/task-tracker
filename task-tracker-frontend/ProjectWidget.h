@@ -63,6 +63,8 @@ private:
     ProjectInfo myProject;
 
     QList<TaskInfo> taskList;
+
+    QList<TaskInfo> currentTaskList;
 };
 
 #endif // PROJECTWIDGET_H

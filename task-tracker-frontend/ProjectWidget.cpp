@@ -54,7 +54,7 @@ void ProjectWidget::OnProjectStatisticsBtnClicked() {
 
 void ProjectWidget::OnItemClicked(QListWidgetItem* item) {
     auto index = ui->listWidget->indexFromItem(item);
-    myContext.SetTask(taskList[taskList.count() - index.row() - 1]);
+    myContext.SetTask(currentTaskList[currentTaskList.count() - index.row() - 1]);
     emit TransitionRequested(MainWindow::Transition::Issue, myContext);
 }
 
@@ -175,10 +175,11 @@ void ProjectWidget::OnFilterRequested(int index) {
 }
 
 void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
-    //auto sorted_tasks = SortTasks(tasks);
+    auto sorted_tasks = SortTasks(tasks);
 
     ui->listWidget->clear();
-    for (auto& task : tasks) {
+    currentTaskList.clear();
+    for (auto& task : sorted_tasks) {
         //TODO: change
         auto item = new QListWidgetItem();
         auto widget = new TaskItemWidget(this);
@@ -186,14 +187,15 @@ void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
         item->setSizeHint(QSize(450, 60));
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item, widget);
-
+        currentTaskList.append(task);
         update();
     }
 }
 
 QList<TaskInfo> ProjectWidget::SortTasks(const QList<TaskInfo> &tasks) {
     auto res = tasks;
-    std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right){return left.GetCreationTime() > right.GetCreationTime();} );
+    std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+    {return left.GetCreationTime() > right.GetCreationTime();} );
     return res;
 }
 
