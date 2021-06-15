@@ -622,17 +622,17 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RoleWidgetItem.ui" line="140"/>
+        <location filename="RoleWidgetItem.ui" line="146"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RoleWidgetItem.ui" line="153"/>
+        <location filename="RoleWidgetItem.ui" line="165"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="RoleWidgetItem.ui" line="166"/>
+        <location filename="RoleWidgetItem.ui" line="184"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>

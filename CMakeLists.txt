@@ -177,6 +177,6 @@ endif()
 target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Network)
 
-set(OPENSSL_USE_STATIC_LIBS TRUE)
+#set(OPENSSL_USE_STATIC_LIBS TRUE)
 #add_executable(${PROJECT_NAME} ...) or add_library(${PROJECT_NAME} ...)
-target_link_libraries(task-tracker-frontend PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+#target_link_libraries(task-tracker-frontend PRIVATE OpenSSL::SSL OpenSSL::Crypto)

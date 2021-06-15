@@ -97,7 +97,7 @@ void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &
        auto item = new QListWidgetItem();
        auto widget = new RoleWidgetItem(this);
        widget->SetRole(role, myContext.GetCurrentRole());
-       item->setSizeHint(QSize(800, 100));
+       item->setSizeHint(QSize(600, 100));
 
        ui->rolesList->addItem(item);
        ui->rolesList->setItemWidget(item, widget);
@@ -116,7 +116,7 @@ void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
     auto item = new QListWidgetItem();
     auto widget = new RoleWidgetItem(this);
     widget->SetRole(role, myContext.GetCurrentRole());
-    item->setSizeHint(QSize(800, 100));
+    item->setSizeHint(QSize(600, 100));
 
     ui->rolesList->addItem(item);
     ui->rolesList->setItemWidget(item, widget);
@@ -179,7 +179,7 @@ void ProjectSettingsWidget::OnUsersLoaded(Status status, const QList<QPair<UserI
         auto item = new QListWidgetItem();
         auto widget = new UserItemWidget(this);
         widget->SetRoles(entry.first, myRoles, myProject, entry.second.GetId(), myContext.GetCurrentRole().HasPermission(RoleInfo::MANAGE_TEAM));
-        item->setSizeHint(QSize(800, 50));
+        item->setSizeHint(QSize(600, 50));
 
         ui->teamList->addItem(item);
         ui->teamList->setItemWidget(item, widget);
