@@ -7,6 +7,7 @@
 #include <QScrollBar>
 #include <QSet>
 #include <QComboBox>
+#include <QtAlgorithms>
 
 ProjectWidget::ProjectWidget(QWidget *parent) :
     AbstractPage(parent),
@@ -123,6 +124,8 @@ void ProjectWidget::SetupTeamFiltrage() {
 }
 
 void ProjectWidget::OnFilterRequested(int index) {
+    if (index == -1)
+        return;
     QList<TaskInfo> filteredTasks;
     if (ui->createdByBox->currentIndex() > 0) {
         auto creator = ui->createdByBox->currentText();
@@ -193,7 +196,7 @@ void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
 }
 
 QList<TaskInfo> ProjectWidget::SortTasks(const QList<TaskInfo> &tasks) {
-    auto res = tasks;
+    QList<TaskInfo> res = tasks;
     std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
     {return left.GetCreationTime() > right.GetCreationTime();} );
     return res;
