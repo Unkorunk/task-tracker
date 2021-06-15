@@ -114,6 +114,13 @@ void ProfileWidget::OnDeleteAccountBtnClicked()
 
 void ProfileWidget::SetupPage() {
     SetupProfile(myContext.GetUser());
+
+    this->ui->EditUserInfoBtn->setText("Edit");
+    this->ui->fullNameField->setEnabled(false);
+    this->ui->eMailField->setEnabled(false);
+
+    this->ui->fullNameField->setText(myContext.GetUser().GetFullName());
+    this->ui->eMailField->setText(myContext.GetUser().GetEmail());
 }
 
 void ProfileWidget::OnGetPicture(QNetworkReply* reply) {

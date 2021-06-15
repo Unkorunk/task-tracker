@@ -264,4 +264,8 @@ inline bool operator<(const ProjectInfo &proj1, const ProjectInfo &proj2)
     return proj1.GetTitle() < proj2.GetTitle();
 }
 
+inline bool operator==(const TaskInfo &task1, const TaskInfo &task2) {
+    return task1.GetId() == task2.GetId();
+}
+
 #endif // DATACLASSES_H

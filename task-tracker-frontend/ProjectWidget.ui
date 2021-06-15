@@ -182,6 +182,25 @@ p, li { white-space: pre-wrap; }
     </layout>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="filtersAndSortLayout">
+     <item>
+      <widget class="QComboBox" name="asigneeByBox"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="updateByBox"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="createdByBox"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="sortingBox"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="orderBox"/>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QListWidget" name="listWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">

@@ -5,6 +5,9 @@
 #include <QDebug>
 #include "MainWindow.h"
 #include <QScrollBar>
+#include <QSet>
+#include <QComboBox>
+#include <QtAlgorithms>
 
 ProjectWidget::ProjectWidget(QWidget *parent) :
     AbstractPage(parent),
@@ -26,6 +29,18 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(ui->searchInput, SIGNAL(textChanged()), this, SLOT (IfTextChanged()));
 
     connect(&Backend::Instance, &Backend::TaskEdited, this, &ProjectWidget::OnTaskUpdate);
+
+    connect(&Backend::Instance, &Backend::ProjectUsersLoaded, this, &ProjectWidget::OnTeamLoaded);
+
+    connect(&Backend::Instance, &Backend::TagCaptionsLoaded, this, &ProjectWidget::OnTagsLoaded);
+
+    connect(ui->createdByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+    connect(ui->asigneeByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+    connect(ui->updateByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+    connect(ui->sortingBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+    connect(ui->orderBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+
+    connect(this, &ProjectWidget::RequestFilter, this, &ProjectWidget::OnFilterRequested);
 }
 
 ProjectWidget::~ProjectWidget() {
@@ -47,37 +62,30 @@ void ProjectWidget::OnProjectStatisticsBtnClicked() {
 
 void ProjectWidget::OnItemClicked(QListWidgetItem* item) {
     auto index = ui->listWidget->indexFromItem(item);
-    myContext.SetTask(taskList[taskList.count() - index.row() - 1]);
+    myContext.SetTask(currentTaskList[currentTaskList.count() - index.row() - 1]);
     emit TransitionRequested(MainWindow::Transition::Issue, myContext);
 }
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
-    ui->listWidget->clear();
-    ui->searchInput->clear();
+    taskList.clear();
+    currentTaskList.clear();
 
-    this->taskList.clear();
-    for (auto& task : tasks) {
-        //TODO: change
+    for (auto& task : tasks){
         taskList.append(task);
-        auto item = new QListWidgetItem();
-        auto widget = new TaskItemWidget(this);
-        widget->SetTask(task);
-        item->setSizeHint(QSize(450, 60));
-        ui->listWidget->addItem(item);
-        ui->listWidget->setItemWidget(item, widget);
-
-        update();
     }
+
+    SetupTaskFiltrage();
+
+    DisplayTasks(taskList);
 }
 
 void ProjectWidget::IfTextChanged() {
-
     QStringList query_parts = ui->searchInput->toPlainText().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
 
     for(int i = 0; i < ui->listWidget->count(); i++){//this->taskList.size()
 
         QStringList title_parts =
-                this->taskList[i].GetTitle().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
+                this->currentTaskList[i].GetTitle().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
 
         bool is_title_contains_query = true;
 
@@ -99,9 +107,19 @@ void ProjectWidget::IfTextChanged() {
             }
 
         }
-        ui->listWidget->item(ui->listWidget->count() - 1 - i)->setHidden(!is_title_contains_query);
+        ui->listWidget->item(ui->listWidget->count() - 1 - i)->
+                setHidden(!is_title_contains_query);
+        //if (is_title_contains_query)
+            //currentTaskList.append(taskList[i]);
         update();
     }
+//    if (ui->searchInput->toPlainText() == "")
+//        currentTaskList = taskList;
+//    qInfo() << "Test" << Qt::endl;
+//    for (auto task : currentTaskList){
+//        qInfo() << task.GetTitle() << Qt::endl;
+//    }
+//    emit RequestFilter(666);
 }
 
 void ProjectWidget::OnTaskUpdate(Status status) {
@@ -115,4 +133,175 @@ void ProjectWidget::SetupPage() {
 
     ui->ProjectNameLabel->setText(myProject.GetTitle());
     Backend::Instance.GetTasks(myProject);
+    Backend::Instance.GetProjectUsers(myProject);
+    //Backend::Instance.GetTagCaptions(myProject);
+    //Backend::Instance.GetRoles(myProject);
+    SetupSorting();
+}
+
+void ProjectWidget::SetupTaskFiltrage() {
+//    QStringList fullNames = {"Created by"};
+//    for (auto& el : taskList) {
+//        auto newUsername = el.Get()->GetFullName();
+//        if (std::find(fullNames.begin(), fullNames.end(), newUsername) == fullNames.end())
+//            fullNames.append(newUsername);
+//    }
+//    ui->createdByBox->addItems(fullNames);
+
+}
+
+void ProjectWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team){
+    myContext.SetProjectTeam(team);
+
+    SetupTeamFiltrage();
+}
+
+void ProjectWidget::SetupTeamFiltrage() {
+    ui->createdByBox->clear();
+    ui->asigneeByBox->clear();
+    ui->updateByBox->clear();
+    QStringList fullNames = {"Created by", "All"};
+    for (auto& el : myContext.GetProjectTeam()) {
+        auto newUsername = el.first.GetFullName();
+        if (std::find(fullNames.begin(), fullNames.end(), newUsername) == fullNames.end())
+            fullNames.append(newUsername);
+    }
+    ui->createdByBox->addItems(fullNames);
+    fullNames[0] = "Asignee by";
+    ui->asigneeByBox->addItems(fullNames);
+    fullNames[0] = "Update by";
+    ui->updateByBox->addItems(fullNames);
+
+}
+
+void ProjectWidget::OnFilterRequested(int index) {
+    if (index < 1)
+        return;
+    QList<TaskInfo> filteredTasks;
+    if (ui->createdByBox->currentIndex() > 1) {
+        auto creator = ui->createdByBox->currentText();
+
+        for (auto task : taskList) {
+            if (task.GetCreator()->GetFullName() == creator)
+                filteredTasks.append(task);
+        }
+    }
+    if (ui->asigneeByBox->currentIndex() > 1) {
+        auto asigner = ui->asigneeByBox->currentText();
+        if (ui->createdByBox->currentIndex() < 2){
+            for (auto task : taskList) {
+                if (task.GetAssignee().has_value() && task.GetAssignee()->GetFullName() == asigner)
+                    filteredTasks.append(task);
+            }
+        }
+        else
+        {
+            QList<TaskInfo> newFilteredTasks;
+            for (auto task : filteredTasks) {
+                if (task.GetAssignee().has_value() && task.GetAssignee()->GetFullName() == asigner)
+                    newFilteredTasks.append(task);
+            }
+            filteredTasks = newFilteredTasks;
+        }
+    }
+    if (ui->updateByBox->currentIndex() > 1) {
+        auto updater = ui->updateByBox->currentText();
+        if (ui->createdByBox->currentIndex() < 2 && ui->asigneeByBox->currentIndex() < 2){
+            for (auto task : taskList) {
+                if (task.GetUpdater()->GetFullName() == updater)
+                    filteredTasks.append(task);
+            }
+        }
+        else {
+            QList<TaskInfo> newFilteredTasks;
+            for (auto task : taskList) {
+                if (task.GetUpdater()->GetFullName() == updater)
+                    newFilteredTasks.append(task);
+            }
+            filteredTasks = newFilteredTasks;
+        }
+    }
+    if (ui->updateByBox->currentIndex() < 2 && ui->asigneeByBox->currentIndex() < 2
+            && ui->createdByBox->currentIndex() < 2)
+        DisplayTasks(SortTasks(taskList));
+    else
+        DisplayTasks(SortTasks(filteredTasks));
+}
+
+void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
+    ui->listWidget->clear();
+    currentTaskList.clear();
+    for (auto& task : tasks) {
+        //TODO: change
+        auto item = new QListWidgetItem();
+        auto widget = new TaskItemWidget(this);
+        widget->SetTask(task);
+        item->setSizeHint(QSize(450, 60));
+        ui->listWidget->addItem(item);
+        ui->listWidget->setItemWidget(item, widget);
+        currentTaskList.append(task);
+        update();
+    }
+    ProjectWidget::IfTextChanged();
+}
+
+QList<TaskInfo> ProjectWidget::SortTasks(const QList<TaskInfo> &tasks) {
+    QList<TaskInfo> res = tasks;
+    qInfo() << "Sort";
+    switch(ui->sortingBox->currentIndex()){
+    case 1:
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetCreationTime() > right.GetCreationTime();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetCreationTime() < right.GetCreationTime();} );
+        break;
+    case 2:
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetUpdateTime() > right.GetUpdateTime();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                      {return left.GetUpdateTime() < right.GetUpdateTime();} );
+        break;
+    case 3:
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetDeadline() > right.GetDeadline();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetDeadline() < right.GetDeadline();} );
+        break;
+    case 4:
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetStoryPoints() > right.GetStoryPoints();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetStoryPoints() < right.GetStoryPoints();} );
+        break;
+    default:
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                {return left.GetCreationTime() > right.GetCreationTime();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                {return left.GetCreationTime() < right.GetCreationTime();} );
+        break;
+    }
+    return res;
+}
+
+void ProjectWidget::OnTagsLoaded(Status status, const QList<TagInfo>& tags) {
+    auto deb = tags;
+}
+
+void ProjectWidget::SetupSorting() {
+    QStringList sortNames = {"Sort by", "Creation time", "Update time", "Deadline", "Story points"};
+    QStringList sortOrder = {"Order by", "ASC", "DSC"};
+    ui->sortingBox->clear();
+    ui->sortingBox->addItems(sortNames);
+    ui->orderBox->clear();
+    ui->orderBox->addItems(sortOrder);
 }

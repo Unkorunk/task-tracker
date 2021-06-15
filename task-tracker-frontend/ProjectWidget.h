@@ -28,6 +28,8 @@ signals:
 
     void CreateTaskClicked(const QString& name);
 
+    void RequestFilter(int index);
+
 protected:
     void SetupPage() override;
 
@@ -44,12 +46,30 @@ private slots:
     void OnTasksLoaded(Status status, const QList<TaskInfo>& tasks);
     void OnTaskUpdate(Status status);
 
+    void OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team);
+
+    void OnFilterRequested(int index);
+
+    void OnTagsLoaded(Status status, const QList<TagInfo>& tags);
+
 private:
+    void SetupTaskFiltrage();
+
+    void SetupTeamFiltrage();
+
+    void DisplayTasks(const QList<TaskInfo> &tasks);
+
+    void SetupSorting();
+
+    QList<TaskInfo> SortTasks(const QList<TaskInfo> &tasks);
+
     Ui::ProjectWidget *ui;
 
     ProjectInfo myProject;
 
     QList<TaskInfo> taskList;
+
+    QList<TaskInfo> currentTaskList;
 };
 
 #endif // PROJECTWIDGET_H
