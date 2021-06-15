@@ -57,6 +57,8 @@ private:
 
     void DisplayTasks(const QList<TaskInfo> &tasks);
 
+    void SetupSorting();
+
     QList<TaskInfo> SortTasks(const QList<TaskInfo> &tasks);
 
     Ui::ProjectWidget *ui;

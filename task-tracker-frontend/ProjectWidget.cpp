@@ -37,6 +37,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     connect(ui->createdByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
     connect(ui->asigneeByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
     connect(ui->updateByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+    connect(ui->sortingBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
 }
 
 ProjectWidget::~ProjectWidget() {
@@ -122,16 +123,18 @@ void ProjectWidget::SetupPage() {
     Backend::Instance.GetProjectUsers(myProject);
     //Backend::Instance.GetTagCaptions(myProject);
     //Backend::Instance.GetRoles(myProject);
+    SetupSorting();
 }
 
 void ProjectWidget::SetupTaskFiltrage() {
 //    QStringList fullNames = {"Created by"};
 //    for (auto& el : taskList) {
-//        auto newUsername = el.GetCreator()->GetFullName();
+//        auto newUsername = el.Get()->GetFullName();
 //        if (std::find(fullNames.begin(), fullNames.end(), newUsername) == fullNames.end())
 //            fullNames.append(newUsername);
 //    }
 //    ui->createdByBox->addItems(fullNames);
+
 }
 
 void ProjectWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team){
@@ -207,17 +210,15 @@ void ProjectWidget::OnFilterRequested(int index) {
     }
     if (ui->updateByBox->currentIndex() < 1 && ui->asigneeByBox->currentIndex() < 1
             && ui->createdByBox->currentIndex() < 1)
-        DisplayTasks(taskList);
+        DisplayTasks(SortTasks(taskList));
     else
-        DisplayTasks(filteredTasks);
+        DisplayTasks(SortTasks(filteredTasks));
 }
 
 void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
-    auto sorted_tasks = SortTasks(tasks);
-
     ui->listWidget->clear();
     currentTaskList.clear();
-    for (auto& task : sorted_tasks) {
+    for (auto& task : tasks) {
         //TODO: change
         auto item = new QListWidgetItem();
         auto widget = new TaskItemWidget(this);
@@ -232,12 +233,37 @@ void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
 
 QList<TaskInfo> ProjectWidget::SortTasks(const QList<TaskInfo> &tasks) {
     QList<TaskInfo> res = tasks;
-
-    std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
-    {return left.GetCreationTime() > right.GetCreationTime();} );
+    switch(ui->sortingBox->currentIndex()){
+    case 1:
+        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetCreationTime() > right.GetCreationTime();} );
+        break;
+    case 2:
+        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetUpdateTime() > right.GetUpdateTime();} );
+        break;
+    case 3:
+        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetDeadline() > right.GetDeadline();} );
+        break;
+    case 4:
+        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetStoryPoints() > right.GetStoryPoints();} );
+        break;
+    default:
+        std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+        {return left.GetCreationTime() > right.GetCreationTime();} );
+        break;
+    }
     return res;
 }
 
 void ProjectWidget::OnTagsLoaded(Status status, const QList<TagInfo>& tags) {
     auto deb = tags;
+}
+
+void ProjectWidget::SetupSorting() {
+    QStringList sortNames = {"Sort by", "Creation time", "Update time", "Deadline", "Story points"};
+    ui->sortingBox->clear();
+    ui->sortingBox->addItems(sortNames);
 }

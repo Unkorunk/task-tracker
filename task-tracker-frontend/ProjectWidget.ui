@@ -192,6 +192,9 @@ p, li { white-space: pre-wrap; }
      <item>
       <widget class="QComboBox" name="createdByBox"/>
      </item>
+     <item>
+      <widget class="QComboBox" name="sortingBox"/>
+     </item>
     </layout>
    </item>
    <item>
