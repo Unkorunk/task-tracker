@@ -153,6 +153,7 @@ set(PROJECT_SOURCES_FRONTEND
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(task-tracker-frontend
+      WIN32
     ${PROJECT_SOURCES_FRONTEND}
   )
 
@@ -162,6 +163,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   )
 else()
   add_executable(task-tracker-frontend
+      WIN32
     ${PROJECT_SOURCES_FRONTEND}
   )
 
