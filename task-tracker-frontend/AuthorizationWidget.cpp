@@ -9,6 +9,7 @@ AuthorizationWidget::AuthorizationWidget(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->LogInBtn, SIGNAL(clicked()), this, SLOT(OnLogInBtnClicked()));
     connect(ui->MoveToSignUpBtn, SIGNAL(clicked()), this, SLOT(OnMoveToSignUpBtnClicked()));
+    //connect(this, &AuthorizationWidget::FailAuthorization, )
 
     connect(&Backend::Instance, &Backend::SignedIn, this, &AuthorizationWidget::OnLogin);
 }
@@ -23,8 +24,6 @@ void AuthorizationWidget::OnLogInBtnClicked() {
     ui->passwordField->setReadOnly(true);
 
     Backend::Instance.SignIn(ui->usernameField->text(), ui->passwordField->text());
-
-    ui->loadingBar->StartLoading();
 }
 
 void AuthorizationWidget::OnMoveToSignUpBtnClicked() {
@@ -38,15 +37,18 @@ void AuthorizationWidget::OnLogin(Status status, const UserInfo& user)
     ui->usernameField->setReadOnly(false);
     ui->passwordField->setReadOnly(false);
 
-    ui->loadingBar->StopLoading();
-
     if (status.isSuccess) {
         emit LoggedIn(user);
         ui->usernameField->setText("");
         ui->passwordField->setText("");
         return;
+    } else {
+        if (ui->usernameField->text().isEmpty()){
+            emit Backend::Instance.RequestFailed("Не заполнен логин!");
+        }
+        else if (ui->passwordField->text().isEmpty()) {
+            emit Backend::Instance.RequestFailed("Не заполнен пароль!");
+        }
     }
-
-    // TODO: handle errors
 }
 

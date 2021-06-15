@@ -21,6 +21,7 @@ private slots:
     void OnMoveToSignUpBtnClicked();
     void OnLogin(Status status, const UserInfo& user);
 signals:
+    void FailAuthorization(QString log);
     void LoggedIn(const UserInfo& user);
     void AuthClicked(AuthorizationWindow::Transition transition);
 

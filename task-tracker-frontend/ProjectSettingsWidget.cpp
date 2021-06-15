@@ -18,6 +18,9 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     connect(ui->createRole, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnRoleCreateClicked);
     connect(ui->inviteButton, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnInviteClicked);
     connect(ui->newTagBtn, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnTagCreateClicked);
+    connect(ui->deleteBtn, &QAbstractButton::clicked, this, &ProjectSettingsWidget::OnDeleteClicked);
+
+    connect(&Backend::Instance, &Backend::ProjectDeleted, this, &ProjectSettingsWidget::OnProjectDeleted);
 
     connect(&Backend::Instance, &Backend::ProjectEdited, this, &ProjectSettingsWidget::OnProjectEdited);
     connect(&Backend::Instance, &Backend::RolesLoaded, this, &ProjectSettingsWidget::OnRolesLoaded);
@@ -32,6 +35,8 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
     connect(&Backend::Instance, &Backend::TagCaptionDeleted, this, &ProjectSettingsWidget::OnTagDeleted);
     connect(&Backend::Instance, &Backend::TagCaptionCreated, this, &ProjectSettingsWidget::OnTagCreated);
     connect(&Backend::Instance, &Backend::TagCaptionEdited, this, &ProjectSettingsWidget::OnTagEdited);
+
+    ui->deleteBtn->hide();
 }
 
 void ProjectSettingsWidget::OnSaveClicked() {
@@ -64,13 +69,23 @@ void ProjectSettingsWidget::OnProjectEdited(Status status) {
     }
 }
 
+void ProjectSettingsWidget::OnDeleteClicked() {
+    Backend::Instance.DeleteProject(myContext.GetCurrentProject());
+}
+
+void ProjectSettingsWidget::OnProjectDeleted(Status status) {
+    if (status.isSuccess) {
+        myContext.SetProject(Context::DEFAULT_PROJECT);
+        emit TransitionRequested(MainWindow::Transition::Greetings, myContext);
+    }
+}
+
 void ProjectSettingsWidget::OnRoleCreateClicked() {
     Backend::Instance.CreateRole(RoleInfo(-1, "User role", 0, myProject.GetId()));
 }
 
 void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &roles) {
     if (!status.isSuccess) {
-        // TODO: Handle errors;
         return;
     }
 
@@ -95,7 +110,6 @@ void ProjectSettingsWidget::OnRolesLoaded(Status status, const QList<RoleInfo> &
 
 void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
     if (!status.isSuccess) {
-        // TODO: Handle errors
         return;
     }
 
@@ -113,7 +127,6 @@ void ProjectSettingsWidget::OnRoleCreated(Status status, const RoleInfo &role) {
 
 void ProjectSettingsWidget::OnRoleEdited(Status status, const RoleInfo &role) {
     if (!status.isSuccess) {
-        // TODO: Handle errors
         return;
     }
 
@@ -130,7 +143,6 @@ void ProjectSettingsWidget::OnRoleEdited(Status status, const RoleInfo &role) {
 
 void ProjectSettingsWidget::OnRoleDeleted(Status status) {
     if (!status.isSuccess) {
-        // TODO: Handle errors;
         return;
     }
 
@@ -143,7 +155,6 @@ void ProjectSettingsWidget::OnInviteClicked() {
 
 void ProjectSettingsWidget::OnMemberInvited(Status status){
     if (!status.isSuccess) {
-        // TODO: handle errors
         return;
     }
 
@@ -152,7 +163,6 @@ void ProjectSettingsWidget::OnMemberInvited(Status status){
 
 void ProjectSettingsWidget::OnMemberKicked(Status status) {
     if (!status.isSuccess) {
-        // TODO: handle errors
         return;
     }
 
@@ -161,7 +171,6 @@ void ProjectSettingsWidget::OnMemberKicked(Status status) {
 
 void ProjectSettingsWidget::OnUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo> > &users) {
     if (!status.isSuccess) {
-        // TODO: Handle errors;
         return;
     }
 
@@ -183,7 +192,6 @@ void ProjectSettingsWidget::OnTagCreateClicked() {
 
 void ProjectSettingsWidget::OnTagsLoaded(Status status, const QList<TagInfo> &tags) {
     if (!status.isSuccess) {
-        // TODO: Handle errors
         return;
     }
 
@@ -201,7 +209,6 @@ void ProjectSettingsWidget::OnTagsLoaded(Status status, const QList<TagInfo> &ta
 
 void ProjectSettingsWidget::OnTagDeleted(Status status) {
     if (!status.isSuccess) {
-        // TODO: handle errors
         return;
     }
     Backend::Instance.GetTagCaptions(myContext.GetCurrentProject());
@@ -209,7 +216,6 @@ void ProjectSettingsWidget::OnTagDeleted(Status status) {
 
 void ProjectSettingsWidget::OnTagCreated(Status status, const TagInfo &tag){
     if (!status.isSuccess) {
-        // TODO: handle errors
         return;
     }
 
@@ -223,7 +229,6 @@ void ProjectSettingsWidget::OnTagCreated(Status status, const TagInfo &tag){
 
 void ProjectSettingsWidget::OnTagEdited(Status status, const TagInfo &tag) {
     if (!status.isSuccess) {
-        // TODO: Handle errors;
         return;
     }
 
@@ -247,6 +252,7 @@ void ProjectSettingsWidget::SetupPage() {
     ui->inviteButton->hide();
     ui->newTagBtn->hide();
     ui->saveNameButton->hide();
+    ui->deleteBtn->hide();
 
     ui->editProjectName->setText(myContext.GetCurrentProject().GetTitle());
     ui->rolesList->clear();
@@ -268,6 +274,9 @@ void ProjectSettingsWidget::SetupPage() {
     }
     if (role.HasPermission(RoleInfo::MANAGE_TEAM)) {
         ui->inviteButton->show();
+    }
+    if (role.HasPermission(RoleInfo::DELETE_PROJECT)) {
+        //ui->deleteBtn->show();
     }
 
     UnlockUi();

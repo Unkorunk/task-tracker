@@ -18,6 +18,7 @@ MainWindow::MainWindow(QMainWindow& authWindow, QWidget *parent)
     connect(ui->greetingsPage, &GreetingsWidget::ProjectSelected, this, &MainWindow::OnTransition);
     connect(ui->projectPage, &ProjectWidget::TransitionRequested, this, &MainWindow::OnTransition);
     connect(ui->issuePage, &IssueWidget::TaskDeleted, this, &MainWindow::OnTransition);
+    connect(ui->projectSettingsPage, &ProjectSettingsWidget::TransitionRequested, this, &MainWindow::OnTransition);
 
     connect(&Backend::Instance, &Backend::LoadingChanged, this, &MainWindow::OnLoadingChanged);
 
@@ -36,6 +37,7 @@ void MainWindow::OnTransition(MainWindow::Transition transition, const Context& 
 
     switch (transition) {
     case Transition::Greetings:
+        myTransitionsHistory.clear();
         Backend::Instance.GetProjects();
         break;
     }

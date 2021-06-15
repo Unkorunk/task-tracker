@@ -35,6 +35,7 @@ public:
     void CreateProject(const QString& projectName);
     void EditProject(const ProjectInfo& projectInfo);
     void GetProjectUsers(const ProjectInfo& projectInfo);
+    void DeleteProject(const ProjectInfo& projectInfo);
 
     void GetTasks(const ProjectInfo& projectInfo);
     void CreateTask(const TaskInfo& taskInfo);
@@ -77,7 +78,13 @@ public:
     void AddTag(const TaskInfo& task, const TagValue& tag);
     void RemoveTag(const TaskTag& taskTag);
 
+    void GetUnreadNotifications();
+    void GetNotifications();
+    void ClearRead();
+
 signals:
+    void RequestFailed(QString log);
+
     void LoadingChanged(bool isLoading);
 
     void SignedIn(Status status, const UserInfo& user);
@@ -89,6 +96,7 @@ signals:
     void ProjectCreated(Status status);   
     void ProjectEdited(Status status);
     void ProjectUsersLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>>& users);
+    void ProjectDeleted(Status status);
 
     void ProfileUpdated(Status status, const UserInfo& user);
 
@@ -122,6 +130,9 @@ signals:
     void TagAdded(Status status, const TaskTag& tagTask);
     void TagRemoved(Status status);
 
+    void UnreadLoaded(Status status, const QList<NotificationInfo>& notifications);
+    void NotificationsLoaded(Status status, const QList<NotificationInfo>& notifications);
+
 private slots:
     void OnResponse(QNetworkReply* reply);
 
@@ -136,6 +147,7 @@ private:
     QString CreateProjectUrl();
     QString EditProjectUrl();
     QString GetProjectUsersUrl();
+    QString DeleteProjectUrl();
 
     QString SignInAccountUrl();
     QString SignUpAccountUrl();
@@ -173,6 +185,10 @@ private:
 
     QString AddTagUrl();
     QString RemoveTagUrl();
+
+    QString GetUnreadsUrl();
+    QString GetNotificationsUrl();
+    QString ClearNotificationsUrl();
 
     QJsonObject GetRootFromReply(QNetworkReply* reply, Status& errorMsg);
 

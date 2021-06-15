@@ -2,7 +2,7 @@
 #define NOTIFICATIONSWIDGET_H
 
 #include "AbstractPage.h"
-
+#include "MainWindow.h"
 #include <QWidget>
 
 namespace Ui {
@@ -20,8 +20,16 @@ public:
 protected:
     void SetupPage() override;
 
+signals:
+    void TransitionRequested(MainWindow::Transition transition, const Context& context);
+
+private slots:
+    void OnNotifictaionsLoaded(Status status, const QList<NotificationInfo> &notificationsList);
+
 private:
     Ui::NotificationsWidget *ui;
+
+    QList<NotificationInfo> notificationsList;
 };
 
 #endif // NOTIFICATIONSWIDGET_H

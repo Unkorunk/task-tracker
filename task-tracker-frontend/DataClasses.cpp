@@ -303,9 +303,9 @@ uint64_t RoleInfo::GetPermission() const {
 QString RoleInfo::GetPermissionStr() const {
     QString res;
     uint64_t mask = 0;
-    for (uint64_t i = 0; i < 8; i++) {
-        mask = 255 << (i * 8ull);
-        res.append((char)((myPermissions & mask) >> (i * 8ull)));
+
+    for (int i = 0; i < 64; i++) {
+        res.append(HasPermission(1 << i) ? '1' : '0');
     }
 
     return res;
@@ -420,6 +420,29 @@ TagValue TaskTag::GetValue() const {
 
 void TaskTag::SetValue(const TagValue &tag) {
     myValue = tag;
+}
+
+int NotificationInfo::GetId() {
+    return myId;
+}
+
+QString NotificationInfo::GetText() const {
+    return myText;
+}
+
+bool NotificationInfo::IsRead() const
+{
+    return isRead;
+}
+
+void NotificationInfo::SetText(QString text) {
+    myText = text;
+}
+
+NotificationInfo::NotificationInfo(int id, QString text, bool readStatus): myId(id), myText(text), isRead(readStatus) {}
+
+NotificationInfo NotificationInfo::ParseFromJson(const QJsonObject &obj) {
+    return NotificationInfo(obj["id"].toInt(), obj["text"].toString(), obj["isRead"].toBool());
 }
 
 // END TASK TAG

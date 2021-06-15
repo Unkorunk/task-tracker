@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "AbstractPage.h"
 #include "Backend.h"
+#include "MainWindow.h"
 
 namespace Ui {
 class ProjectSettingsWidget;
@@ -18,6 +19,8 @@ private slots:
     void OnCancelClicked();
 
     void OnProjectEdited(Status status);
+    void OnDeleteClicked();
+    void OnProjectDeleted(Status status);
 
     void OnRoleCreateClicked();
 
@@ -39,6 +42,8 @@ private slots:
     void OnTagDeleted(Status status);
     void OnTagCreated(Status status, const TagInfo& tag);
     void OnTagEdited(Status status, const TagInfo& tag);
+signals:
+    void TransitionRequested(MainWindow::Transition, const Context& context);
 public:
     explicit ProjectSettingsWidget(QWidget *parent = nullptr);
     ~ProjectSettingsWidget();

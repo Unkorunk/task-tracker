@@ -10,7 +10,6 @@
 #include "Backend.h"
 #include "AbstractPage.h"
 #include "MainWindow.h"
-#include "MainWindow.h"
 
 namespace Ui {
 class ProjectWidget;
@@ -37,6 +36,8 @@ private slots:
 
     void OnProjectSettingsBtnClicked();
     void OnProjectStatisticsBtnClicked();
+
+    void IfTextChanged();
 
     void OnItemClicked(QListWidgetItem*);
 

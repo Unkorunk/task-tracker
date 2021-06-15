@@ -223,13 +223,31 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="213"/>
+        <location filename="NavBar.ui" line="207"/>
+        <source>19</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="NavBar.ui" line="233"/>
         <source>Profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NavBar.ui" line="234"/>
+        <location filename="NavBar.ui" line="254"/>
         <source>Log out</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>NotificationItemWidget</name>
+    <message>
+        <location filename="NotificationItemWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="NotificationItemWidget.ui" line="25"/>
+        <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -241,8 +259,8 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="NotificationsWidget.ui" line="26"/>
-        <source>Notifications Widget</source>
+        <location filename="NotificationsWidget.ui" line="36"/>
+        <source>Notifications</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -352,41 +370,46 @@ an account?</source>
     </message>
     <message>
         <location filename="ProjectSettingsWidget.ui" line="95"/>
+        <source>Delete Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ProjectSettingsWidget.ui" line="108"/>
         <source>Team</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="103"/>
+        <location filename="ProjectSettingsWidget.ui" line="116"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Roles&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="116"/>
+        <location filename="ProjectSettingsWidget.ui" line="129"/>
         <source>Create role</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="175"/>
+        <location filename="ProjectSettingsWidget.ui" line="188"/>
         <source>Team:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="227"/>
+        <location filename="ProjectSettingsWidget.ui" line="240"/>
         <source>Email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="255"/>
+        <location filename="ProjectSettingsWidget.ui" line="268"/>
         <source>Invite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="288"/>
+        <location filename="ProjectSettingsWidget.ui" line="301"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProjectSettingsWidget.ui" line="299"/>
+        <location filename="ProjectSettingsWidget.ui" line="312"/>
         <source>New Property</source>
         <translation type="unfinished"></translation>
     </message>
@@ -430,11 +453,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ProjectWidget.ui" line="178"/>
         <source>Enter search request</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ProjectWidget.ui" line="207"/>
-        <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -655,13 +673,8 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="TaskItemWidget.ui" line="186"/>
-        <source>Status</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="TaskItemWidget.ui" line="204"/>
-        <location filename="TaskItemWidget.ui" line="222"/>
+        <location filename="TaskItemWidget.ui" line="182"/>
+        <location filename="TaskItemWidget.ui" line="200"/>
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>

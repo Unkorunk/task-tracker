@@ -20,6 +20,8 @@ ProjectsList::ProjectsList(QWidget *parent) :
     connect(ui->addProjectBtn, &QAbstractButton::clicked, this, &ProjectsList::OnAddProjectBtnClicked);
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(OnItemClicked(QListWidgetItem*)));
 
+    connect(ui->textEdit, SIGNAL(textChanged()), this, SLOT (IfTextChanged()));
+
     connect(dialog, SIGNAL(createProject(QString&)), this, SLOT(OnProjectCreated(QString&)));
 
 }
@@ -54,6 +56,40 @@ void ProjectsList::OnProjectCreated(QString& projectName) {
 void ProjectsList::OnAddProjectBtnClicked() {
     dialog->clear();
     dialog->show();
+}
+
+void ProjectsList::IfTextChanged(){
+
+    QStringList query_parts = ui->textEdit->toPlainText().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
+
+    for(int i = 0; i < this->myProjects.size(); i++){
+
+        QStringList title_parts =
+                this->myProjects[i].first.GetTitle().toLower().trimmed().split(" ", Qt::SkipEmptyParts, Qt::CaseInsensitive);
+
+        bool is_title_contains_query = true;
+
+        for (int k = 0; k < query_parts.size(); k++){
+
+            bool is_query_part_find = false;
+
+            for (int j = 0; j < title_parts.size(); j++){
+
+                if (title_parts[j].indexOf(query_parts[k]) == 0) {
+                    is_query_part_find = true;
+                }
+
+            }
+
+            if (!is_query_part_find) {
+                is_title_contains_query = false;
+                break;
+            }
+
+        }
+        ui->listWidget->item(i)->setHidden(!is_title_contains_query);
+        update();
+    }
 }
 
 void ProjectsList::OnItemClicked(QListWidgetItem* item) {

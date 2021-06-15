@@ -83,6 +83,19 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="deleteBtn">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Delete Project</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
