@@ -281,6 +281,14 @@ QList<TaskInfo> ProjectWidget::SortTasks(const QList<TaskInfo> &tasks) {
             std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
                   {return left.GetStoryPoints() < right.GetStoryPoints();} );
         break;
+    case 5:
+        if (ui->orderBox->currentIndex() < 2)
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetTitle() > right.GetTitle();} );
+        else
+            std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
+                  {return left.GetTitle() < right.GetTitle();} );
+        break;
     default:
         if (ui->orderBox->currentIndex() < 2)
             std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right)
@@ -298,7 +306,7 @@ void ProjectWidget::OnTagsLoaded(Status status, const QList<TagInfo>& tags) {
 }
 
 void ProjectWidget::SetupSorting() {
-    QStringList sortNames = {"Sort by", "Creation time", "Update time", "Deadline", "Story points"};
+    QStringList sortNames = {"Sort by", "Creation time", "Update time", "Deadline", "Story points", "Task title"};
     QStringList sortOrder = {"Order by", "ASC", "DSC"};
     ui->sortingBox->clear();
     ui->sortingBox->addItems(sortNames);
