@@ -41,8 +41,8 @@ ProjectSettingsWidget::ProjectSettingsWidget(QWidget *parent) :
 
 void ProjectSettingsWidget::OnSaveClicked() {
     if (ui->cancelButton->isVisible()) {
-        // TODO: Handle errors
         if (ui->editProjectName->text().count() == 0) {
+            emit Backend::Instance.RequestFailed("У проекта должно быть название!");
             return;
         }
 
@@ -65,7 +65,7 @@ void ProjectSettingsWidget::OnProjectEdited(Status status) {
        myProject.SetTitle(ui->editProjectName->text());
        ToReadonlyMode();
     } else {
-        // TODO: Handle errors
+        emit Backend::Instance.RequestFailed("Не удалось сохранить изменения!");
     }
 }
 
