@@ -45,10 +45,14 @@ private slots:
 
     void OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team);
 
-    void OnCreatorRequested(int index);
+    void OnFilterRequested(int index);
+
+    void OnTagsLoaded(Status status, const QList<TagInfo>& tags);
 
 private:
-    void SetupFiltrage();
+    void SetupTaskFiltrage();
+
+    void SetupTeamFiltrage();
 
     void DisplayTasks(const QList<TaskInfo> &tasks);
 

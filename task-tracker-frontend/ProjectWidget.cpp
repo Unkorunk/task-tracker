@@ -5,6 +5,8 @@
 #include <QDebug>
 #include "MainWindow.h"
 #include <QScrollBar>
+#include <QSet>
+#include <QComboBox>
 
 ProjectWidget::ProjectWidget(QWidget *parent) :
     AbstractPage(parent),
@@ -26,7 +28,11 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
 
     connect(&Backend::Instance, &Backend::ProjectUsersLoaded, this, &ProjectWidget::OnTeamLoaded);
 
-    connect(ui->createdByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnCreatorRequested);
+    connect(&Backend::Instance, &Backend::TagCaptionsLoaded, this, &ProjectWidget::OnTagsLoaded);
+
+    connect(ui->createdByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+    connect(ui->asigneeByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
+    connect(ui->updateByBox, &QComboBox::currentIndexChanged, this, &ProjectWidget::OnFilterRequested);
 }
 
 ProjectWidget::~ProjectWidget() {
@@ -54,9 +60,13 @@ void ProjectWidget::OnItemClicked(QListWidgetItem* item) {
 
 void ProjectWidget::OnTasksLoaded(Status status, const QList<TaskInfo> &tasks) {
     taskList.clear();
+
     for (auto& task : tasks){
         taskList.append(task);
     }
+
+    SetupTaskFiltrage();
+
     DisplayTasks(taskList);
 }
 
@@ -74,48 +84,101 @@ void ProjectWidget::SetupPage() {
     ui->ProjectNameLabel->setText(myProject.GetTitle());
     Backend::Instance.GetTasks(myProject);
     Backend::Instance.GetProjectUsers(myProject);
+    //Backend::Instance.GetTagCaptions(myProject);
+    //Backend::Instance.GetRoles(myProject);
 }
 
-void ProjectWidget::SetupFiltrage() {
-    auto pr_team = myContext.GetProjectTeam();
-    QStringList fullNames = {"Created by"};
-    for (auto& el : pr_team) {
-        fullNames.append(el.first.GetFullName());
-    }
-    ui->createdByBox->clear();
-    ui->createdByBox->addItems(fullNames);
+void ProjectWidget::SetupTaskFiltrage() {
+//    QStringList fullNames = {"Created by"};
+//    for (auto& el : taskList) {
+//        auto newUsername = el.GetCreator()->GetFullName();
+//        if (std::find(fullNames.begin(), fullNames.end(), newUsername) == fullNames.end())
+//            fullNames.append(newUsername);
+//    }
+//    ui->createdByBox->addItems(fullNames);
 }
 
 void ProjectWidget::OnTeamLoaded(Status status, const QList<QPair<UserInfo, RoleInfo>> &team){
     myContext.SetProjectTeam(team);
 
-    SetupFiltrage();
+    SetupTeamFiltrage();
 }
 
-void ProjectWidget::OnCreatorRequested(int index) {
-    if (index == 0 || ui->createdByBox->currentIndex() == 0) {
-        DisplayTasks(taskList);
-        return;
+void ProjectWidget::SetupTeamFiltrage() {
+    ui->createdByBox->clear();
+    ui->asigneeByBox->clear();
+    ui->updateByBox->clear();
+    QStringList fullNames = {"Created by"};
+    for (auto& el : myContext.GetProjectTeam()) {
+        auto newUsername = el.first.GetFullName();
+        if (std::find(fullNames.begin(), fullNames.end(), newUsername) == fullNames.end())
+            fullNames.append(newUsername);
     }
-    else if (index == -1 || ui->createdByBox->currentIndex() == -1) return;
+    ui->createdByBox->addItems(fullNames);
+    fullNames[0] = "Asignee by";
+    ui->asigneeByBox->addItems(fullNames);
+    fullNames[0] = "Update by";
+    ui->updateByBox->addItems(fullNames);
 
+}
+
+void ProjectWidget::OnFilterRequested(int index) {
     QList<TaskInfo> filteredTasks;
+    if (ui->createdByBox->currentIndex() > 0) {
+        auto creator = ui->createdByBox->currentText();
 
-    auto creator = ui->createdByBox->currentText();
-
-    for (auto task : taskList) {
-        if (task.GetCreator()->GetFullName() == creator)
-            filteredTasks.append(task);
+        for (auto task : taskList) {
+            if (task.GetCreator()->GetFullName() == creator)
+                filteredTasks.append(task);
+        }
     }
-
-    DisplayTasks(filteredTasks);
+    if (ui->asigneeByBox->currentIndex() > 0) {
+        auto asigner = ui->asigneeByBox->currentText();
+        if (ui->createdByBox->currentIndex() < 1){
+            for (auto task : taskList) {
+                if (task.GetAssignee().has_value() && task.GetAssignee()->GetFullName() == asigner)
+                    filteredTasks.append(task);
+            }
+        }
+        else
+        {
+            QList<TaskInfo> newFilteredTasks;
+            for (auto task : filteredTasks) {
+                if (task.GetAssignee().has_value() && task.GetAssignee()->GetFullName() == asigner)
+                    newFilteredTasks.append(task);
+            }
+            filteredTasks = newFilteredTasks;
+        }
+    }
+    if (ui->updateByBox->currentIndex() > 0) {
+        auto updater = ui->updateByBox->currentText();
+        if (ui->createdByBox->currentIndex() < 1 && ui->asigneeByBox->currentIndex() < 1){
+            for (auto task : taskList) {
+                if (task.GetUpdater()->GetFullName() == updater)
+                    filteredTasks.append(task);
+            }
+        }
+        else {
+            QList<TaskInfo> newFilteredTasks;
+            for (auto task : taskList) {
+                if (task.GetUpdater()->GetFullName() == updater)
+                    newFilteredTasks.append(task);
+            }
+            filteredTasks = newFilteredTasks;
+        }
+    }
+    if (ui->updateByBox->currentIndex() < 1 && ui->asigneeByBox->currentIndex() < 1
+            && ui->createdByBox->currentIndex() < 1)
+        DisplayTasks(taskList);
+    else
+        DisplayTasks(filteredTasks);
 }
 
 void ProjectWidget::DisplayTasks(const QList<TaskInfo> &tasks){
-    auto sorted_tasks = SortTasks(tasks);
+    //auto sorted_tasks = SortTasks(tasks);
 
     ui->listWidget->clear();
-    for (auto& task : sorted_tasks) {
+    for (auto& task : tasks) {
         //TODO: change
         auto item = new QListWidgetItem();
         auto widget = new TaskItemWidget(this);
@@ -132,4 +195,8 @@ QList<TaskInfo> ProjectWidget::SortTasks(const QList<TaskInfo> &tasks) {
     auto res = tasks;
     std::sort(res.begin(), res.end(), [](const TaskInfo &left, const TaskInfo &right){return left.GetCreationTime() > right.GetCreationTime();} );
     return res;
+}
+
+void ProjectWidget::OnTagsLoaded(Status status, const QList<TagInfo>& tags) {
+    auto deb = tags;
 }

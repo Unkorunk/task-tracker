@@ -211,12 +211,15 @@ border-radius: 3px;</string>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <layout class="QHBoxLayout" name="filtersAndSortLayout">
      <item>
-      <widget class="QComboBox" name="createdByBox"/>
+      <widget class="QComboBox" name="asigneeByBox"/>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox"/>
+      <widget class="QComboBox" name="updateByBox"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="createdByBox"/>
      </item>
     </layout>
    </item>
