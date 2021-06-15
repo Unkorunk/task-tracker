@@ -32,15 +32,14 @@ void LoadingBar::StartLoading()
 void LoadingBar::StopLoading()
 {
     ui->waitingSpinner->stop();
-    if (!isError) {
-        ui->label->hide();
-    }
+    ui->label->setText("");
+    ui->label->hide();
 }
 
 void LoadingBar::FailLoading(QString log)
 {
     isError = true;
-    //я бы принимал сюда текст снаружи
+    ui->waitingSpinner->stop();
     ui->label->setText(log);
     ui->label->show();
 }

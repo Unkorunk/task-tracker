@@ -14,6 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools Sql REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Network REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 set(TS_FILES_FRONTEND task-tracker-frontend/task-tracker-frontend_ru_RU.ts)
 
@@ -153,6 +154,7 @@ set(PROJECT_SOURCES_FRONTEND
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(task-tracker-frontend
+      WIN32
     ${PROJECT_SOURCES_FRONTEND}
   )
 
@@ -162,6 +164,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   )
 else()
   add_executable(task-tracker-frontend
+      WIN32
     ${PROJECT_SOURCES_FRONTEND}
   )
 
@@ -173,3 +176,7 @@ endif()
 
 target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(task-tracker-frontend PRIVATE Qt${QT_VERSION_MAJOR}::Network)
+
+set(OPENSSL_USE_STATIC_LIBS TRUE)
+#add_executable(${PROJECT_NAME} ...) or add_library(${PROJECT_NAME} ...)
+target_link_libraries(task-tracker-frontend PRIVATE OpenSSL::SSL OpenSSL::Crypto)

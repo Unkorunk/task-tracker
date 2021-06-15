@@ -43,6 +43,8 @@ private slots:
     void OnLoadingChanged(bool isLoading);
 
 private:
+    void DoTransition(Transition transition, const Context& context, bool addHistory);
+
     Ui::MainWindow *ui;
 
     QMainWindow& myAuthWindow;

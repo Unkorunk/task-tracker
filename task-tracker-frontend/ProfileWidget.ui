@@ -41,6 +41,10 @@
        <height>0</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget#verticalWidget {background-color: rgb(232, 227, 227);}
+QLabel {background-color: rgb(232, 227, 227);}</string>
+     </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <spacer name="verticalSpacer">

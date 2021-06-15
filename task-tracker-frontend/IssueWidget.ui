@@ -47,7 +47,7 @@ border: none;</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(226, 128, 128);
+          <string notr="true">background-color: rgb(60, 216, 36);
 color: rgb(255, 255, 255);</string>
          </property>
          <property name="text">
@@ -160,10 +160,10 @@ border: none;
 }</string>
        </property>
        <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
+        <enum>Qt::ScrollBarAsNeeded</enum>
        </property>
        <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
+        <enum>Qt::ScrollBarAsNeeded</enum>
        </property>
        <property name="selectionMode">
         <enum>QAbstractItemView::NoSelection</enum>

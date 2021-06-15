@@ -25,7 +25,6 @@ const QString Backend::BaseUrl = "http://139.59.144.121:8080";
 
 Backend::Backend() : myNetworkManager(std::make_unique<QNetworkAccessManager>()) {
     connect(myNetworkManager.get(), &QNetworkAccessManager::finished, this, &Backend::OnResponse);
-    //connect(this, Backend::SignInFailed, this, &LoadingBar::FailLoading);
 }
 
 QString Backend::GetProjectsUrl() {
@@ -629,7 +628,7 @@ void Backend::OnResponse(QNetworkReply* reply) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
         } else {
             qInfo() << "ошибочка вышла..";
-            emit RequestFailed("Вы не заполнили все обязательные поля!");
+            emit RequestFailed("Не удалось создать аккаунт!");
         }
 
         emit SignedUp(status, user);

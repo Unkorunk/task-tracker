@@ -40,6 +40,7 @@ void ProfileWidget::LoadAvatar(const std::string &strAvatarUrl)
     QUrl url(QString().fromStdString(strAvatarUrl));
     QNetworkAccessManager* manager = new QNetworkAccessManager(this);
     connect(manager, &QNetworkAccessManager::finished, this, &ProfileWidget::OnGetPicture);
+    qInfo() << url;
     manager->get(QNetworkRequest(url));
 }
 
@@ -111,14 +112,6 @@ void ProfileWidget::OnDeleteAccountBtnClicked()
     }
 }
 
-//void ProfileWidget::OnUserDeleted(Status status)
-//{
-//    MainWindow::Instance->StopLoading();
-//    if (status.isSuccess) {
-//        MainWindow::Instance->OnTransition(MainWindow::Transition::Greetings);
-//    }
-//}
-
 void ProfileWidget::SetupPage() {
     SetupProfile(myContext.GetUser());
 
@@ -131,6 +124,7 @@ void ProfileWidget::SetupPage() {
 }
 
 void ProfileWidget::OnGetPicture(QNetworkReply* reply) {
+    qInfo() << "Picture loading ::" << reply->error();
     if (reply->error() == QNetworkReply::NoError)
          {
              QByteArray jpegData = reply->readAll();
@@ -140,6 +134,8 @@ void ProfileWidget::OnGetPicture(QNetworkReply* reply) {
              {
                  this->ui->imgLbl->clear();
                  this->ui->imgLbl->setPixmap(pixmap);
+             } else {
+                 qInfo() << "No picture";
              }
          }
 }

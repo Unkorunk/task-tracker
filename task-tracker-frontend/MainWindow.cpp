@@ -42,11 +42,14 @@ void MainWindow::OnTransition(MainWindow::Transition transition, const Context& 
         break;
     }
 
-    AbstractPage* page = (AbstractPage*)ui->stackedWidget->widget((int)transition);
-    page->Setup(myContext);
+    if (myTransitionsHistory.empty() || myTransitionsHistory.top().first != transition) {
+        AbstractPage* page = (AbstractPage*)ui->stackedWidget->widget((int)transition);
+        page->Setup(myContext);
 
-    myTransitionsHistory.push(QPair<Transition, Context>((Transition)ui->stackedWidget->currentIndex(), myContext));
-    ui->stackedWidget->setCurrentIndex((int)transition);
+        myTransitionsHistory.push(QPair<Transition, Context>((Transition)ui->stackedWidget->currentIndex(), myContext));
+
+        ui->stackedWidget->setCurrentIndex((int)transition);
+    }
 }
 
 void MainWindow::OnBackButtonClicked() {
