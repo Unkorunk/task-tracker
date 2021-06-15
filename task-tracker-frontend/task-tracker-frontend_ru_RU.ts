@@ -339,11 +339,6 @@ an account?</source>
         <source>ProjectName</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="ProjectItemWidget.ui" line="133"/>
-        <source>all tasks done</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ProjectSettingsWidget</name>
