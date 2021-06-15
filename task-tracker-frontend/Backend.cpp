@@ -628,7 +628,7 @@ void Backend::OnResponse(QNetworkReply* reply) {
             user = UserInfo::ParseFromJson(root["user"].toObject());
         } else {
             qInfo() << "ошибочка вышла..";
-            emit RequestFailed("Вы не заполнили все обязательные поля!");
+            emit RequestFailed("Данный логин уже занят!");
         }
 
         emit SignedUp(status, user);

@@ -272,52 +272,52 @@ an account?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="61"/>
+        <location filename="ProfileWidget.ui" line="65"/>
         <source>Login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="75"/>
+        <location filename="ProfileWidget.ui" line="79"/>
         <source>Full Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="89"/>
+        <location filename="ProfileWidget.ui" line="93"/>
         <source>Email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="103"/>
+        <location filename="ProfileWidget.ui" line="107"/>
         <source>Avatar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="123"/>
+        <location filename="ProfileWidget.ui" line="127"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="143"/>
+        <location filename="ProfileWidget.ui" line="147"/>
         <source>Current Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="157"/>
+        <location filename="ProfileWidget.ui" line="161"/>
         <source>New Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="171"/>
+        <location filename="ProfileWidget.ui" line="175"/>
         <source>Repeat New Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="185"/>
+        <location filename="ProfileWidget.ui" line="189"/>
         <source>Reset Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ProfileWidget.ui" line="205"/>
+        <location filename="ProfileWidget.ui" line="209"/>
         <source>Delete Account</source>
         <translation type="unfinished"></translation>
     </message>

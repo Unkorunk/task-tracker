@@ -42,6 +42,11 @@ void RegistrationWidget::OnSignUpBtnClicked() {
         emit Backend::Instance.RequestFailed("Не указан адрес электронной почты!");
         return;
     }
+    else if (!ui->emailField->text().contains('@') || !ui->emailField->text().contains('.')){
+        ui->loadingBar->show();
+        emit Backend::Instance.RequestFailed("Некорректный адрес электронной почты!");
+        return;
+    }
     else if (ui->passwordField->text().isEmpty()){
         ui->loadingBar->show();
         emit Backend::Instance.RequestFailed("Не заполнен пароль!");
@@ -81,6 +86,7 @@ void RegistrationWidget::OnMoveToLogInBtnClicked() {
     ui->usernameField->setText("");
     ui->passwordField->setText("");
     ui->repPasswordField->setText("");
+    ui->loadingBar->StopLoading();
     emit SignupBtnClicked(AuthorizationWindow::Transition::Authorization);
 }
 
@@ -97,6 +103,7 @@ void RegistrationWidget::OnSignup(Status status, const UserInfo& user)
     ui->repPasswordField->setReadOnly(false);
 
     if (status.isSuccess) {
+        ui->loadingBar->StopLoading();
         emit SignedUp(user);
         ui->fullNameField->setText("");
         ui->emailField->setText("");
@@ -118,6 +125,9 @@ void RegistrationWidget::OnSignup(Status status, const UserInfo& user)
             ui->loadingBar->show();
             emit Backend::Instance.RequestFailed("Не указан адрес электронной почты!");
         }
+        else if (!ui->emailField->text().contains('@') && !ui->emailField->text().contains('.')){
+            emit Backend::Instance.RequestFailed("Некорректный адрес электронной почты!");
+        }
         else if (ui->passwordField->text().isEmpty()){
             ui->loadingBar->show();
             emit Backend::Instance.RequestFailed("Не заполнен пароль!");
@@ -133,6 +143,9 @@ void RegistrationWidget::OnSignup(Status status, const UserInfo& user)
         else if (ui->passwordField->text() != ui->repPasswordField->text()){
             ui->loadingBar->show();
             emit Backend::Instance.RequestFailed("Повторно введённый пароль не совпадает с исходным.");
+        } else {
+            ui->loadingBar->show();
+            emit Backend::Instance.RequestFailed("Пользователь с данными логином/электронной почтой уже существует!");
         }
     }
 }

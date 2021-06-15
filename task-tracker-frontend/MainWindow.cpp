@@ -33,7 +33,23 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::OnTransition(MainWindow::Transition transition, const Context& context) {
-    DoTransition(transition, context, true);
+    myContext = context;
+
+    switch (transition) {
+    case Transition::Greetings:
+        myTransitionsHistory.clear();
+        Backend::Instance.GetProjects();
+        break;
+    }
+
+    if (myTransitionsHistory.empty() || myTransitionsHistory.top().first != transition) {
+        AbstractPage* page = (AbstractPage*)ui->stackedWidget->widget((int)transition);
+        page->Setup(myContext);
+
+        myTransitionsHistory.push(QPair<Transition, Context>((Transition)ui->stackedWidget->currentIndex(), myContext));
+
+        ui->stackedWidget->setCurrentIndex((int)transition);
+    }
 }
 
 void MainWindow::OnBackButtonClicked() {
@@ -42,7 +58,8 @@ void MainWindow::OnBackButtonClicked() {
     }
 
     QPair<Transition, Context> prevState = myTransitionsHistory.pop();
-    DoTransition(prevState.first, prevState.second, false);
+    OnTransition(prevState.first, prevState.second);
+    myTransitionsHistory.pop();
 }
 
 void MainWindow::OnLoadingChanged(bool isLoading) {
@@ -50,28 +67,6 @@ void MainWindow::OnLoadingChanged(bool isLoading) {
         ui->loadingBar->StartLoading();
     } else {
         ui->loadingBar->StopLoading();
-    }
-}
-
-void MainWindow::DoTransition(MainWindow::Transition transition, const Context &context, bool addHistory) {
-    myContext = context;
-
-    if (myTransitionsHistory.empty() || (Transition)ui->stackedWidget->currentIndex() != transition) {
-        AbstractPage* page = (AbstractPage*)ui->stackedWidget->widget((int)transition);
-        page->Setup(myContext);
-
-        if (addHistory) {
-            myTransitionsHistory.push(QPair<Transition, Context>((Transition)ui->stackedWidget->currentIndex(), myContext));
-        }
-
-        ui->stackedWidget->setCurrentIndex((int)transition);
-    }
-
-    switch (transition) {
-    case Transition::Greetings:
-        myTransitionsHistory.clear();
-        Backend::Instance.GetProjects();
-        break;
     }
 }
 
